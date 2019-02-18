@@ -71,7 +71,7 @@ module Karafka
                                .merge!(opts)
 
           subject.params_batch = Karafka::Params::ParamsBatch
-                                  .new(_karafka_raw_data)
+                                 .new(_karafka_raw_data)
         end
 
         private
