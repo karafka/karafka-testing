@@ -33,6 +33,8 @@ Once included into your RSpec setup, this library will provide you two methods t
 - `#publish_for_karafka` - this method will "send" message to the consumer instance.
 
 
+**Note:** Messages sent using the `#publish_for_karafka` method won't be sent to Kafka. They will be "virtually" delegated to the created consumer instance so your specs can run without Kafka setup.
+
 ```ruby
 RSpec.describe InlineBatchConsumer do
   # This will create a consumer instance with all the settings defined for the given topic
