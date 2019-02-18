@@ -1,7 +1,10 @@
 
 module Karafka
   module Testing
+    # All the things related to extra functionalities needed to easier spec out
+    # Karafka things using RSpec
     module RSpec
+      # RSpec helpers module that needs to be included
       module Helpers
         class << self
           def included(base)
