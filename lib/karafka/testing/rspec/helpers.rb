@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module Karafka
   module Testing
@@ -33,23 +34,29 @@ module Karafka
 
         def publish_for_karafka(payload, opts = {})
           _karafka_raw_data << Karafka::Params::Params
-            .new
-            .merge!(
-              'deserializer' => consumer.topic.deserializer,
-              'create_time' => Time.now,
-              'headers' => {},
-              'is_control_record' => false,
-              'key' => nil,
-              'offset' => 0,
-              'partition' => 0,
-              'receive_time' => Time.now,
-              'topic' => consumer.topic.name
-            )
-            .merge!('payload' => payload)
-            .merge!(opts)
+                               .new
+                               .merge!(message_defaults)
+                               .merge!('payload' => payload)
+                               .merge!(opts)
 
-          consumer.params_batch = Karafka::Params::ParamsBatch
+          subject.params_batch = Karafka::Params::ParamsBatch
                                   .new(_karafka_raw_data)
+        end
+
+        private
+
+        def message_defaults
+          {
+            'deserializer' => subject.topic.deserializer,
+            'create_time' => Time.now,
+            'headers' => {},
+            'is_control_record' => false,
+            'key' => nil,
+            'offset' => 0,
+            'partition' => 0,
+            'receive_time' => Time.now,
+            'topic' => subject.topic.name
+          }
         end
       end
     end

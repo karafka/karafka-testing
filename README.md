@@ -27,7 +27,35 @@ end
 
 ## Usage
 
-WIP
+Once included into your RSpec setup, this library will provide you two methods that you can use with your specs:
+
+- `#karafka_consumer_for` - this method will create a consumer instance for the desired topic. It **needs** to be set as the spec subject.
+- `#publish_for_karafka` - this method will "send" message to the consumer instance.
+
+
+```ruby
+RSpec.describe InlineBatchConsumer do
+  # This will create a consumer instance with all the settings defined for the given topic
+  subject(:consumer) { karafka_consumer_for(:inline_batch_data) }
+
+  let(:nr1_value) { rand }
+  let(:nr2_value) { rand }
+  let(:sum) { nr1_value + nr2_value }
+
+  before do
+    # Sends first message to Karafka consumer
+    publish_for_karafka({ 'number' => nr1_value }.to_json)
+    # Sends second message to Karafka consumer
+    publish_for_karafka({ 'number' => nr2_value }.to_json)
+    allow(Karafka.logger).to receive(:info)
+  end
+
+  it 'expects to log a proper message' do
+    expect(Karafka.logger).to receive(:info).with("Sum of 2 elements equals to: #{sum}")
+    consumer.consume
+  end
+end
+```
 
 ## References
 
