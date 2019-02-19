@@ -7,7 +7,7 @@ Karafka-Testing is a library that provides rspec helpers, to make testing of Kar
 
 ## Installation
 
-Add the gem to your Gemfile in the `test` group:
+Add this gem to your Gemfile in the `test` group:
 ```ruby
 group :test do
   gem 'karafka-testing'
