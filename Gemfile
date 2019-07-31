@@ -4,10 +4,4 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'karafka', git: 'https://github.com/karafka/karafka'
-gem 'waterdrop', git: 'https://github.com/karafka/waterdrop'
-
-group :test do
-  gem 'rspec'
-  gem 'simplecov'
-end
+gem 'karafka', '1.3.0.rc1'
