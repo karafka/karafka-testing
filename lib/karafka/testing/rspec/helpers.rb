@@ -36,7 +36,8 @@ module Karafka
         def karafka_consumer_for(requested_topic)
           selected_topic = nil
 
-          App.consumer_groups.each do |consumer_group|
+          # @note Remove in 2.0. This won't work without the global state
+          ::Karafka::App.consumer_groups.each do |consumer_group|
             consumer_group.topics.each do |topic|
               selected_topic = topic if topic.name == requested_topic.to_s
             end
