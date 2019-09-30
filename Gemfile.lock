@@ -76,7 +76,7 @@ GEM
       zeitwerk (~> 2.1)
     king_konf (0.3.7)
     multi_json (1.13.1)
-    rake (12.3.3)
+    rake (13.0.0)
     ruby-kafka (0.7.10)
       digest-crc
     thor (0.20.3)
