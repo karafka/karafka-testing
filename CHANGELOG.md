@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## Unreleased (master)
+- Ruby 2.6.5 support
+
 ## 1.3.0 (2019-09-09)
 - Dynamic `App` name (#2)
 
