@@ -20,6 +20,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w[lib]
   spec.cert_chain    = %w[certs/mensfeld.pem]
 
+  spec.required_ruby_version = '>= 2.5.0'
+
   if $PROGRAM_NAME.end_with?('gem')
     spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
   end
