@@ -14,8 +14,7 @@ jobs:
       language: ruby
       rvm: 2.6.5
       before_install:
-        - gem update --system
-        - gem install bundler
+        - yes | gem update --system
       script: \curl -sSL https://api.coditsu.io/run/ci | bash
 
 stages:
