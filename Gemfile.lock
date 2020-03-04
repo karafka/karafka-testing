@@ -11,7 +11,7 @@ GEM
     delivery_boy (1.0.0)
       king_konf (~> 0.3)
       ruby-kafka (~> 0.7.8)
-    digest-crc (0.5.0)
+    digest-crc (0.5.1)
     dry-configurable (0.11.3)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.4, >= 0.4.7)
@@ -92,7 +92,7 @@ GEM
       dry-validation (~> 1.2)
       ruby-kafka (>= 0.7.8)
       zeitwerk (~> 2.1)
-    zeitwerk (2.2.2)
+    zeitwerk (2.3.0)
 
 PLATFORMS
   ruby
