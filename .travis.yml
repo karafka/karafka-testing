@@ -12,7 +12,7 @@ jobs:
   include:
     - stage: coditsu
       language: ruby
-      rvm: 2.7.0
+      rvm: 2.7.1
       before_install:
         - yes | gem update --system
       script: \curl -sSL https://api.coditsu.io/run/ci | bash
