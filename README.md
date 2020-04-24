@@ -1,6 +1,6 @@
 # Karafka Testing library
 
-[![Build Status](https://travis-ci.org/karafka/testing.svg)](https://travis-ci.org/karafka/testing)
+[![Build Status](https://github.com/karafka/testing/workflows/ci/badge.svg)](https://github.com/karafka/testing/actions?query=workflow%3Aci)
 [![Join the chat at https://gitter.im/karafka/karafka](https://badges.gitter.im/karafka/karafka.svg)](https://gitter.im/karafka/karafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Karafka-Testing is a library that provides rspec helpers, to make testing of Karafka consumers much easier.
@@ -62,7 +62,7 @@ end
 ## References
 
 * [Karafka framework](https://github.com/karafka/karafka)
-* [Karafka Testing Travis CI](https://travis-ci.org/karafka/testing)
+* [Karafka Testing Actions CI](https://github.com/karafka/testing/actions?query=workflow%3Aci)
 * [Karafka Testing Coditsu](https://app.coditsu.io/karafka/repositories/testing)
 
 ## Note on contributions
