@@ -51,7 +51,7 @@ module Karafka
         # Adds a new Karafka params instance with given payload and options into an internal
         # buffer that will be used to simulate messages delivery to the consumer
         #
-        # @param payload [String] anything you want to send
+        # @param raw_payload [String] anything you want to send
         # @param opts [Hash] additional options with which you want to overwrite the
         #   message defaults (key, offset, etc)
         #
