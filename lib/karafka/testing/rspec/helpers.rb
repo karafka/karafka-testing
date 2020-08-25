@@ -64,21 +64,19 @@ module Karafka
         #   before do
         #     publish_for_karafka({ 'hello' => 'world' }.to_json, 'partition' => 6)
         #   end
-        def publish_for_karafka(payload, opts = {})
-          _karafka_raw_data << Karafka::Params::Params
-                               .new
-                               .merge!(message_defaults)
-                               .merge!('payload' => payload)
-                               .merge!(opts)
+        def publish_for_karafka(raw_payload, opts = {})
+          metadata = Karafka::Params::Metadata.new(
+            **metadata_defaults.merge(opts)
+          ).freeze
 
-          subject.params_batch = Karafka::Params::ParamsBatch
-                                 .new(_karafka_raw_data)
+          _karafka_raw_data << Karafka::Params::Params.new(raw_payload, metadata)
+          subject.params_batch = Karafka::Params::ParamsBatch.new(_karafka_raw_data)
         end
 
         private
 
         # @return [Hash] message default options
-        def message_defaults
+        def metadata_defaults
           {
             'deserializer' => subject.topic.deserializer,
             'create_time' => Time.now,
