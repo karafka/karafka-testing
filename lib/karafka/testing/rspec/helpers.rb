@@ -78,15 +78,15 @@ module Karafka
         # @return [Hash] message default options
         def metadata_defaults
           {
-            'deserializer' => subject.topic.deserializer,
-            'create_time' => Time.now,
-            'headers' => {},
-            'is_control_record' => false,
-            'key' => nil,
-            'offset' => 0,
-            'partition' => 0,
-            'receive_time' => Time.now,
-            'topic' => subject.topic.name
+            deserializer: subject.topic.deserializer,
+            create_time: Time.now,
+            headers: {},
+            is_control_record: false,
+            key: nil,
+            offset: 0,
+            partition: 0,
+            receive_time: Time.now,
+            topic: subject.topic.name
           }
         end
       end

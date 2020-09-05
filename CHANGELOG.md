@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 1.4.1 (2020-09-05)
+- Fix for Ruby 2.5 and 2.6 support
+
 ## 1.4.0 (2020-09-05)
 - Update to match Karafka 1.4.0 params and batch metadata setup
 
