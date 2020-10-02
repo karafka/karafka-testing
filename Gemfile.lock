@@ -28,7 +28,7 @@ GEM
       dry-core (~> 0.4)
       dry-equalizer (~> 0.2)
     dry-inflector (0.2.0)
-    dry-initializer (3.0.3)
+    dry-initializer (3.0.4)
     dry-logic (1.0.8)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.2)
