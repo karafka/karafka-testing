@@ -1,6 +1,7 @@
 # Karafka Testing library
 
 [![Build Status](https://github.com/karafka/testing/workflows/ci/badge.svg)](https://github.com/karafka/testing/actions?query=workflow%3Aci)
+[![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](http://badge.fury.io/rb/karafka-testing)
 [![Join the chat at https://gitter.im/karafka/karafka](https://badges.gitter.im/karafka/karafka.svg)](https://gitter.im/karafka/karafka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Karafka-Testing is a library that provides rspec helpers, to make testing of Karafka consumers much easier.
