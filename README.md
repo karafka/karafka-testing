@@ -74,6 +74,4 @@ Each pull request must pass all the RSpec specs and meet our quality requirement
 
 To check if everything is as it should be, we use [Coditsu](https://coditsu.io) that combines multiple linters and code analyzers for both code and documentation. Once you're done with your changes, submit a pull request.
 
-Coditsu will automatically check your work against our quality standards. You can find your commit check results on the [builds page](https://app.coditsu.io/karafka/repositories/test/builds/commit_builds) of the Karafka Testing repository.
-
-[![coditsu](https://coditsu.io/assets/quality_bar.svg)](https://app.coditsu.io/karafka/repositories/testing/builds/commit_builds)
+Coditsu will automatically check your work against our quality standards. You can find your commit check results on the [builds page](https://app.coditsu.io/karafka/repositories/testing/builds/commit_builds) of the Karafka Testing repository.
