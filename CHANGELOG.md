@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## Unreleased
+- Remove Ruby 2.5 support and update minimum Ruby requirement to 2.6
+
 ## 1.4.1 (2020-09-05)
 - Fix for Ruby 2.5 and 2.6 support
 
