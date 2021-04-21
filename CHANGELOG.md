@@ -1,6 +1,7 @@
 # Karafka Test gem changelog
 
-## Unreleased
+## 1.4.2 (2021-04-21)
+- Restore MIT license
 - Remove Ruby 2.5 support and update minimum Ruby requirement to 2.6
 
 ## 1.4.1 (2020-09-05)
