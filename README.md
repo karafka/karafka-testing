@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/karafka/testing/workflows/ci/badge.svg)](https://github.com/karafka/testing/actions?query=workflow%3Aci)
 [![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](http://badge.fury.io/rb/karafka-testing)
-[![Join the chat at https://gitter.im/karafka/karafka](https://badges.gitter.im/karafka/karafka.svg)](https://gitter.im/karafka/karafka)
+[![Join the chat at https://slack.karafka.io](https://raw.githubusercontent.com/karafka/misc/master/slack.svg)](https://slack.karafka.io)
 
 Karafka-Testing is a library that provides rspec helpers, to make testing of Karafka consumers much easier.
 
@@ -68,10 +68,8 @@ end
 
 ## Note on contributions
 
-First, thank you for considering contributing to Karafka Testing! It's people like you that make the open source community such a great community!
+First, thank you for considering contributing to the Karafka ecosystem! It's people like you that make the open source community such a great community!
 
-Each pull request must pass all the RSpec specs and meet our quality requirements.
+Each pull request must pass all the RSpec specs, integration tests and meet our quality requirements.
 
-To check if everything is as it should be, we use [Coditsu](https://coditsu.io) that combines multiple linters and code analyzers for both code and documentation. Once you're done with your changes, submit a pull request.
-
-Coditsu will automatically check your work against our quality standards. You can find your commit check results on the [builds page](https://app.coditsu.io/karafka/repositories/testing/builds/commit_builds) of the Karafka Testing repository.
+Fork it, update and wait for the Github Actions results.
