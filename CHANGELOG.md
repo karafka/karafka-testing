@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## 2.0.0 (Unreleased)
+- Change the API to be more comprehensive
+- Update to work with Karafka 2.0
+
 ## 1.4.2 (2021-04-21)
 - Restore MIT license
 - Remove Ruby 2.5 support and update minimum Ruby requirement to 2.6

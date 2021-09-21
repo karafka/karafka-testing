@@ -28,18 +28,17 @@ end
 
 ## Usage
 
-Once included into your RSpec setup, this library will provide you two methods that you can use with your specs:
+Once included into your RSpec setup, this library will provide you with a special object `#karafka` that includes two methods that you can use with your specs:
 
-- `#karafka_consumer_for` - this method will create a consumer instance for the desired topic. It **needs** to be set as the spec subject.
-- `#publish_for_karafka` - this method will "send" message to the consumer instance.
+- `#consumer_for` - creates a consumer instance for the desired topic. It **needs** to be set as the spec subject.
+- `#publish` - "sends" message to the consumer instance.
 
-
-**Note:** Messages sent using the `#publish_for_karafka` method won't be sent to Kafka. They will be "virtually" delegated to the created consumer instance so your specs can run without Kafka setup.
+**Note:** Messages sent using the `#publish` method won't be sent to Kafka. They will be "virtually" delegated to the created consumer instance so your specs can run without Kafka setup.
 
 ```ruby
 RSpec.describe InlineBatchConsumer do
   # This will create a consumer instance with all the settings defined for the given topic
-  subject(:consumer) { karafka_consumer_for(:inline_batch_data) }
+  subject(:consumer) { karafka.consumer_for(:inline_batch_data) }
 
   let(:nr1_value) { rand }
   let(:nr2_value) { rand }
@@ -47,9 +46,9 @@ RSpec.describe InlineBatchConsumer do
 
   before do
     # Sends first message to Karafka consumer
-    publish_for_karafka({ 'number' => nr1_value }.to_json)
+    karafka.publish({ 'number' => nr1_value }.to_json)
     # Sends second message to Karafka consumer
-    publish_for_karafka({ 'number' => nr2_value }.to_json)
+    karafka.publish({ 'number' => nr2_value }.to_json, partition: 2)
     allow(Karafka.logger).to receive(:info)
   end
 

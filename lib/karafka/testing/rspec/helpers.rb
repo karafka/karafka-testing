@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'karafka/testing/errors'
+require 'karafka/testing/rspec/proxy'
 
 module Karafka
   module Testing
@@ -15,14 +16,15 @@ module Karafka
           def included(base)
             # This is an internal buffer for keeping "to be sent" messages before
             # we run the consume
-            base.let(:_karafka_raw_data) { [] }
-            # Clear the messages buffer after each spec, so nothing will leak
-            # in between them
-            base.after { _karafka_raw_data.clear }
+            base.let(:_karafka_messages) { [] }
+            base.let(:karafka) { Karafka::Testing::RSpec::Proxy.new(self) }
+            # Clear the messages buffer after each spec, so nothing leaks in between them
+            base.after { _karafka_messages.clear }
           end
         end
 
-        # Creates a consumer instance for given topic
+        # Creates a consumer instance for a given topic
+        #
         # @param requested_topic [String, Symbol] name of the topic for which we want to
         #   create a consumer instance
         # @return [Object] described_class instance
@@ -31,12 +33,12 @@ module Karafka
         #
         # @example Creates a MyConsumer consumer instance with settings for `my_requested_topic`
         #   RSpec.describe MyConsumer do
-        #     subject(:consumer) { karafka_consumer_for(:my_requested_topic) }
+        #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
         def karafka_consumer_for(requested_topic)
           selected_topic = nil
 
-          # @note Remove in 2.0. This won't work without the global state
+          # @note Remove in 2.1. This won't work without the global state
           ::Karafka::App.consumer_groups.each do |consumer_group|
             consumer_group.topics.each do |topic|
               selected_topic = topic if topic.name == requested_topic.to_s
@@ -45,47 +47,58 @@ module Karafka
 
           raise Karafka::Testing::Errors::TopicNotFoundError, requested_topic unless selected_topic
 
-          described_class.new(selected_topic)
+          consumer = described_class.new
+          consumer.topic = selected_topic
+          consumer
         end
 
-        # Adds a new Karafka params instance with given payload and options into an internal
+        # Adds a new Karafka message instance with given payload and options into an internal
         # buffer that will be used to simulate messages delivery to the consumer
         #
-        # @param raw_payload [String] anything you want to send
+        # @param payload [String] anything you want to send
         # @param opts [Hash] additional options with which you want to overwrite the
         #   message defaults (key, offset, etc)
         #
         # @example Send a json message to consumer
         #   before do
-        #     publish_for_karafka({ 'hello' => 'world' }.to_json)
+        #     karafka.publish({ 'hello' => 'world' }.to_json)
         #   end
         #
         # @example Send a json message to consumer and simulate, that it is partition 6
         #   before do
-        #     publish_for_karafka({ 'hello' => 'world' }.to_json, 'partition' => 6)
+        #     karafka.publish({ 'hello' => 'world' }.to_json, 'partition' => 6)
         #   end
-        def publish_for_karafka(raw_payload, opts = {})
-          metadata = Karafka::Params::Metadata.new(
-            **metadata_defaults.merge(opts)
+        def karafka_publish(payload, opts = {})
+          metadata = Karafka::Messages::Metadata.new(
+            **karafka_message_metadata_defaults.merge(opts)
           ).freeze
 
-          _karafka_raw_data << Karafka::Params::Params.new(raw_payload, metadata)
-          subject.params_batch = Karafka::Params::ParamsBatch.new(_karafka_raw_data)
+          # Add this message to previously published messages
+          _karafka_messages << Karafka::Messages::Message.new(payload, metadata)
+
+          # Update batch metadata
+          batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
+            _karafka_messages,
+            subject.topic,
+            Time.now
+          )
+
+          # Update consumer messages batch
+          subject.messages = Karafka::Messages::Messages.new(_karafka_messages, batch_metadata)
         end
 
         private
 
         # @return [Hash] message default options
-        def metadata_defaults
+        def karafka_message_metadata_defaults
           {
             deserializer: subject.topic.deserializer,
-            create_time: Time.now,
+            timestamp: Time.now,
             headers: {},
-            is_control_record: false,
             key: nil,
-            offset: 0,
+            offset: _karafka_messages.size,
             partition: 0,
-            receive_time: Time.now,
+            received_at: Time.now,
             topic: subject.topic.name
           }
         end
