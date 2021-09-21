@@ -1,5 +1,9 @@
 # Karafka Testing library
 
+Note: Documentation presented below works with not yet released Karafka `2.0`.
+
+Please refer to [this](https://github.com/karafka/testing/tree/1.4) branch and its documentation for details about usage with Karafka `1.4`.
+
 [![Build Status](https://github.com/karafka/testing/workflows/ci/badge.svg)](https://github.com/karafka/testing/actions?query=workflow%3Aci)
 [![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](http://badge.fury.io/rb/karafka-testing)
 [![Join the chat at https://slack.karafka.io](https://raw.githubusercontent.com/karafka/misc/master/slack.svg)](https://slack.karafka.io)
