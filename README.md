@@ -63,12 +63,6 @@ RSpec.describe InlineBatchConsumer do
 end
 ```
 
-## References
-
-* [Karafka framework](https://github.com/karafka/karafka)
-* [Karafka Testing Actions CI](https://github.com/karafka/testing/actions?query=workflow%3Aci)
-* [Karafka Testing Coditsu](https://app.coditsu.io/karafka/repositories/testing)
-
 ## Note on contributions
 
 First, thank you for considering contributing to the Karafka ecosystem! It's people like you that make the open source community such a great community!
