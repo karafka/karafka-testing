@@ -8,7 +8,7 @@ Please refer to [this](https://github.com/karafka/testing/tree/1.4) branch and i
 [![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](http://badge.fury.io/rb/karafka-testing)
 [![Join the chat at https://slack.karafka.io](https://raw.githubusercontent.com/karafka/misc/master/slack.svg)](https://slack.karafka.io)
 
-Karafka-Testing is a library that provides rspec helpers, to make testing of Karafka consumers much easier.
+Karafka-Testing is a library that provides RSpec helpers, to make testing of Karafka consumers much easier.
 
 ## Installation
 
