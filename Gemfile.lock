@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/karafka/karafka.git
-  revision: c236d1ad0d686d3b9a6929e8653f90b4ae0bf1d9
+  revision: eb638b913f791adb2918aa8031daa13522cd09eb
   branch: 2.0
   specs:
     karafka (2.0.0.pre.alpha1)
@@ -84,6 +84,7 @@ GEM
     zeitwerk (2.4.2)
 
 PLATFORMS
+  x86_64-darwin-19
   x86_64-linux
 
 DEPENDENCIES
@@ -91,4 +92,4 @@ DEPENDENCIES
   karafka-testing!
 
 BUNDLED WITH
-   2.2.27
+   2.2.28
