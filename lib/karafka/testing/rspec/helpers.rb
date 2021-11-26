@@ -17,10 +17,11 @@ module Karafka
             # This is an internal buffer for keeping "to be sent" messages before
             # we run the consume
             base.let(:_karafka_raw_data) { [] }
+            # Inject a dummy client that will intercept commands directed to the kafka client
+            base.before { Persistence::Client.write(DummyClient.new) }
             # Clear the messages buffer after each spec, so nothing will leak
             # in between them
             base.after { _karafka_raw_data.clear }
-            base.before { Persistence::Client.write(DummyClient.new) }
           end
         end
 
