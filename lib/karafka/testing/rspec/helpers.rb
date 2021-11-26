@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'karafka/testing/errors'
+require 'karafka/testing/dummy_client'
 
 module Karafka
   module Testing
@@ -19,6 +20,7 @@ module Karafka
             # Clear the messages buffer after each spec, so nothing will leak
             # in between them
             base.after { _karafka_raw_data.clear }
+            base.before { Persistence::Client.write(DummyClient.new) }
           end
         end
 
