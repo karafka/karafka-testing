@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 1.4.3 (2021-11-26)
+- #71 - `mark_as_consumed!` is not stubbed, causing `Karafka::Errors::MissingClientError`
+
 ## 1.4.2 (2021-04-21)
 - Restore MIT license
 - Remove Ruby 2.5 support and update minimum Ruby requirement to 2.6
