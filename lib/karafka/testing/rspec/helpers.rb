@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'karafka/testing/errors'
+require 'karafka/testing/dummy_client'
 require 'karafka/testing/rspec/proxy'
 
 module Karafka
@@ -49,6 +50,7 @@ module Karafka
 
           consumer = described_class.new
           consumer.topic = selected_topic
+          consumer.client = Karafka::Testing::DummyClient.new
           consumer
         end
 
