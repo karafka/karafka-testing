@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.email         = %w[maciej@mensfeld.pl]
   spec.summary       = 'Library which provides helpers for easier Karafka consumers tests'
   spec.description   = 'Library which provides helpers for easier Karafka consumers tests'
-  spec.homepage      = 'https://github.com/karafka/testing'
+  spec.homepage      = 'https://karafka.io'
   spec.license       = 'MIT'
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
