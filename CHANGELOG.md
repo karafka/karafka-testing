@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 1.4.4 (2021-12-05)
+- Source code metadata url added to the gemspec
+
 ## 1.4.3 (2021-11-27)
 - #71 - `mark_as_consumed!` is not stubbed, causing `Karafka::Errors::MissingClientError`
 
