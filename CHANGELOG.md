@@ -3,6 +3,7 @@
 ## 2.0.0 (Unreleased)
 - Change the API to be more comprehensive
 - Update to work with Karafka 2.0
+- Support for Ruby 3.1
 
 ## 1.4.2 (2021-04-21)
 - Restore MIT license
