@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## Unreleased
+- Support for Ruby 3.1
+
 ## 1.4.4 (2021-12-05)
 - Source code metadata url added to the gemspec
 
