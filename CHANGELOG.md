@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.0.0 (Unreleased)
+## 2.0.0.alpha1 (2022-01-30)
 - Change the API to be more comprehensive
 - Update to work with Karafka 2.0
 - Support for Ruby 3.1
