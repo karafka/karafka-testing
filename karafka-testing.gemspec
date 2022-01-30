@@ -27,5 +27,5 @@ Gem::Specification.new do |spec|
     spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
   end
 
-  # spec.add_dependency 'karafka', '~> 2.0'
+  spec.add_dependency 'karafka', '~> 2.0.alpha1'
 end
