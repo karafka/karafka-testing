@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.cert_chain    = %w[certs/mensfeld.pem]
   spec.metadata      = { 'source_code_uri' => 'https://github.com/karafka/testing' }
 
-  spec.required_ruby_version = '>= 2.6.0'
+  spec.required_ruby_version = '>= 2.7'
 
   if $PROGRAM_NAME.end_with?('gem')
     spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
