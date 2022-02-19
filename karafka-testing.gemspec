@@ -19,7 +19,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = %w[lib]
   spec.cert_chain    = %w[certs/mensfeld.pem]
-  spec.metadata      = { 'source_code_uri' => 'https://github.com/karafka/testing' }
 
   spec.required_ruby_version = '>= 2.6.0'
 
@@ -28,4 +27,9 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency 'karafka', '~> 1.4.0'
+
+  spec.metadata = {
+    'source_code_uri' => 'https://github.com/karafka/karafka',
+    'rubygems_mfa_required' => 'true'
+  }
 end
