@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.0.alpha2 (2022-02-19)
+- Add `rubygems_mfa_required`
+
 ## 2.0.0.alpha1 (2022-01-30)
 - Change the API to be more comprehensive
 - Update to work with Karafka 2.0
