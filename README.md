@@ -63,6 +63,24 @@ RSpec.describe InlineBatchConsumer do
 end
 ```
 
+If your consumers use `producer` to dispatch messages, you can set up your expectations against it as well:
+
+```ruby
+RSpec.describe InlineBatchConsumer do
+  subject(:consumer) { karafka.consumer_for(:inline_batch_data) }
+
+  before { karafka.publish({ 'number' => 1 }.to_json) }
+
+  it 'expects to dispatch async message to messages topic with value bigger by 1' do
+    expect(consumer.producer)
+      .to receive(:produce_async)
+      .with(topic: 'messages', payload: { number: 2 }.to_json)
+
+    consumer.consume
+  end
+end
+```
+
 ## Note on contributions
 
 First, thank you for considering contributing to the Karafka ecosystem! It's people like you that make the open source community such a great community!
