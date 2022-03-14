@@ -1,6 +1,6 @@
 # Karafka Testing library
 
-**Note**: Documentation presented below works with Karafka `2.0.0.alpha2` and higher.
+**Note**: Documentation presented below works with Karafka `2.0.0.alpha3` and higher.
 
 Please refer to [this](https://github.com/karafka/testing/tree/1.4) branch and its documentation for details about usage with Karafka `1.4`.
 
