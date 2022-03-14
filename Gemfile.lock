@@ -56,7 +56,7 @@ GEM
       thor (>= 0.20)
       waterdrop (>= 2.2.0, < 3.0.0)
       zeitwerk (~> 2.3)
-    mini_portile2 (2.7.1)
+    mini_portile2 (2.8.0)
     rake (13.0.6)
     rdkafka (0.11.1)
       ffi (~> 1.15)
@@ -73,11 +73,10 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
-  x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
   karafka-testing!
 
 BUNDLED WITH
-   2.3.6
+   2.3.7
