@@ -50,6 +50,7 @@ module Karafka
 
           consumer = described_class.new
           consumer.topic = selected_topic
+          consumer.producer = Karafka::App.producer
           consumer.client = Karafka::Testing::DummyClient.new
           consumer
         end
