@@ -1,6 +1,6 @@
 # Karafka Testing library
 
-**Note**: Documentation presented below works with Karafka `2.0.0.alpha1` and higher.
+**Note**: Documentation presented below works with Karafka `2.0.0.alpha3` and higher.
 
 Please refer to [this](https://github.com/karafka/testing/tree/1.4) branch and its documentation for details about usage with Karafka `1.4`.
 
@@ -58,6 +58,24 @@ RSpec.describe InlineBatchConsumer do
 
   it 'expects to log a proper message' do
     expect(Karafka.logger).to receive(:info).with("Sum of 2 elements equals to: #{sum}")
+    consumer.consume
+  end
+end
+```
+
+If your consumers use `producer` to dispatch messages, you can set up your expectations against it as well:
+
+```ruby
+RSpec.describe InlineBatchConsumer do
+  subject(:consumer) { karafka.consumer_for(:inline_batch_data) }
+
+  before { karafka.publish({ 'number' => 1 }.to_json) }
+
+  it 'expects to dispatch async message to messages topic with value bigger by 1' do
+    expect(consumer.producer)
+      .to receive(:produce_async)
+      .with(topic: 'messages', payload: { number: 2 }.to_json)
+
     consumer.consume
   end
 end

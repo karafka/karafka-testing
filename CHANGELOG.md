@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.0.alpha3 (2022-03-14)
+- Provide support for referencing producer from consumer
+
 ## 2.0.0.alpha2 (2022-02-19)
 - Add `rubygems_mfa_required`
 
