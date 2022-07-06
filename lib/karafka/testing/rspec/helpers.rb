@@ -48,10 +48,13 @@ module Karafka
 
           raise Karafka::Testing::Errors::TopicNotFoundError, requested_topic unless selected_topic
 
+          coordinators = Karafka::Processing::CoordinatorsBuffer.new
+
           consumer = described_class.new
           consumer.topic = selected_topic
           consumer.producer = Karafka::App.producer
           consumer.client = Karafka::Testing::DummyClient.new
+          consumer.coordinator = coordinators.find_or_create(requested_topic, 0)
           consumer
         end
 
