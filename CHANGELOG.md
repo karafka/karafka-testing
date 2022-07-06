@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.0.alpha4 (2022-07-14)
+- Require Karafka `2.0.0.beta5` and fix non-existing coordinator reference
+
 ## 2.0.0.alpha3 (2022-03-14)
 - Provide support for referencing producer from consumer
 
