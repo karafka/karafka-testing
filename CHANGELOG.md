@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.0.rc1 (2022-07-19)
+- Require Karafka `2.0.0.rc2`
+
 ## 2.0.0.alpha4 (2022-07-06)
 - Require Karafka `2.0.0.beta5` and fix non-existing coordinator reference
 
