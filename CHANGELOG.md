@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.0 (2022-08-01)
+- No changes. Just non-rc release.
+
 ## 2.0.0.rc1 (2022-07-19)
 - Require Karafka `2.0.0.rc2`
 
