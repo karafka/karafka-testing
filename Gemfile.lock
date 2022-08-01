@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     karafka-testing (2.0.0)
-      karafka (~> 2.0.rc2)
+      karafka (>= 2.0.rc4, < 3.0.0)
 
 GEM
   remote: https://rubygems.org/
