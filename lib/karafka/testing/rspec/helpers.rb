@@ -2,8 +2,8 @@
 
 require 'waterdrop'
 require 'karafka/testing/errors'
-require 'karafka/testing/dummy_consumer_client'
-require 'karafka/testing/dummy_producer_client'
+require 'karafka/testing/spec_consumer_client'
+require 'karafka/testing/spec_producer_client'
 require 'karafka/testing/rspec/proxy'
 
 module Karafka
@@ -25,9 +25,9 @@ module Karafka
             # consumer for processing. This buffer holds only those that should go to consumer
             base.let(:_karafka_consumer_messages) { [] }
             # Consumer fake client to mock communication with Kafka
-            base.let(:_karafka_consumer_client) { Karafka::Testing::DummyConsumerClient.new }
+            base.let(:_karafka_consumer_client) { Karafka::Testing::SpecConsumerClient.new }
             # Producer fake client to mock communication with Kafka
-            base.let(:_karafka_producer_client) { Karafka::Testing::DummyProducerClient.new(self) }
+            base.let(:_karafka_producer_client) { Karafka::Testing::SpecProducerClient.new(self) }
 
             base.before do
               _karafka_consumer_messages.clear
@@ -71,8 +71,8 @@ module Karafka
           _karafka_build_consumer_for(selected_topics.first)
         end
 
-        # Adds a new Karafka message instance with given payload and options into an internal
-        # buffer that will be used to simulate messages delivery to the consumer
+        # Adds a new Karafka message instance if needed with given payload and options into an
+        # internal consumer buffer that will be used to simulate messages delivery to the consumer
         #
         # @param payload [String] anything you want to send
         # @param opts [Hash] additional options with which you want to overwrite the
@@ -87,12 +87,16 @@ module Karafka
         #   before do
         #     karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         #   end
-        def _karafka_add_message_to_consumer(message)
+        def _karafka_add_message_to_consumer_if_needed(message)
+          # We target to the consumer only messages that were produced to it, since specs may also
+          # produce other messages targeting other topics
+          return unless message[:topic] == consumer.topic.name
+
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults
 
           metadata.keys.each do |key|
-            next unless message.key(key)
+            next unless message.key?(key)
 
             metadata[key] = message.fetch(key)
           end
@@ -114,6 +118,18 @@ module Karafka
           subject.messages = Karafka::Messages::Messages.new(
             _karafka_consumer_messages,
             batch_metadata
+          )
+        end
+
+        # Produces message with a given payload to the consumer matching topic
+        # @param payload [String] payload we want to dispatch
+        # @param metadata [Hash] any metadat we want to dispatch alongside the payload
+        def _karafka_produce(payload, metadata = {})
+          Karafka.producer.produce_sync(
+            {
+              topic: subject.topic.name,
+              payload: payload
+            }.merge(metadata)
           )
         end
 

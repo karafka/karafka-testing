@@ -42,7 +42,7 @@ Once included into your RSpec setup, this library will provide you with a specia
 ```ruby
 RSpec.describe InlineBatchConsumer do
   # This will create a consumer instance with all the settings defined for the given topic
-  subject(:consumer) { karafka.consumer_for(:inline_batch_data) }
+  subject(:consumer) { karafka.consumer_for('inline_batch_data') }
 
   let(:nr1_value) { rand }
   let(:nr2_value) { rand }
@@ -50,9 +50,18 @@ RSpec.describe InlineBatchConsumer do
 
   before do
     # Sends first message to Karafka consumer
-    karafka.publish({ 'number' => nr1_value }.to_json)
+    Karafka.producer.produce_sync(
+      topic: 'inline_batch_data',
+      payload: { 'number' => nr1_value }.to_json
+    )
+
     # Sends second message to Karafka consumer
-    karafka.publish({ 'number' => nr2_value }.to_json, partition: 2)
+    Karafka.producer.produce_sync(
+      topic: 'inline_batch_data',
+      payload: { 'number' => nr2_value }.to_json,
+      partition: 2
+    )
+
     allow(Karafka.logger).to receive(:info)
   end
 
