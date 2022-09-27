@@ -39,16 +39,16 @@ module Karafka
         #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
         def karafka_consumer_for(requested_topic, requested_consumer_group = nil)
-          selected_topics = []
+          all_topics = ::Karafka::App.consumer_groups.map(&:topics).flat_map(&:to_a)
 
-          ::Karafka::App.consumer_groups.each do |consumer_group|
-            consumer_group.topics.each do |topic|
-              next if topic.name != requested_topic.to_s
-              next if requested_consumer_group &&
-                      consumer_group.name != requested_consumer_group.to_s
+          # First select topics that match what we are looking for
+          selected_topics = all_topics.select do |topic|
+            topic.name == requested_topic.to_s
+          end
 
-              selected_topics << topic
-            end
+          # And then narrow it down based on the consumer group criteria (if present)
+          selected_topics.delete_if do |topic|
+            requested_consumer_group && topic.consumer_group.name != requested_consumer_group.to_s
           end
 
           raise Errors::TopicInManyConsumerGroupsError, requested_topic if selected_topics.size > 1
