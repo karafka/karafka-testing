@@ -10,18 +10,13 @@ module Karafka
           @rspec_example = rspec_example
         end
 
-        # @param args Anything that the `#karafka_consumer_for` accepts
+        # @param args Anything that the `#_karafka_consumer_for` accepts
         def consumer_for(*args)
-          @rspec_example.karafka_consumer_for(*args)
-        end
-
-        # @param args Anything that the `#karafka_publish` accepts
-        def publish(*args)
-          @rspec_example.karafka_publish(*args)
+          @rspec_example._karafka_consumer_for(*args)
         end
 
         def produced_messages
-          @rspec_example.karafka_produced_messages
+          @rspec_example._karafka_produced_messages
         end
       end
     end

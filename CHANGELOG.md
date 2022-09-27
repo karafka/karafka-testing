@@ -1,8 +1,9 @@
 # Karafka Test gem changelog
 
-## 2.0.2 (Unreleased)
+## 2.1.0 (Unreleased)
 - Provide multi-consumer group testing support (#92)
 - Fail fast if requested topic is present in multiple consumer groups but consumer group is not specified.
+- Rename `karafka.publish` to `karafka.produce` to align with producer API (`produce_sync` and `produce_async`).
 
 ## 2.0.1 (2022-08-05)
 - Require non rc version of Karafka.
