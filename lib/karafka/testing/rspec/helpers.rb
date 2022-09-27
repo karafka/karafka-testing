@@ -36,6 +36,8 @@ module Karafka
         #
         # @param requested_topic [String, Symbol] name of the topic for which we want to
         #   create a consumer instance
+        # @param requested_consumer_group [String, Symbol, nil] optional name of the consumer group
+        #   if we have multiple consumer groups listening on the same topic
         # @return [Object] described_class instance
         # @raise [Karafka::Testing::Errors::TopicNotFoundError] raised when we're unable to find
         #   topic that was requested
@@ -44,26 +46,23 @@ module Karafka
         #   RSpec.describe MyConsumer do
         #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
-        def karafka_consumer_for(requested_topic)
-          selected_topic = nil
+        def karafka_consumer_for(requested_topic, requested_consumer_group = nil)
+          all_topics = ::Karafka::App.consumer_groups.map(&:topics).flat_map(&:to_a)
 
-          # @note Remove in 2.1. This won't work without the global state
-          ::Karafka::App.consumer_groups.each do |consumer_group|
-            consumer_group.topics.each do |topic|
-              selected_topic = topic if topic.name == requested_topic.to_s
-            end
+          # First select topics that match what we are looking for
+          selected_topics = all_topics.select do |topic|
+            topic.name == requested_topic.to_s
           end
 
-          raise Karafka::Testing::Errors::TopicNotFoundError, requested_topic unless selected_topic
+          # And then narrow it down based on the consumer group criteria (if present)
+          selected_topics.delete_if do |topic|
+            requested_consumer_group && topic.consumer_group.name != requested_consumer_group.to_s
+          end
 
-          coordinators = Karafka::Processing::CoordinatorsBuffer.new
+          raise Errors::TopicInManyConsumerGroupsError, requested_topic if selected_topics.size > 1
+          raise Errors::TopicNotFoundError, requested_topic if selected_topics.empty?
 
-          consumer = described_class.new
-          consumer.topic = selected_topic
-          consumer.producer = Karafka::App.producer
-          consumer.client = Karafka::Testing::DummyClient.new
-          consumer.coordinator = coordinators.find_or_create(requested_topic, 0)
-          consumer
+          karafka_build_consumer_for(selected_topics.first)
         end
 
         # Adds a new Karafka message instance with given payload and options into an internal
@@ -119,6 +118,21 @@ module Karafka
             received_at: Time.now,
             topic: subject.topic.name
           }
+        end
+
+        # Builds the consumer instance based on the provided topic
+        #
+        # @param topic [Karafka::Routing::Topic] topic for which we want to build the consumer
+        # @return [Object] karafka consumer
+        def karafka_build_consumer_for(topic)
+          coordinators = Karafka::Processing::CoordinatorsBuffer.new
+
+          consumer = described_class.new
+          consumer.topic = topic
+          consumer.producer = Karafka::App.producer
+          consumer.client = Karafka::Testing::DummyClient.new
+          consumer.coordinator = coordinators.find_or_create(topic.name, 0)
+          consumer
         end
       end
     end
