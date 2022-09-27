@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.2 (Unreleased)
+- Provide multi-consumer group testing support (#92)
+
 ## 2.0.1 (2022-08-05)
 - Require non rc version of Karafka.
 
