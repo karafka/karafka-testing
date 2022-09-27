@@ -38,26 +38,24 @@ module Karafka
         #   RSpec.describe MyConsumer do
         #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
-        #
-        # @note In case the same topic is used several times in multiple consumer groups and
-        #   the `requested_consumer_group` value is not specified, first will be selected
         def karafka_consumer_for(requested_topic, requested_consumer_group = nil)
-          selected_consumer_group = ::Karafka::App.consumer_groups.find do |cg|
-            cg.name == requested_consumer_group.to_s ||
-              requested_consumer_group.nil?
+          # Find all the topics that would match our name first
+          selected_topics = ::Karafka::App.routes.map(&:topics).flat_map(&:to_a).select do |topic|
+            topic.name == requested_topic.to_s
           end
 
-          selected_consumer_group || raise(
-            Karafka::Testing::Errors::ConsumerGroupNotFoundError,
-            requested_consumer_group
-          )
+          # Remove those that do not match our consumer group requirements (if any)
+          selected_topics.delete_if do |topic|
+            requested_consumer_group && topic.consumer_group.name != requested_consumer_group.to_s
+          end
 
-          selected_topic = selected_consumer_group.topics.find(requested_topic.to_s)
+          raise Errors::TopicInManyConsumerGroupsError, requested_topic if selected_topics.size > 1
+          raise Errors::TopicNotFoundError, requested_topic if selected_topics.empty?
 
           coordinators = Karafka::Processing::CoordinatorsBuffer.new
 
           consumer = described_class.new
-          consumer.topic = selected_topic
+          consumer.topic = selected_topics.first
           consumer.producer = Karafka::App.producer
           consumer.client = Karafka::Testing::DummyClient.new
           consumer.coordinator = coordinators.find_or_create(requested_topic, 0)
