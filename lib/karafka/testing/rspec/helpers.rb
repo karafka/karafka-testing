@@ -28,6 +28,8 @@ module Karafka
         #
         # @param requested_topic [String, Symbol] name of the topic for which we want to
         #   create a consumer instance
+        # @param requested_consumer_group [String, Symbol, nil] optional name of the consumer group
+        #   if we have multiple consumer groups listening on the same topic
         # @return [Object] described_class instance
         # @raise [Karafka::Testing::Errors::TopicNotFoundError] raised when we're unable to find
         #   topic that was requested
@@ -36,17 +38,21 @@ module Karafka
         #   RSpec.describe MyConsumer do
         #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
-        def karafka_consumer_for(requested_topic)
-          selected_topic = nil
-
-          # @note Remove in 2.1. This won't work without the global state
-          ::Karafka::App.consumer_groups.each do |consumer_group|
-            consumer_group.topics.each do |topic|
-              selected_topic = topic if topic.name == requested_topic.to_s
-            end
+        #
+        # @note In case the same topic is used several times in multiple consumer groups and
+        #   the `requested_consumer_group` value is not specified, first will be selected
+        def karafka_consumer_for(requested_topic, requested_consumer_group = nil)
+          selected_consumer_group = ::Karafka::App.consumer_groups.find do |cg|
+            cg.name == requested_consumer_group.to_s ||
+              requested_consumer_group.nil?
           end
 
-          raise Karafka::Testing::Errors::TopicNotFoundError, requested_topic unless selected_topic
+          selected_consumer_group || raise(
+            Karafka::Testing::Errors::ConsumerGroupNotFoundError,
+            requested_consumer_group
+          )
+
+          selected_topic = selected_consumer_group.topics.find(requested_topic.to_s)
 
           coordinators = Karafka::Processing::CoordinatorsBuffer.new
 

@@ -7,8 +7,9 @@ module Karafka
     module Errors
       # Base error for all the internal errors
       BaseError = Class.new(StandardError)
-      # Raised when we want to build a consumer for a topic that does not exist
-      TopicNotFoundError = Class.new(BaseError)
+
+      # Raised when we want to build a consumer for a non-existing consumer group
+      ConsumerGroupNotFoundError = Class.new(BaseError)
     end
   end
 end
