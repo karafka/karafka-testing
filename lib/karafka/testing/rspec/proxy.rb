@@ -19,6 +19,10 @@ module Karafka
         def publish(*args)
           @rspec_example.karafka_publish(*args)
         end
+
+        def produced_messages
+          @rspec_example.karafka_produced_messages
+        end
       end
     end
   end

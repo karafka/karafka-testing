@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require 'waterdrop'
 require 'karafka/testing/errors'
 require 'karafka/testing/dummy_client'
+require 'karafka/testing/dummy_producer_client'
 require 'karafka/testing/rspec/proxy'
 
 module Karafka
@@ -19,8 +21,14 @@ module Karafka
             # we run the consume
             base.let(:_karafka_messages) { [] }
             base.let(:karafka) { Karafka::Testing::RSpec::Proxy.new(self) }
+            base.let(:karafka_producer_client) { Karafka::Testing::DummyProducerClient.new }
             # Clear the messages buffer after each spec, so nothing leaks in between them
             base.after { _karafka_messages.clear }
+
+            base.before do
+              karafka_producer_client.reset
+              allow(Karafka.producer).to receive(:client).and_return(karafka_producer_client)
+            end
           end
         end
 
@@ -91,6 +99,10 @@ module Karafka
 
           # Update consumer messages batch
           subject.messages = Karafka::Messages::Messages.new(_karafka_messages, batch_metadata)
+        end
+
+        def karafka_produced_messages
+          karafka_producer_client.produced_messages
         end
 
         private
