@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require 'waterdrop'
 require 'karafka/testing/errors'
-require 'karafka/testing/dummy_client'
+require 'karafka/testing/spec_consumer_client'
+require 'karafka/testing/spec_producer_client'
 require 'karafka/testing/rspec/proxy'
 
 module Karafka
@@ -15,12 +17,24 @@ module Karafka
           # Adds all the needed extra functionalities to the rspec group
           # @param base [Class] RSpec example group we want to extend
           def included(base)
-            # This is an internal buffer for keeping "to be sent" messages before
-            # we run the consume
-            base.let(:_karafka_messages) { [] }
+            # RSpec local reference to Karafka proxy that allows us to build the consumer instance
             base.let(:karafka) { Karafka::Testing::RSpec::Proxy.new(self) }
-            # Clear the messages buffer after each spec, so nothing leaks in between them
-            base.after { _karafka_messages.clear }
+
+            # Messages that are targeted to the consumer
+            # You can produce many messages from Karafka during specs and not all should go to the
+            # consumer for processing. This buffer holds only those that should go to consumer
+            base.let(:_karafka_consumer_messages) { [] }
+            # Consumer fake client to mock communication with Kafka
+            base.let(:_karafka_consumer_client) { Karafka::Testing::SpecConsumerClient.new }
+            # Producer fake client to mock communication with Kafka
+            base.let(:_karafka_producer_client) { Karafka::Testing::SpecProducerClient.new(self) }
+
+            base.before do
+              _karafka_consumer_messages.clear
+              _karafka_producer_client.reset
+
+              allow(Karafka.producer).to receive(:client).and_return(_karafka_producer_client)
+            end
           end
         end
 
@@ -28,6 +42,8 @@ module Karafka
         #
         # @param requested_topic [String, Symbol] name of the topic for which we want to
         #   create a consumer instance
+        # @param requested_consumer_group [String, Symbol, nil] optional name of the consumer group
+        #   if we have multiple consumer groups listening on the same topic
         # @return [Object] described_class instance
         # @raise [Karafka::Testing::Errors::TopicNotFoundError] raised when we're unable to find
         #   topic that was requested
@@ -36,77 +52,118 @@ module Karafka
         #   RSpec.describe MyConsumer do
         #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
-        def karafka_consumer_for(requested_topic)
-          selected_topic = nil
+        def _karafka_consumer_for(requested_topic, requested_consumer_group = nil)
+          all_topics = ::Karafka::App.consumer_groups.map(&:topics).flat_map(&:to_a)
 
-          # @note Remove in 2.1. This won't work without the global state
-          ::Karafka::App.consumer_groups.each do |consumer_group|
-            consumer_group.topics.each do |topic|
-              selected_topic = topic if topic.name == requested_topic.to_s
-            end
+          # First select topics that match what we are looking for
+          selected_topics = all_topics.select do |topic|
+            topic.name == requested_topic.to_s
           end
 
-          raise Karafka::Testing::Errors::TopicNotFoundError, requested_topic unless selected_topic
+          # And then narrow it down based on the consumer group criteria (if present)
+          selected_topics.delete_if do |topic|
+            requested_consumer_group && topic.consumer_group.name != requested_consumer_group.to_s
+          end
 
-          coordinators = Karafka::Processing::CoordinatorsBuffer.new
+          raise Errors::TopicInManyConsumerGroupsError, requested_topic if selected_topics.size > 1
+          raise Errors::TopicNotFoundError, requested_topic if selected_topics.empty?
 
-          consumer = described_class.new
-          consumer.topic = selected_topic
-          consumer.producer = Karafka::App.producer
-          consumer.client = Karafka::Testing::DummyClient.new
-          consumer.coordinator = coordinators.find_or_create(requested_topic, 0)
-          consumer
+          _karafka_build_consumer_for(selected_topics.first)
         end
 
-        # Adds a new Karafka message instance with given payload and options into an internal
-        # buffer that will be used to simulate messages delivery to the consumer
+        # Adds a new Karafka message instance if needed with given payload and options into an
+        # internal consumer buffer that will be used to simulate messages delivery to the consumer
         #
-        # @param payload [String] anything you want to send
-        # @param opts [Hash] additional options with which you want to overwrite the
-        #   message defaults (key, offset, etc)
-        #
+        # @param message [Hash] message that was sent to Kafka
         # @example Send a json message to consumer
         #   before do
-        #     karafka.publish({ 'hello' => 'world' }.to_json)
+        #     karafka.produce({ 'hello' => 'world' }.to_json)
         #   end
         #
         # @example Send a json message to consumer and simulate, that it is partition 6
         #   before do
-        #     karafka.publish({ 'hello' => 'world' }.to_json, 'partition' => 6)
+        #     karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         #   end
-        def karafka_publish(payload, opts = {})
-          metadata = Karafka::Messages::Metadata.new(
-            **karafka_message_metadata_defaults.merge(opts)
-          ).freeze
+        def _karafka_add_message_to_consumer_if_needed(message)
+          # We target to the consumer only messages that were produced to it, since specs may also
+          # produce other messages targeting other topics
+          return unless message[:topic] == consumer.topic.name
 
-          # Add this message to previously published messages
-          _karafka_messages << Karafka::Messages::Message.new(payload, metadata)
+          # Build message metadata and copy any metadata that would come from the message
+          metadata = _karafka_message_metadata_defaults
+
+          metadata.keys.each do |key|
+            next unless message.key?(key)
+
+            metadata[key] = message.fetch(key)
+          end
+
+          # Add this message to previously produced messages
+          _karafka_consumer_messages << Karafka::Messages::Message.new(
+            message[:payload],
+            Karafka::Messages::Metadata.new(metadata).freeze
+          )
 
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
-            _karafka_messages,
+            _karafka_consumer_messages,
             subject.topic,
             Time.now
           )
 
           # Update consumer messages batch
-          subject.messages = Karafka::Messages::Messages.new(_karafka_messages, batch_metadata)
+          subject.messages = Karafka::Messages::Messages.new(
+            _karafka_consumer_messages,
+            batch_metadata
+          )
+        end
+
+        # Produces message with a given payload to the consumer matching topic
+        # @param payload [String] payload we want to dispatch
+        # @param metadata [Hash] any metadata we want to dispatch alongside the payload
+        def _karafka_produce(payload, metadata = {})
+          Karafka.producer.produce_sync(
+            {
+              topic: subject.topic.name,
+              payload: payload
+            }.merge(metadata)
+          )
+        end
+
+        # @return [Array<Hash>] messages that were produced
+        def _karafka_produced_messages
+          _karafka_producer_client.messages
         end
 
         private
 
         # @return [Hash] message default options
-        def karafka_message_metadata_defaults
+        def _karafka_message_metadata_defaults
           {
             deserializer: subject.topic.deserializer,
             timestamp: Time.now,
             headers: {},
             key: nil,
-            offset: _karafka_messages.size,
+            offset: _karafka_consumer_messages.size,
             partition: 0,
             received_at: Time.now,
             topic: subject.topic.name
           }
+        end
+
+        # Builds the consumer instance based on the provided topic
+        #
+        # @param topic [Karafka::Routing::Topic] topic for which we want to build the consumer
+        # @return [Object] karafka consumer
+        def _karafka_build_consumer_for(topic)
+          coordinators = Karafka::Processing::CoordinatorsBuffer.new
+
+          consumer = described_class.new
+          consumer.topic = topic
+          consumer.producer = Karafka::App.producer
+          consumer.client = _karafka_consumer_client
+          consumer.coordinator = coordinators.find_or_create(topic.name, 0)
+          consumer
         end
       end
     end

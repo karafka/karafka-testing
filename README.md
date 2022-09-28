@@ -1,14 +1,10 @@
 # Karafka Testing library
 
-**Note**: Documentation presented below works with Karafka `2.0.0` and higher.
-
-Please refer to [this](https://github.com/karafka/testing/tree/1.4) branch and its documentation for details about usage with Karafka `1.4`.
-
 [![Build Status](https://github.com/karafka/karafka-testing/workflows/ci/badge.svg)](https://github.com/karafka/karafka-testing/actions?query=workflow%3Aci)
 [![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](http://badge.fury.io/rb/karafka-testing)
 [![Join the chat at https://slack.karafka.io](https://raw.githubusercontent.com/karafka/misc/master/slack.svg)](https://slack.karafka.io)
 
-Karafka-Testing is a library that provides RSpec helpers, to make testing of Karafka consumers much easier.
+Karafka-Testing is a library that provides RSpec helpers, to make testing of Karafka consumers and producer much easier.
 
 ## Installation
 
@@ -32,17 +28,22 @@ end
 
 ## Usage
 
-Once included into your RSpec setup, this library will provide you with a special object `#karafka` that includes two methods that you can use with your specs:
+Once included in your RSpec setup, this library will provide you with a special `#karafka` object that contains three methods that you can use within your specs:
 
 - `#consumer_for` - creates a consumer instance for the desired topic. It **needs** to be set as the spec subject.
-- `#publish` - "sends" message to the consumer instance.
+- `#produce` - "sends" message to the consumer instance.
+- `#produced_messages` - contains all the messages "sent" to Kafka during spec execution.
 
-**Note:** Messages sent using the `#publish` method won't be sent to Kafka. They will be "virtually" delegated to the created consumer instance so your specs can run without Kafka setup.
+**Note:** Messages sent using the `#produce` method and directly from `Karafka.producer` won't be sent to Kafka. They will be buffered and accessible in a per-spec buffer in case you want to test messages production.
+
+Messages that target the topic built using the `karafka#consumer_for` method will additionally be delivered to the consumer you want to test.
+
+### Testing messages consumption (consumers)
 
 ```ruby
 RSpec.describe InlineBatchConsumer do
   # This will create a consumer instance with all the settings defined for the given topic
-  subject(:consumer) { karafka.consumer_for(:inline_batch_data) }
+  subject(:consumer) { karafka.consumer_for('inline_batch_data') }
 
   let(:nr1_value) { rand }
   let(:nr2_value) { rand }
@@ -50,9 +51,11 @@ RSpec.describe InlineBatchConsumer do
 
   before do
     # Sends first message to Karafka consumer
-    karafka.publish({ 'number' => nr1_value }.to_json)
+    karafka.produce({ 'number' => nr1_value }.to_json)
+
     # Sends second message to Karafka consumer
-    karafka.publish({ 'number' => nr2_value }.to_json, partition: 2)
+    karafka.produce({ 'number' => nr2_value }.to_json, partition: 2)
+
     allow(Karafka.logger).to receive(:info)
   end
 
@@ -63,21 +66,52 @@ RSpec.describe InlineBatchConsumer do
 end
 ```
 
-If your consumers use `producer` to dispatch messages, you can set up your expectations against it as well:
+If your consumers use `producer` to dispatch messages, you can check its operations as well:
 
 ```ruby
 RSpec.describe InlineBatchConsumer do
   subject(:consumer) { karafka.consumer_for(:inline_batch_data) }
 
-  before { karafka.publish({ 'number' => 1 }.to_json) }
+  before { karafka.produce({ 'number' => 1 }.to_json) }
 
   it 'expects to dispatch async message to messages topic with value bigger by 1' do
-    expect(consumer.producer)
-      .to receive(:produce_async)
-      .with(topic: 'messages', payload: { number: 2 }.to_json)
-
     consumer.consume
+
+    expect(karafka.produced_messages.last.payload).to eq({ number: 2 }.to_json)
   end
+end
+```
+
+### Testing messages production (producer)
+
+When running RSpec, Karafka will not dispatch messages to Kafka using `Karafka.producer` but will buffer them internally.
+
+This means you can check your application flow, making sure your logic acts as expected:
+
+```ruby
+# Example class in which there is a message production
+class UsersBuilder
+  def create(user_details)
+    user = ::User.create!(user_details)
+
+    Karafka.producer.produce_sync(
+      topic: 'users_changes',
+      payload: { user_id: user.id, type: 'user.created' },
+      key: user.id.to_s
+    )
+
+    user
+  end
+end
+
+RSpec.describe InlineBatchConsumer do
+  let(:created_user) { UsersBuilder.new.create(user_details) }
+
+  before { created_user }
+
+  it { expect(karafka.produced_messages.size).to eq(1) }
+  it { expect(karafka.produced_messages.first[:topic]).to eq('user.created') }
+  it { expect(karafka.produced_messages.first[:key]).to eq(created_user.id.to_s) }
 end
 ```
 

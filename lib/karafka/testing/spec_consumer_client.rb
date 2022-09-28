@@ -2,10 +2,10 @@
 
 module Karafka
   module Testing
-    # A dummy client that takes over client delegated methods from the consumers
+    # A spec client that takes over client delegated methods from the consumers
     # For specs we do not mark anything as consumed, nor do we really send heartbeats.
     # Those things are tested in the framework itself
-    class DummyClient
+    class SpecConsumerClient
       %i[
         mark_as_consumed
         mark_as_consumed!
