@@ -109,13 +109,10 @@ RSpec.describe InlineBatchConsumer do
 
   before { created_user }
 
-  it 'expect to dispatch proper message to Kafka after user creation' do
-    expect(karafka.produced_messages.size).to eq(1)
-    expect(karafka.produced_messages.first[:topic]).to eq('user.created')
-    expect(karafka.produced_messages.first[:key]).to eq(created_user.id.to_s)
-  end
+  it { expect(karafka.produced_messages.size).to eq(1) }
+  it { expect(karafka.produced_messages.first[:topic]).to eq('user.created') }
+  it { expect(karafka.produced_messages.first[:key]).to eq(created_user.id.to_s) }
 end
-
 ```
 
 ## Note on contributions
