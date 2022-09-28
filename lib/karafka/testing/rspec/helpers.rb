@@ -74,10 +74,7 @@ module Karafka
         # Adds a new Karafka message instance if needed with given payload and options into an
         # internal consumer buffer that will be used to simulate messages delivery to the consumer
         #
-        # @param payload [String] anything you want to send
-        # @param opts [Hash] additional options with which you want to overwrite the
-        #   message defaults (key, offset, etc)
-        #
+        # @param message [Hash] message that was sent to Kafka
         # @example Send a json message to consumer
         #   before do
         #     karafka.produce({ 'hello' => 'world' }.to_json)
@@ -123,7 +120,7 @@ module Karafka
 
         # Produces message with a given payload to the consumer matching topic
         # @param payload [String] payload we want to dispatch
-        # @param metadata [Hash] any metadat we want to dispatch alongside the payload
+        # @param metadata [Hash] any metadata we want to dispatch alongside the payload
         def _karafka_produce(payload, metadata = {})
           Karafka.producer.produce_sync(
             {
