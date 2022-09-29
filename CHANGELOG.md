@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.0.2 (Unreleased)
+## 2.0.2 (2022-09-29)
 - Provide multi-consumer group testing support (#92)
 - Fail fast if requested topic is present in multiple consumer groups but consumer group is not specified.
 - Allow for usage of `Karafka.producer` directly and make it buffered.
