@@ -1,10 +1,13 @@
 # Karafka Test gem changelog
 
+## 2.0.3 (2022-09-30)
+- Fix direct name reference `consumer` instead of `subject` (#97).
+
 ## 2.0.2 (2022-09-29)
 - Provide multi-consumer group testing support (#92)
 - Fail fast if requested topic is present in multiple consumer groups but consumer group is not specified.
 - Allow for usage of `Karafka.producer` directly and make it buffered.
-- Rename `karafka.publish` to `karafka.produce` to align naming conventions [Breaking change].
+- Rename `karafka.publish` to `karafka.produce` to align naming conventions [breaking change].
 
 ## 2.0.1 (2022-08-05)
 - Require non rc version of Karafka.
