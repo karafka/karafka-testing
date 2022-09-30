@@ -87,7 +87,7 @@ module Karafka
         def _karafka_add_message_to_consumer_if_needed(message)
           # We target to the consumer only messages that were produced to it, since specs may also
           # produce other messages targeting other topics
-          return unless message[:topic] == consumer.topic.name
+          return unless message[:topic] == subject.topic.name
 
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults
