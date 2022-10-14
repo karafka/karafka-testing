@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.4 (2022-10-14)
+- Align changes with Karafka `2.0.13` changes.
+
 ## 2.0.3 (2022-09-30)
 - Fix direct name reference `consumer` instead of `subject` (#97).
 
