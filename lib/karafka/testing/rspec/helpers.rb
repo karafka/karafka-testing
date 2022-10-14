@@ -163,6 +163,7 @@ module Karafka
           consumer.producer = Karafka::App.producer
           consumer.client = _karafka_consumer_client
           consumer.coordinator = coordinators.find_or_create(topic.name, 0)
+          consumer.coordinator.seek_offset = 0
           consumer
         end
       end
