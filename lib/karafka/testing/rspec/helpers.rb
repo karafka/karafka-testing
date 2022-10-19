@@ -85,6 +85,10 @@ module Karafka
         #     karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         #   end
         def _karafka_add_message_to_consumer_if_needed(message)
+          # We're interested in adding message to subject only when it is a consumer
+          # Users may want to test other things (models producing messages for example) and in
+          # their case subject will not be a consumer
+          return unless subject.is_a?(Karafka::BaseConsumer)
           # We target to the consumer only messages that were produced to it, since specs may also
           # produce other messages targeting other topics
           return unless message[:topic] == subject.topic.name
