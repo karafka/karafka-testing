@@ -9,7 +9,7 @@ GEM
   specs:
     concurrent-ruby (1.1.10)
     ffi (1.15.5)
-    karafka (2.0.13)
+    karafka (2.0.14)
       karafka-core (>= 2.0.2, < 3.0.0)
       rdkafka (>= 0.12)
       thor (>= 0.20)
@@ -31,10 +31,11 @@ GEM
     zeitwerk (2.6.1)
 
 PLATFORMS
+  arm64-darwin
   x86_64-linux
 
 DEPENDENCIES
   karafka-testing!
 
 BUNDLED WITH
-   2.3.22
+   2.3.24
