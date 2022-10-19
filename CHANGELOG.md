@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## Unreleased
+- Fix for: Test event production without defining a subject (#102)
+
 ## 2.0.4 (2022-10-14)
 - Align changes with Karafka `2.0.13` changes.
 
