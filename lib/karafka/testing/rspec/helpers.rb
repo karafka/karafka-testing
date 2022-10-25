@@ -86,7 +86,7 @@ module Karafka
         #   end
         def _karafka_add_message_to_consumer_if_needed(message)
           # Consumer needs to be defined in order to pass messages to it
-          return unless respond_to?(:consumer)
+          return unless defined?(consumer)
           # We're interested in adding message to consumer only when it is a Karafka consumer
           # Users may want to test other things (models producing messages for example) and in
           # their case consumer will not be a consumer
