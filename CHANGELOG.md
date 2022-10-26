@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## Unreleased
+- Replace the `subject` reference with named `consumer` reference.
+- Do not forward sent messages to `consumer` unless it's a Karafka consumer.
+
 ## 2.0.5 (2022-10-19)
 - Fix for: Test event production without defining a subject (#102)
 

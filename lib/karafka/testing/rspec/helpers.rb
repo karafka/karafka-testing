@@ -85,13 +85,15 @@ module Karafka
         #     karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         #   end
         def _karafka_add_message_to_consumer_if_needed(message)
-          # We're interested in adding message to subject only when it is a consumer
+          # Consumer needs to be defined in order to pass messages to it
+          return unless defined?(consumer)
+          # We're interested in adding message to consumer only when it is a Karafka consumer
           # Users may want to test other things (models producing messages for example) and in
-          # their case subject will not be a consumer
-          return unless subject.is_a?(Karafka::BaseConsumer)
+          # their case consumer will not be a consumer
+          return unless consumer.is_a?(Karafka::BaseConsumer)
           # We target to the consumer only messages that were produced to it, since specs may also
           # produce other messages targeting other topics
-          return unless message[:topic] == subject.topic.name
+          return unless message[:topic] == consumer.topic.name
 
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults
@@ -111,12 +113,12 @@ module Karafka
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
             _karafka_consumer_messages,
-            subject.topic,
+            consumer.topic,
             Time.now
           )
 
           # Update consumer messages batch
-          subject.messages = Karafka::Messages::Messages.new(
+          consumer.messages = Karafka::Messages::Messages.new(
             _karafka_consumer_messages,
             batch_metadata
           )
@@ -128,7 +130,7 @@ module Karafka
         def _karafka_produce(payload, metadata = {})
           Karafka.producer.produce_sync(
             {
-              topic: subject.topic.name,
+              topic: consumer.topic.name,
               payload: payload
             }.merge(metadata)
           )
@@ -144,14 +146,14 @@ module Karafka
         # @return [Hash] message default options
         def _karafka_message_metadata_defaults
           {
-            deserializer: subject.topic.deserializer,
+            deserializer: consumer.topic.deserializer,
             timestamp: Time.now,
             headers: {},
             key: nil,
             offset: _karafka_consumer_messages.size,
             partition: 0,
             received_at: Time.now,
-            topic: subject.topic.name
+            topic: consumer.topic.name
           }
         end
 
