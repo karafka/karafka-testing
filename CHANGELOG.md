@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.7 (2022-11-03)
+- Release version with cert with valid access permissions (#114).
+
 ## 2.0.6 (2022-10-26)
 - Replace the `subject` reference with named `consumer` reference.
 - Do not forward sent messages to `consumer` unless it's a Karafka consumer.

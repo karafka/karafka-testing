@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    karafka-testing (2.0.6)
+    karafka-testing (2.0.7)
       karafka (>= 2.0, < 3.0.0)
 
 GEM
@@ -28,7 +28,7 @@ GEM
       karafka-core (>= 2.0.2, < 3.0.0)
       rdkafka (>= 0.10)
       zeitwerk (~> 2.3)
-    zeitwerk (2.6.3)
+    zeitwerk (2.6.4)
 
 PLATFORMS
   arm64-darwin
