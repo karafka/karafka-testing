@@ -20,13 +20,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w[lib]
   spec.cert_chain    = %w[certs/cert_chain.pem]
 
-  spec.required_ruby_version = '>= 2.7'
-
   if $PROGRAM_NAME.end_with?('gem')
     spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
   end
 
-  spec.add_dependency 'karafka', '>= 2.0', '< 3.0.0'
+  spec.add_dependency 'karafka', '>= 2.0.20', '< 3.0.0'
 
   spec.metadata = {
     'source_code_uri' => 'https://github.com/karafka/karafka-testing',
