@@ -167,6 +167,9 @@ module Karafka
           consumer = described_class.new
           consumer.topic = topic
           consumer.producer = Karafka::App.producer
+          # Inject appropriate strategy so needed options and components are available
+          strategy = Karafka::App.config.internal.processing.strategy_selector.find(topic)
+          consumer.singleton_class.include(strategy)
           consumer.client = _karafka_consumer_client
           consumer.coordinator = coordinators.find_or_create(topic.name, 0)
           consumer.coordinator.seek_offset = 0
