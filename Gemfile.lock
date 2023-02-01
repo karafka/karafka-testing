@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    karafka-testing (2.0.8)
+    karafka-testing (2.0.9)
       karafka (>= 2.0.20, < 3.0.0)
 
 GEM

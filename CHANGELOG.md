@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.9 (Unreleased)
+- Inject consumer strategy to the test consumer instance.
+
 ## 2.0.8 (2022-11-03)
 - Do not lock Ruby and rely on `karafka-core` via `karafka`.
 - Due to changes in the engine, lock to `2.0.20`.
