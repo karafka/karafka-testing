@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.0.9 (Unreleased)
+## 2.0.9 (2023-02-10)
 - Inject consumer strategy to the test consumer instance.
 
 ## 2.0.8 (2022-11-03)
