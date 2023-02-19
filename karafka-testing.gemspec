@@ -27,7 +27,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'karafka', '>= 2.0.20', '< 3.0.0'
 
   spec.metadata = {
+    'funding_uri' => 'https://karafka.io/#become-pro',
+    'homepage_uri' => 'https://karafka.io',
+    'changelog_uri' => 'https://github.com/karafka/karafka-testing/blob/master/CHANGELOG.md',
+    'bug_tracker_uri' => 'https://github.com/karafka/karafka-testing/issues',
     'source_code_uri' => 'https://github.com/karafka/karafka-testing',
+    'documentation_uri' => 'https://karafka.io/docs',
     'rubygems_mfa_required' => 'true'
   }
 end
