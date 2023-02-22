@@ -44,7 +44,7 @@ module Karafka
         #   create a consumer instance
         # @param requested_consumer_group [String, Symbol, nil] optional name of the consumer group
         #   if we have multiple consumer groups listening on the same topic
-        # @return [Object] described_class instance
+        # @return [Object] Karafka consumer instance
         # @raise [Karafka::Testing::Errors::TopicNotFoundError] raised when we're unable to find
         #   topic that was requested
         #
@@ -164,7 +164,7 @@ module Karafka
         def _karafka_build_consumer_for(topic)
           coordinators = Karafka::Processing::CoordinatorsBuffer.new
 
-          consumer = described_class.new
+          consumer = topic.consumer.new
           consumer.topic = topic
           consumer.producer = Karafka::App.producer
           # Inject appropriate strategy so needed options and components are available

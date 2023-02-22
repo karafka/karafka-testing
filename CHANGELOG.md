@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.10 (Unreleased)
+- Replace direct `described_class` reference for consumer building with `topic.consumer` Karafka routing based one. This change will allow for usage of `karafka.consumer_for` from any specs.
+
 ## 2.0.9 (2023-02-10)
 - Inject consumer strategy to the test consumer instance.
 
