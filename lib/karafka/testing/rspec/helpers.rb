@@ -68,7 +68,7 @@ module Karafka
           raise Errors::TopicInManyConsumerGroupsError, requested_topic if selected_topics.size > 1
           raise Errors::TopicNotFoundError, requested_topic if selected_topics.empty?
 
-          _karafka_build_consumer_for(selected_topics.first)
+          _karafka_build_consumer_for(selected_topics.first, all_topics)
         end
 
         # Adds a new Karafka message instance if needed with given payload and options into an
@@ -160,12 +160,15 @@ module Karafka
         # Builds the consumer instance based on the provided topic
         #
         # @param topic [Karafka::Routing::Topic] topic for which we want to build the consumer
+        # @param topics_array [Array<Karafka::Routing::Topic>] all the topics for coordinators
+        #   buffer.
         # @return [Object] karafka consumer
-        def _karafka_build_consumer_for(topic)
-          coordinators = Karafka::Processing::CoordinatorsBuffer.new
+        def _karafka_build_consumer_for(topic, topics_array)
+          coordinators = Karafka::Processing::CoordinatorsBuffer.new(
+            Karafka::Routing::Topics.new(topics_array)
+          )
 
           consumer = topic.consumer.new
-          consumer.topic = topic
           consumer.producer = Karafka::App.producer
           # Inject appropriate strategy so needed options and components are available
           strategy = Karafka::App.config.internal.processing.strategy_selector.find(topic)
