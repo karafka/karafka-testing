@@ -114,6 +114,7 @@ module Karafka
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
             _karafka_consumer_messages,
             consumer.topic,
+            0,
             Time.now
           )
 
