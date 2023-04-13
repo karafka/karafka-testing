@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.0.11 (2023-04-13)
+- Align metadata builder format with Karafka `2.0.40`.
+
 ## 2.0.10 (2023-04-11)
 - Align with changes in Karafka `2.0.39`
 - Replace direct `described_class` reference for consumer building with `topic.consumer` Karafka routing based one. This change will allow for usage of `karafka.consumer_for` from any specs.
