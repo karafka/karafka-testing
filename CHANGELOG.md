@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.1.0 (2023-05-22)
+- Align Karafka expectations to match `2.1.0`.
+
 ## 2.0.11 (2023-04-13)
 - Align metadata builder format with Karafka `2.0.40`.
 
