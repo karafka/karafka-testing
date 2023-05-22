@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
     spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
   end
 
-  spec.add_dependency 'karafka', '>= 2.0.40', '< 3.0.0'
+  spec.add_dependency 'karafka', '>= 2.1.0', '< 3.0.0'
 
   spec.metadata = {
     'funding_uri' => 'https://karafka.io/#become-pro',
