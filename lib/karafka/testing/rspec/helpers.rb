@@ -33,7 +33,11 @@ module Karafka
               _karafka_consumer_messages.clear
               _karafka_producer_client.reset
 
-              allow(Karafka.producer).to receive(:client).and_return(_karafka_producer_client)
+              if Object.const_defined?('Mocha', false)
+                Karafka.producer.expects(:client).returns(_karafka_producer_client)
+              else
+                allow(Karafka.producer).to receive(:client).and_return(_karafka_producer_client)
+              end
             end
           end
         end
