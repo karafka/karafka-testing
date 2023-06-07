@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.1.1 (Unreleased)
+## 2.1.1 (2023-06-07)
 - [Enhancement] Support WaterDrop stubs with Mocha.
 
 ## 2.1.0 (2023-05-22)
