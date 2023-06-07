@@ -34,7 +34,7 @@ module Karafka
               _karafka_producer_client.reset
 
               if Object.const_defined?('Mocha', false)
-                Karafka.producer.expects(:client).returns(_karafka_producer_client)
+                Karafka.producer.stubs(:client).returns(_karafka_producer_client)
               else
                 allow(Karafka.producer).to receive(:client).and_return(_karafka_producer_client)
               end
