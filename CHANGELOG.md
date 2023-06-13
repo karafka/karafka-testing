@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## 2.1.2 (2023-06-13)
+- [Enhancement] Depend on WaterDrop `>=` `2.6.0` directly and not via Karafka to make sure correct version is used.
+- [Fix] Use proper WaterDrop `>=` `2.6.0` buffered client reference.
+
 ## 2.1.1 (2023-06-07)
 - [Enhancement] Support WaterDrop stubs with Mocha.
 

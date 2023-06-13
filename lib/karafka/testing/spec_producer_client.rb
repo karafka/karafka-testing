@@ -3,7 +3,7 @@
 module Karafka
   module Testing
     # Spec producer client used to buffer messages that we send out in specs
-    class SpecProducerClient < ::WaterDrop::Producer::DummyClient
+    class SpecProducerClient < ::WaterDrop::Clients::Buffered
       attr_accessor :messages
 
       # Sync fake response for the message delivery to Kafka, since we do not dispatch anything
@@ -17,7 +17,7 @@ module Karafka
       # @param rspec [RSpec::Core::ExampleGroup] rspec example we need to hold to trigger actions
       #   on it that are rspec context aware
       def initialize(rspec)
-        super()
+        super(nil)
         @rspec = rspec
         self.messages = []
       end
