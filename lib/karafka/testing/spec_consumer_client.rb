@@ -12,6 +12,11 @@ module Karafka
       ].each do |caught_delegator|
         define_method(caught_delegator) { |*| }
       end
+
+      # @return [Boolean] assignments are never lost for specs
+      def assignment_lost?
+        false
+      end
     end
   end
 end
