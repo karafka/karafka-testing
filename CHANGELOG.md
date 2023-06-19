@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.1.3 (2023-06-19)
+- [Enhancement] Align with Karafka `2.1.5` API.
+
 ## 2.1.2 (2023-06-13)
 - [Enhancement] Depend on WaterDrop `>=` `2.6.0` directly and not via Karafka to make sure correct version is used.
 - [Fix] Use proper WaterDrop `>=` `2.6.0` buffered client reference.
