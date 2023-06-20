@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.1.4 (Unreleased)
+- [Fix] Fix invalid consumer group assignment for consumers created for non-default consumer group when same topic is being used multiple times.
+
 ## 2.1.3 (2023-06-19)
 - [Enhancement] Align with Karafka `2.1.5` API.
 
