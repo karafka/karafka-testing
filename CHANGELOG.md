@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## 2.1.5 (Unreleased)
+- Add support for client `#commit_offsets` and `#commit_offsets!` stubs.
+- Make sure that `#mark_as_consumed!` and `#mark_as_consumed` return true.
+
 ## 2.1.4 (2023-06-20)
 - [Fix] Fix invalid consumer group assignment for consumers created for non-default consumer group when same topic is being used multiple times.
 
