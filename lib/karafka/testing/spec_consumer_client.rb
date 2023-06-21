@@ -9,8 +9,10 @@ module Karafka
       %i[
         mark_as_consumed
         mark_as_consumed!
+        commit_offsets
+        commit_offsets!
       ].each do |caught_delegator|
-        define_method(caught_delegator) { |*| }
+        define_method(caught_delegator) { |*| true }
       end
 
       # @return [Boolean] assignments are never lost for specs
