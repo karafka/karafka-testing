@@ -29,7 +29,7 @@ module Karafka
             # Producer fake client to mock communication with Kafka
             base.let(:_karafka_producer_client) { Karafka::Testing::SpecProducerClient.new(self) }
 
-            base.before do
+            base.prepend_before do
               _karafka_consumer_messages.clear
               _karafka_producer_client.reset
 
