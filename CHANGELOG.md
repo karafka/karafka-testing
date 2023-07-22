@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.1.5 (Unreleased)
+## 2.1.5 (2023-07-22)
 - [Enhancement] User `prepend_before` instead of `prepend` for RSpec (ojab)
 - [Enhancement] Add support for client `#commit_offsets` and `#commit_offsets!` stubs.
 - [Fix] Make sure that `#mark_as_consumed!` and `#mark_as_consumed` return true.
