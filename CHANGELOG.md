@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## 2.1.6 (Unreleased)
+- [Enhancement] Make `#used?` API always return true.
+- [Enhancement] Expand dummy client API with #seek.
+
 ## 2.1.5 (2023-07-22)
 - [Enhancement] User `prepend_before` instead of `prepend` for RSpec (ojab)
 - [Enhancement] Add support for client `#commit_offsets` and `#commit_offsets!` stubs.

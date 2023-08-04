@@ -11,6 +11,7 @@ module Karafka
         mark_as_consumed!
         commit_offsets
         commit_offsets!
+        seek
       ].each do |caught_delegator|
         define_method(caught_delegator) { |*| true }
       end

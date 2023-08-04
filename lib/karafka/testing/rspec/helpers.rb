@@ -179,6 +179,8 @@ module Karafka
           consumer.client = _karafka_consumer_client
           consumer.coordinator = coordinators.find_or_create(topic.name, 0)
           consumer.coordinator.seek_offset = 0
+          # Indicate usage as for tests no direct enqueuing happens
+          consumer.instance_variable_set('@used', true)
           consumer
         end
       end
