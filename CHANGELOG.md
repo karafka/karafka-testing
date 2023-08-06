@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.1.6 (Unreleased)
+## 2.1.6 (2023-08-06)
 - [Enhancement] Make `#used?` API always return true.
 - [Enhancement] Expand dummy client API with #seek.
 
