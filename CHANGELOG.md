@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## 2.2.0 (2023-09-91)
+- [Maintenance] Ensure that `2.2.0` works with consumers for patterns.
+- [Maintenance] Replace signing key with a new one (old expired).
+
 ## 2.1.6 (2023-08-06)
 - [Enhancement] Make `#used?` API always return true.
 - [Enhancement] Expand dummy client API with #seek.
