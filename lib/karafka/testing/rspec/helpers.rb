@@ -57,17 +57,10 @@ module Karafka
         #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
         def _karafka_consumer_for(requested_topic, requested_consumer_group = nil)
-          all_topics = ::Karafka::App.consumer_groups.map(&:topics).flat_map(&:to_a)
-
-          # First select topics that match what we are looking for
-          selected_topics = all_topics.select do |topic|
-            topic.name == requested_topic.to_s
-          end
-
-          # And then narrow it down based on the consumer group criteria (if present)
-          selected_topics.delete_if do |topic|
-            requested_consumer_group && topic.consumer_group.name != requested_consumer_group.to_s
-          end
+          selected_topics = _karafka_consumer_find_candidate_topics(
+            requested_topic.to_s,
+            requested_consumer_group.to_s
+          )
 
           raise Errors::TopicInManyConsumerGroupsError, requested_topic if selected_topics.size > 1
           raise Errors::TopicNotFoundError, requested_topic if selected_topics.empty?
@@ -182,6 +175,47 @@ module Karafka
           # Indicate usage as for tests no direct enqueuing happens
           consumer.instance_variable_set('@used', true)
           consumer
+        end
+
+        # Finds all the routing topics matching requested topic within all topics or within
+        # provided consumer group based on name
+        #
+        # @param requested_topic [String] requested topic name
+        # @param requested_consumer_group [String] requested consumer group or nil to look in all
+        # @return [Array<Karafka::Routing::Topic>] all matching topics
+        #
+        # @note Since we run the lookup on subscription groups, the search will automatically
+        #   expand with matching patterns
+        def _karafka_consumer_find_candidate_topics(requested_topic, requested_consumer_group)
+          _karafka_consumer_find_subscription_groups(requested_consumer_group)
+            .map(&:topics)
+            .filter_map do |topics|
+              topics.find(requested_topic.to_s)
+            rescue Karafka::Errors::TopicNotFoundError
+              nil
+            end
+        end
+
+        # Finds subscription groups from the requested consumer group or selects all if no
+        # consumer group specified
+        # @param requested_consumer_group [String] requested consumer group or nil to look in all
+        # @return [Array<Karafka::Routing::SubscriptionGroup>] requested subscription groups
+        def _karafka_consumer_find_subscription_groups(requested_consumer_group)
+          if requested_consumer_group && !requested_consumer_group.empty?
+            ::Karafka::App
+              .subscription_groups
+              # Find matching consumer group
+              .find { |cg, _sgs| cg.name == requested_consumer_group.to_s }
+              # Raise error if not found
+              .tap { |cg| cg || raise(Errors::ConsumerGroupNotFound, requested_consumer_group) }
+              # Since lookup was on a hash, get the value, that is subscription groups
+              .last
+          else
+            ::Karafka::App
+              .subscription_groups
+              .values
+              .flatten
+          end
         end
       end
     end

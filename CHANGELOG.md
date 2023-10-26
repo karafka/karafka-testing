@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.2.1 (Unreleased)
+- [Enhancement] Support patterns in `#consumer_for` consumer builder.
+
 ## 2.2.0 (2023-09-91)
 - [Maintenance] Ensure that `2.2.0` works with consumers for patterns.
 - [Maintenance] Replace signing key with a new one (old expired).
