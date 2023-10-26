@@ -13,6 +13,9 @@ module Karafka
 
       # Raised when topic is in many consumer groups and not limited by consumer group expectation
       TopicInManyConsumerGroupsError = Class.new(BaseError)
+
+      # Raised when you requested a topic from a consumer group that does not exist
+      ConsumerGroupNotFound = Class.new(BaseError)
     end
   end
 end
