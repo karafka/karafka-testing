@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'waterdrop'
 require 'karafka/testing/errors'
 require 'karafka/testing/spec_consumer_client'
 require 'karafka/testing/spec_producer_client'
@@ -60,21 +59,20 @@ module Karafka
         #
         # @param message [Hash] message that was sent to Kafka
         # @example Send a json message to consumer
-        #
         # @karafka.produce({ 'hello' => 'world' }.to_json)
         #
         # @example Send a json message to consumer and simulate, that it is partition 6
         # @karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         def _karafka_add_message_to_consumer_if_needed(message)
           # Consumer needs to be defined in order to pass messages to it
-          return unless defined?(consumer)
+          return unless defined?(@consumer)
           # We're interested in adding message to consumer only when it is a Karafka consumer
           # Users may want to test other things (models producing messages for example) and in
           # their case consumer will not be a consumer
-          return unless consumer.is_a?(Karafka::BaseConsumer)
+          return unless @consumer.is_a?(Karafka::BaseConsumer)
           # We target to the consumer only messages that were produced to it, since specs may also
           # produce other messages targeting other topics
-          return unless message[:topic] == consumer.topic.name
+          return unless message[:topic] == @consumer.topic.name
 
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults
@@ -84,24 +82,22 @@ module Karafka
 
             metadata[key] = message.fetch(key)
           end
-
           # Add this message to previously produced messages
-          _karafka_consumer_messages << Karafka::Messages::Message.new(
+          @_karafka_consumer_messages << Karafka::Messages::Message.new(
             message[:payload],
             Karafka::Messages::Metadata.new(metadata).freeze
           )
-
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
-            _karafka_consumer_messages,
-            consumer.topic,
+            @_karafka_consumer_messages,
+            @consumer.topic,
             0,
             Time.now
           )
 
           # Update consumer messages batch
-          consumer.messages = Karafka::Messages::Messages.new(
-            _karafka_consumer_messages,
+          @consumer.messages = Karafka::Messages::Messages.new(
+            @_karafka_consumer_messages,
             batch_metadata
           )
         end
@@ -112,15 +108,15 @@ module Karafka
         def _karafka_produce(payload, metadata = {})
           Karafka.producer.produce_sync(
             {
-              topic: consumer.topic.name,
-              payload:
+              topic: @consumer.topic.name,
+              payload: payload
             }.merge(metadata)
           )
         end
 
         # @return [Array<Hash>] messages that were produced
         def _karafka_produced_messages
-          _karafka_producer_client.messages
+          @_karafka_producer_client.messages
         end
 
         private
@@ -128,14 +124,14 @@ module Karafka
         # @return [Hash] message default options
         def _karafka_message_metadata_defaults
           {
-            deserializer: consumer.topic.deserializer,
+            deserializer: @consumer.topic.deserializer,
             timestamp: Time.now,
             headers: {},
             key: nil,
-            offset: _karafka_consumer_messages.size,
+            offset: @_karafka_consumer_messages.size,
             partition: 0,
             received_at: Time.now,
-            topic: consumer.topic.name
+            topic: @consumer.topic.name
           }
         end
 
@@ -147,18 +143,17 @@ module Karafka
           coordinators = Karafka::Processing::CoordinatorsBuffer.new(
             Karafka::Routing::Topics.new([topic])
           )
-
-          consumer = topic.consumer.new
-          consumer.producer = Karafka::App.producer
+          @consumer = topic.consumer.new
+          @consumer.producer = Karafka::App.producer
           # Inject appropriate strategy so needed options and components are available
           strategy = Karafka::App.config.internal.processing.strategy_selector.find(topic)
-          consumer.singleton_class.include(strategy)
-          consumer.client = _karafka_consumer_client
-          consumer.coordinator = coordinators.find_or_create(topic.name, 0)
-          consumer.coordinator.seek_offset = 0
+          @consumer.singleton_class.include(strategy)
+          @consumer.client = @karafka_consumer_client
+          @consumer.coordinator = coordinators.find_or_create(topic.name, 0)
+          @consumer.coordinator.seek_offset = 0
           # Indicate usage as for tests no direct enqueuing happens
-          consumer.instance_variable_set('@used', true)
-          consumer
+          @consumer.instance_variable_set('@used', true)
+          @consumer
         end
 
         # Finds all the routing topics matching requested topic within all topics or within
