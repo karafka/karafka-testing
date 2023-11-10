@@ -8,15 +8,15 @@ require 'karafka/testing/minitest/proxy'
 module Karafka
   module Testing
     # All the things related to extra functionalities needed to easier spec out
-    # Karafka things using Minitest
-    module Minitest
-      # Minitest helpers module that needs to be included
+    # Karafka things using MiniTest
+    module MiniTest
+      # MiniTest helpers module that needs to be included
       module Helpers
         class << self
           def included(base)
             base.class_eval do
               setup do
-                @karafka = Karafka::Testing::Minitest::Proxy.new(self)
+                @karafka = Karafka::Testing::MiniTest::Proxy.new(self)
                 @_karafka_consumer_messages = []
                 @_karafka_consumer_client = Karafka::Testing::SpecConsumerClient.new
                 @_karafka_producer_client = Karafka::Testing::SpecProducerClient.new(self)
