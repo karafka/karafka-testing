@@ -40,10 +40,8 @@ module Karafka
         # @raise [Karafka::Testing::Errors::TopicNotFoundError] raised when we're unable to find
         #   topic that was requested
         #
-        # @example Creates a MyConsumer consumer instance with settings for `my_requested_topic`
-        #   RSpec.describe MyConsumer do
-        #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
-        #   end
+        # @example Creates a consumer instance with settings for `my_requested_topic`
+        # consumer = @karafka.consumer_for(:my_requested_topic)
         def _karafka_consumer_for(requested_topic, requested_consumer_group = nil)
           selected_topics = _karafka_consumer_find_candidate_topics(
             requested_topic.to_s,
@@ -61,14 +59,10 @@ module Karafka
         #
         # @param message [Hash] message that was sent to Kafka
         # @example Send a json message to consumer
-        #   before do
-        #     karafka.produce({ 'hello' => 'world' }.to_json)
-        #   end
+        # @karafka.produce({ 'hello' => 'world' }.to_json)
         #
         # @example Send a json message to consumer and simulate, that it is partition 6
-        #   before do
-        #     karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
-        #   end
+        # @karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         def _karafka_add_message_to_consumer_if_needed(message)
           # Consumer needs to be defined in order to pass messages to it
           return unless defined?(@consumer)
@@ -115,7 +109,7 @@ module Karafka
           Karafka.producer.produce_sync(
             {
               topic: @consumer.topic.name,
-              payload: payload,
+              payload: payload
             }.merge(metadata)
           )
         end
@@ -149,7 +143,6 @@ module Karafka
           coordinators = Karafka::Processing::CoordinatorsBuffer.new(
             Karafka::Routing::Topics.new([topic])
           )
-
           @consumer = topic.consumer.new
           @consumer.producer = Karafka::App.producer
           # Inject appropriate strategy so needed options and components are available
