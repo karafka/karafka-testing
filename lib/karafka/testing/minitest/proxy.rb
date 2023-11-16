@@ -2,11 +2,11 @@
 
 module Karafka
   module Testing
-    module MiniTest
-      # Proxy object for a nicer `karafka.` API within MiniTest
+    module Minitest
+      # Proxy object for a nicer `karafka.` API within Minitest
       # None other should be used by the end users
       class Proxy
-        # @param minitest_example [MiniTest::Test] minitest context
+        # @param minitest_example [Minitest::Test] minitest context
         def initialize(minitest_example)
           @minitest_example = minitest_example
         end

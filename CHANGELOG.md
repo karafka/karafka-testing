@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.2.2 (Unreleased)
+- [**Feature**] Provide support for Minitest (ValentinoRusconi-EH)
+
 ## 2.2.1 (2023-10-26)
 - [Enhancement] Support patterns in `#consumer_for` consumer builder.
 
