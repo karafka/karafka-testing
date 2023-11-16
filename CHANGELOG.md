@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.2.2 (Unreleased)
+## 2.2.2 (2023-11-16)
 - [**Feature**] Provide support for Minitest (ValentinoRusconi-EH)
 
 ## 2.2.1 (2023-10-26)
