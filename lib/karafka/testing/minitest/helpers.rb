@@ -8,15 +8,17 @@ require 'karafka/testing/minitest/proxy'
 module Karafka
   module Testing
     # All the things related to extra functionalities needed to easier spec out
-    # Karafka things using MiniTest
-    module MiniTest
-      # MiniTest helpers module that needs to be included
+    # Karafka things using Minitest
+    module Minitest
+      # Minitest helpers module that needs to be included
       module Helpers
         class << self
+          # Adds all the needed extra functionalities to the minitest group
+          # @param base [Class] Minitest example group we want to extend
           def included(base)
             base.class_eval do
               setup do
-                @karafka = Karafka::Testing::MiniTest::Proxy.new(self)
+                @karafka = Karafka::Testing::Minitest::Proxy.new(self)
                 @_karafka_consumer_messages = []
                 @_karafka_consumer_client = Karafka::Testing::SpecConsumerClient.new
                 @_karafka_producer_client = Karafka::Testing::SpecProducerClient.new(self)
@@ -41,7 +43,7 @@ module Karafka
         #   topic that was requested
         #
         # @example Creates a consumer instance with settings for `my_requested_topic`
-        # consumer = @karafka.consumer_for(:my_requested_topic)
+        #   consumer = @karafka.consumer_for(:my_requested_topic)
         def _karafka_consumer_for(requested_topic, requested_consumer_group = nil)
           selected_topics = _karafka_consumer_find_candidate_topics(
             requested_topic.to_s,
@@ -58,11 +60,12 @@ module Karafka
         # internal consumer buffer that will be used to simulate messages delivery to the consumer
         #
         # @param message [Hash] message that was sent to Kafka
+        #
         # @example Send a json message to consumer
-        # @karafka.produce({ 'hello' => 'world' }.to_json)
+        #   @karafka.produce({ 'hello' => 'world' }.to_json)
         #
         # @example Send a json message to consumer and simulate, that it is partition 6
-        # @karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
+        #   @karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         def _karafka_add_message_to_consumer_if_needed(message)
           # Consumer needs to be defined in order to pass messages to it
           return unless defined?(@consumer)
