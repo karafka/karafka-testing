@@ -28,15 +28,25 @@ jobs:
             coverage: 'true'
     steps:
       - uses: actions/checkout@v4
+
       - name: Install package dependencies
         run: "[ -e $APT_DEPS ] || sudo apt-get install -y --no-install-recommends $APT_DEPS"
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{matrix.ruby}}
+
       - name: Install latest bundler
         run: |
-          gem install bundler --no-document
+          if [[ "$(ruby -v | awk '{print $2}')" == 2.7.8* ]]; then
+            gem install bundler -v 2.4.4 --no-document
+          else
+            gem install bundler --no-document
+          fi
+
+          bundle config set without 'tools benchmarks docs'
+
       - name: Bundle install
         run: |
           bundle install --jobs 4 --retry 3
@@ -49,14 +59,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
+
       - name: Install latest bundler
         run: gem install bundler --no-document
+
       - name: Install Diffend plugin
         run: bundle plugin install diffend
+
       - name: Bundle Secure
         run: bundle secure
 
