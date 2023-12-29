@@ -51,7 +51,11 @@ jobs:
 
       - name: Bundle install
         run: |
-          bundle install --jobs 4 --retry 3
+          if [[ "$(ruby -v | awk '{print $2}')" == 2.7.8* ]]; then
+            BUNDLER_VERSION=2.4.22 bundle install --jobs 4 --retry 3
+          else
+            bundle install --jobs 4 --retry 3
+          fi
 
   diffend:
     runs-on: ubuntu-latest
