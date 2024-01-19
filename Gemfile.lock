@@ -8,7 +8,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     ffi (1.16.3)
     karafka (2.2.14)
       karafka-core (>= 2.2.7, < 2.3.0)
@@ -17,13 +17,13 @@ GEM
     karafka-core (2.2.7)
       concurrent-ruby (>= 1.1)
       karafka-rdkafka (>= 0.13.9, < 0.15.0)
-    karafka-rdkafka (0.14.6)
+    karafka-rdkafka (0.14.7)
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
     mini_portile2 (2.8.5)
     rake (13.1.0)
-    waterdrop (2.6.11)
+    waterdrop (2.6.12)
       karafka-core (>= 2.2.3, < 3.0.0)
       zeitwerk (~> 2.3)
     zeitwerk (2.6.12)
@@ -36,4 +36,4 @@ DEPENDENCIES
   karafka-testing!
 
 BUNDLED WITH
-   2.5.3
+   2.5.5
