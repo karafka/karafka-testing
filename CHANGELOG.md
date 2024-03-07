@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.3.1 (2024-03-07)
+- [Fix] Same CG multiplexing topic builder fails with `TopicInManyConsumerGroupsError`.
+
 ## 2.3.0 (2024-01-26)
 - [Maintenance] Release matching Karafka `2.3.0` release.
 

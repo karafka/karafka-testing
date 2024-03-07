@@ -176,6 +176,7 @@ module Karafka
             rescue Karafka::Errors::TopicNotFoundError
               nil
             end
+            .uniq(&:consumer_group)
         end
 
         # Finds subscription groups from the requested consumer group or selects all if no
