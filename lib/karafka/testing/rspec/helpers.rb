@@ -30,6 +30,8 @@ module Karafka
             base.let(:_karafka_producer_client) { Karafka::Testing::SpecProducerClient.new(self) }
 
             base.prepend_before do
+              Karafka::Testing.ensure_karafka_initialized!
+
               _karafka_consumer_messages.clear
               _karafka_producer_client.reset
 

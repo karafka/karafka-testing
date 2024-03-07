@@ -15,7 +15,17 @@ module Karafka
       TopicInManyConsumerGroupsError = Class.new(BaseError)
 
       # Raised when you requested a topic from a consumer group that does not exist
-      ConsumerGroupNotFound = Class.new(BaseError)
+      ConsumerGroupNotFoundError = Class.new(BaseError)
+
+      # Raised when trying to use testing without Karafka app being visible
+      # If you are seeing this error, then you tried to use testing helpers without Karafka being
+      # loaded prior to this happening.
+      KarafkaNotLoadedError = Class.new(BaseError)
+
+      # Raised when there is an attempt to use the testing primitives without Karafka app being
+      # configured. Prior to initialization process, most of config values are nils, etc and
+      # mocks will not work.
+      KarafkaNotInitializedError = Class.new(BaseError)
     end
   end
 end
