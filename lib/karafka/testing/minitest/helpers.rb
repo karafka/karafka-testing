@@ -18,6 +18,8 @@ module Karafka
           def included(base)
             base.class_eval do
               setup do
+                Karafka::Testing.ensure_karafka_initialized!
+
                 @karafka = Karafka::Testing::Minitest::Proxy.new(self)
                 @_karafka_consumer_messages = []
                 @_karafka_consumer_client = Karafka::Testing::SpecConsumerClient.new
@@ -176,6 +178,7 @@ module Karafka
             rescue Karafka::Errors::TopicNotFoundError
               nil
             end
+            .uniq(&:consumer_group)
         end
 
         # Finds subscription groups from the requested consumer group or selects all if no
