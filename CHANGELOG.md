@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.4.0 (Unreleased)
+- **[Breaking]** Drop Ruby `2.7` support.
+
 ## 2.3.1 (2024-03-07)
 - [Enhancement] Prevent usage of testing when Karafka is not loaded.
 - [Enhancement] Prevent usage of testing when Karafka is not initialized.
