@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'waterdrop'
+require 'karafka/testing'
 require 'karafka/testing/errors'
 require 'karafka/testing/spec_consumer_client'
 require 'karafka/testing/spec_producer_client'
