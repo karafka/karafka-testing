@@ -2,6 +2,7 @@
 
 ## 2.4.0 (Unreleased)
 - **[Breaking]** Drop Ruby `2.7` support.
+- [Fix] Support again `require: false` on gem loading.
 
 ## 2.3.1 (2024-03-07)
 - [Enhancement] Prevent usage of testing when Karafka is not loaded.
