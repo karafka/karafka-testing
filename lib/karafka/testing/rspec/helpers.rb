@@ -147,7 +147,7 @@ module Karafka
         # @return [Hash] message default options
         def _karafka_message_metadata_defaults
           {
-            deserializer: consumer.topic.deserializer,
+            deserializers: consumer.topic.deserializers,
             timestamp: Time.now,
             headers: {},
             key: nil,
