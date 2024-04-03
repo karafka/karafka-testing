@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'karafka/testing'
 require 'karafka/testing/errors'
 require 'karafka/testing/spec_consumer_client'
 require 'karafka/testing/spec_producer_client'
@@ -17,6 +18,8 @@ module Karafka
           # @param base [Class] Minitest example group we want to extend
           def included(base)
             eval_flow = lambda do
+              Karafka::Testing.ensure_karafka_initialized!
+
               @karafka = Karafka::Testing::Minitest::Proxy.new(self)
               @_karafka_consumer_messages = []
               @_karafka_consumer_client = Karafka::Testing::SpecConsumerClient.new
@@ -135,10 +138,10 @@ module Karafka
         # @return [Hash] message default options
         def _karafka_message_metadata_defaults
           {
-            deserializer: @consumer.topic.deserializer,
+            deserializers: @consumer.topic.deserializers,
             timestamp: Time.now,
-            headers: {},
-            key: nil,
+            raw_headers: {},
+            raw_key: nil,
             offset: @_karafka_consumer_messages.size,
             partition: 0,
             received_at: Time.now,
@@ -184,6 +187,7 @@ module Karafka
             rescue Karafka::Errors::TopicNotFoundError
               nil
             end
+            .uniq(&:consumer_group)
         end
 
         # Finds subscription groups from the requested consumer group or selects all if no
