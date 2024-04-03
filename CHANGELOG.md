@@ -4,6 +4,9 @@
 - **[Breaking]** Drop Ruby `2.7` support.
 - [Fix] Support again `require: false` on gem loading.
 
+## 2.3.2 (2024-04-03)
+- [Enhancement] Support `Minitest::Spec`.
+
 ## 2.3.1 (2024-03-07)
 - [Enhancement] Prevent usage of testing when Karafka is not loaded.
 - [Enhancement] Prevent usage of testing when Karafka is not initialized.

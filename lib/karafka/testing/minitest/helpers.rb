@@ -17,19 +17,27 @@ module Karafka
           # Adds all the needed extra functionalities to the minitest group
           # @param base [Class] Minitest example group we want to extend
           def included(base)
-            base.class_eval do
-              setup do
-                Karafka::Testing.ensure_karafka_initialized!
+            eval_flow = lambda do
+              Karafka::Testing.ensure_karafka_initialized!
 
-                @karafka = Karafka::Testing::Minitest::Proxy.new(self)
-                @_karafka_consumer_messages = []
-                @_karafka_consumer_client = Karafka::Testing::SpecConsumerClient.new
-                @_karafka_producer_client = Karafka::Testing::SpecProducerClient.new(self)
+              @karafka = Karafka::Testing::Minitest::Proxy.new(self)
+              @_karafka_consumer_messages = []
+              @_karafka_consumer_client = Karafka::Testing::SpecConsumerClient.new
+              @_karafka_producer_client = Karafka::Testing::SpecProducerClient.new(self)
 
-                @_karafka_consumer_messages.clear
-                @_karafka_producer_client.reset
+              @_karafka_consumer_messages.clear
+              @_karafka_producer_client.reset
 
-                Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
+              Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
+            end
+
+            if base.to_s == 'Minitest::Spec'
+              base.class_eval do
+                before(&eval_flow)
+              end
+            else
+              base.class_eval do
+                setup(&eval_flow)
               end
             end
           end
