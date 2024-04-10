@@ -24,8 +24,8 @@ Gem::Specification.new do |spec|
     spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
   end
 
-  spec.add_dependency 'karafka', '>= 2.3.0', '< 2.5.0'
-  spec.add_dependency 'waterdrop', '>= 2.7.0.beta2'
+  spec.add_dependency 'karafka', '>= 2.4.0.beta1', '< 2.5.0'
+  spec.add_dependency 'waterdrop', '>= 2.7.0.rc1'
 
   spec.required_ruby_version = '>= 3.0.0'
 
