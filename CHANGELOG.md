@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## 2.3.3 (2024-04-19)
+- [Refactor] Extract common components for Minitest and RSpec.
+- [Fix] Fix a case where multiplexed SG would fail with `TopicInManyConsumerGroupsError`
+
 ## 2.3.2 (2024-04-03)
 - [Enhancement] Support `Minitest::Spec`.
 
