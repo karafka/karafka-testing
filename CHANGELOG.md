@@ -1,6 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.4.0 (Unreleased)
+## 2.4.0 (2024-04-26)
 - **[Breaking]** Drop Ruby `2.7` support.
 - [Refactor] Extract common components for Minitest and RSpec.
 - [Fix] Support again `require: false` on gem loading.
