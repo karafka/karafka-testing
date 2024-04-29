@@ -163,7 +163,7 @@ module Karafka
           # Inject appropriate strategy so needed options and components are available
           strategy = Karafka::App.config.internal.processing.strategy_selector.find(topic)
           @consumer.singleton_class.include(strategy)
-          @consumer.client = @karafka_consumer_client
+          @consumer.client = @_karafka_consumer_client
           @consumer.coordinator = coordinators.find_or_create(topic.name, 0)
           @consumer.coordinator.seek_offset = 0
           # Indicate usage as for tests no direct enqueuing happens
