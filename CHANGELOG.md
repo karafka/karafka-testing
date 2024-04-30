@@ -1,5 +1,8 @@
 # Karafka Test gem changelog
 
+## 2.4.2 (2024-06-30)
+- [Fix] Fix FrozenError when accessing key and headers in `Karafka::Messages::Metadata` (tldn0718)
+
 ## 2.4.1 (2024-06-29)
 - [Fix] Fix instance variable in minitest helper (tldn0718)
 
