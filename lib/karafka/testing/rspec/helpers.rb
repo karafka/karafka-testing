@@ -108,7 +108,7 @@ module Karafka
           # Add this message to previously produced messages
           _karafka_consumer_messages << Karafka::Messages::Message.new(
             message[:payload],
-            Karafka::Messages::Metadata.new(metadata).freeze
+            Karafka::Messages::Metadata.new(metadata)
           )
 
           # Update batch metadata
