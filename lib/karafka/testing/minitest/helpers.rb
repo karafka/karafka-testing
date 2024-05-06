@@ -14,6 +14,14 @@ module Karafka
     module Minitest
       # Minitest helpers module that needs to be included
       module Helpers
+        # Map to convert dispatch attributes into their "delivery" format, since we bypass Kafka
+        METADATA_DISPATCH_MAPPINGS = {
+          raw_key: :key,
+          raw_headers: :headers
+        }.freeze
+
+        private_constant :METADATA_DISPATCH_MAPPINGS
+
         class << self
           # Adds all the needed extra functionalities to the minitest group
           # @param base [Class] Minitest example group we want to extend
@@ -93,10 +101,13 @@ module Karafka
           metadata = _karafka_message_metadata_defaults
 
           metadata.keys.each do |key|
-            next unless message.key?(key)
+            message_key = METADATA_DISPATCH_MAPPINGS.fetch(key, key)
 
-            metadata[key] = message.fetch(key)
+            next unless message.key?(message_key)
+
+            metadata[key] = message.fetch(message_key)
           end
+
           # Add this message to previously produced messages
           @_karafka_consumer_messages << Karafka::Messages::Message.new(
             message[:payload],
