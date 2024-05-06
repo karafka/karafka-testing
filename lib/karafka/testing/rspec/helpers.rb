@@ -99,10 +99,13 @@ module Karafka
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults
 
+          mapping = { raw_key: :key }
           metadata.keys.each do |key|
-            next unless message.key?(key)
+            message_key = mapping.fetch(key, key)
 
-            metadata[key] = message.fetch(key)
+            next unless message.key?(message_key)
+
+            metadata[key] = message.fetch(message_key)
           end
 
           # Add this message to previously produced messages
