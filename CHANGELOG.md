@@ -1,9 +1,14 @@
 # Karafka Test gem changelog
 
-## 2.4.2 (2024-06-30)
+## 2.4.3 (2024-05-06)
+- [Fix] Fix: raw_key is not being assigned for rspec (CaioPenhalver)
+- [Fix] Fix: raw_key is not being assigned for minitest
+- [Fix] Fix: headers is not being assigned for minitest and rspec
+
+## 2.4.2 (2024-04-30)
 - [Fix] Fix FrozenError when accessing key and headers in `Karafka::Messages::Metadata` (tldn0718)
 
-## 2.4.1 (2024-06-29)
+## 2.4.1 (2024-04-29)
 - [Fix] Fix instance variable in minitest helper (tldn0718)
 
 ## 2.4.0 (2024-04-26)

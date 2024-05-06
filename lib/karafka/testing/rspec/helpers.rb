@@ -15,6 +15,14 @@ module Karafka
     module RSpec
       # RSpec helpers module that needs to be included
       module Helpers
+        # Map to convert dispatch attributes into their "delivery" format, since we bypass Kafka
+        METADATA_DISPATCH_MAPPINGS = {
+          raw_key: :key,
+          raw_headers: :headers
+        }.freeze
+
+        private_constant :METADATA_DISPATCH_MAPPINGS
+
         class << self
           # Adds all the needed extra functionalities to the rspec group
           # @param base [Class] RSpec example group we want to extend
@@ -99,9 +107,8 @@ module Karafka
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults
 
-          mapping = { raw_key: :key }
           metadata.keys.each do |key|
-            message_key = mapping.fetch(key, key)
+            message_key = METADATA_DISPATCH_MAPPINGS.fetch(key, key)
 
             next unless message.key?(message_key)
 
