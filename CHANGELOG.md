@@ -1,5 +1,9 @@
 # Karafka Test gem changelog
 
+## UNRELEASED
+
+- [Enhancement] Memoize `consumer_for` so consumers can be set up for multiple topics and `let(:consumer)` is no longer a requirement. (dorner)
+
 ## 2.4.3 (2024-05-06)
 - [Fix] Fix: raw_key is not being assigned for rspec (CaioPenhalver)
 - [Fix] Fix: raw_key is not being assigned for minitest

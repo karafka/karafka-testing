@@ -44,7 +44,7 @@ module Karafka
 
               _karafka_consumer_messages.clear
               _karafka_producer_client.reset
-              @_karafka_consumer_mapping = {}
+              @_karafka_consumer_mappings = {}
 
               if Object.const_defined?('Mocha', false)
                 Karafka.producer.stubs(:client).returns(_karafka_producer_client)
@@ -98,7 +98,7 @@ module Karafka
           consumer_obj = if defined?(consumer)
                            consumer
                          else
-                           @_karafka_consumer_mapping&.dig(message[:topic])
+                           @_karafka_consumer_mappings&.dig(message[:topic])
                          end
           # Consumer needs to be defined in order to pass messages to it
           return unless consumer_obj
@@ -151,7 +151,7 @@ module Karafka
                   elsif defined?(consumer)
                       consumer.topic.name
                   else
-                    @_karafka_consumer_mapping&.keys&.last
+                    @_karafka_consumer_mappings&.keys&.last
                   end
           Karafka.producer.produce_sync(
             {
@@ -202,7 +202,7 @@ module Karafka
           # Indicate usage as for tests no direct enqueuing happens
           consumer.instance_variable_set('@used', true)
 
-          @_karafka_consumer_mapping[topic.name] = consumer
+          @_karafka_consumer_mappings[topic.name] = consumer
           consumer
         end
       end
