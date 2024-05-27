@@ -44,6 +44,7 @@ module Karafka
 
               _karafka_consumer_messages.clear
               _karafka_producer_client.reset
+              @_karafka_consumer_mappings = {}
 
               if Object.const_defined?('Mocha', false)
                 Karafka.producer.stubs(:client).returns(_karafka_producer_client)
@@ -94,18 +95,23 @@ module Karafka
         #     karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         #   end
         def _karafka_add_message_to_consumer_if_needed(message)
+          consumer_obj = if defined?(consumer)
+                           consumer
+                         else
+                           @_karafka_consumer_mappings&.dig(message[:topic])
+                         end
           # Consumer needs to be defined in order to pass messages to it
-          return unless defined?(consumer)
+          return unless consumer_obj
           # We're interested in adding message to consumer only when it is a Karafka consumer
           # Users may want to test other things (models producing messages for example) and in
           # their case consumer will not be a consumer
-          return unless consumer.is_a?(Karafka::BaseConsumer)
+          return unless consumer_obj.is_a?(Karafka::BaseConsumer)
           # We target to the consumer only messages that were produced to it, since specs may also
           # produce other messages targeting other topics
-          return unless message[:topic] == consumer.topic.name
+          return unless message[:topic] == consumer_obj.topic.name
 
           # Build message metadata and copy any metadata that would come from the message
-          metadata = _karafka_message_metadata_defaults
+          metadata = _karafka_message_metadata_defaults(consumer_obj)
 
           metadata.keys.each do |key|
             message_key = METADATA_DISPATCH_MAPPINGS.fetch(key, key)
@@ -124,13 +130,13 @@ module Karafka
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
             _karafka_consumer_messages,
-            consumer.topic,
+            consumer_obj.topic,
             0,
             Time.now
           )
 
           # Update consumer messages batch
-          consumer.messages = Karafka::Messages::Messages.new(
+          consumer_obj.messages = Karafka::Messages::Messages.new(
             _karafka_consumer_messages,
             batch_metadata
           )
@@ -140,9 +146,16 @@ module Karafka
         # @param payload [String] payload we want to dispatch
         # @param metadata [Hash] any metadata we want to dispatch alongside the payload
         def _karafka_produce(payload, metadata = {})
+          topic = if metadata[:topic]
+                    metadata[:topic]
+                  elsif defined?(consumer)
+                      consumer.topic.name
+                  else
+                    @_karafka_consumer_mappings&.keys&.last
+                  end
           Karafka.producer.produce_sync(
             {
-              topic: consumer.topic.name,
+              topic: topic,
               payload: payload
             }.merge(metadata)
           )
@@ -156,16 +169,16 @@ module Karafka
         private
 
         # @return [Hash] message default options
-        def _karafka_message_metadata_defaults
+        def _karafka_message_metadata_defaults(consumer_obj)
           {
-            deserializers: consumer.topic.deserializers,
+            deserializers: consumer_obj.topic.deserializers,
             timestamp: Time.now,
             raw_headers: {},
             raw_key: nil,
             offset: _karafka_consumer_messages.size,
             partition: 0,
             received_at: Time.now,
-            topic: consumer.topic.name
+            topic: consumer_obj.topic.name
           }
         end
 
@@ -188,6 +201,8 @@ module Karafka
           consumer.coordinator.seek_offset = 0
           # Indicate usage as for tests no direct enqueuing happens
           consumer.instance_variable_set('@used', true)
+
+          @_karafka_consumer_mappings[topic.name] = consumer
           consumer
         end
       end
