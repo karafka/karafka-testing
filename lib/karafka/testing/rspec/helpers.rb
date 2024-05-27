@@ -149,7 +149,7 @@ module Karafka
           topic = if metadata[:topic]
                     metadata[:topic]
                   elsif defined?(consumer)
-                      consumer.topic.name
+                    consumer.topic.name
                   else
                     @_karafka_consumer_mappings&.keys&.last
                   end
@@ -168,6 +168,7 @@ module Karafka
 
         private
 
+        # @param consumer_obj [Karafka::BaseConsumer] consumer reference
         # @return [Hash] message default options
         def _karafka_message_metadata_defaults(consumer_obj)
           {
