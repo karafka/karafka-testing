@@ -161,6 +161,7 @@ module Karafka
 
         private
 
+        # @param consumer_obj [Karafka::BaseConsumer] consumer reference
         # @return [Hash] message default options
         def _karafka_message_metadata_defaults(consumer_obj)
           {
