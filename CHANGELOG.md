@@ -1,7 +1,6 @@
 # Karafka Test gem changelog
 
-## 2.4.4 (Unreleased)
-
+## 2.4.4 (2024-07-02)
 - [Enhancement] Memoize `consumer_for` so consumers can be set up for multiple topics and `let(:consumer)` is no longer a requirement. (dorner)
 
 ## 2.4.3 (2024-05-06)
