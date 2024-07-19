@@ -1,6 +1,7 @@
 # Karafka Test gem changelog
 
 ## 2.4.5 (Unreleased)
+- [Enhancement] Provide `karafka.consumer_messages` to get (or alter) the messages that will go into created consumer.
 - [Fix] `#consumer_group_metadata_pointer` is not stubbed in the consumer client.
 
 ## 2.4.4 (2024-07-02)

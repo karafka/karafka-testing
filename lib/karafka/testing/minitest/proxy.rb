@@ -25,6 +25,12 @@ module Karafka
         def produced_messages
           @minitest_example._karafka_produced_messages
         end
+
+        # @return [Array<Karafka::Messages::Message>] array of messages that will be used to
+        #   construct the final consumer messages batch
+        def consumer_messages
+          @minitest_example._karafka_consumer_messages
+        end
       end
     end
   end

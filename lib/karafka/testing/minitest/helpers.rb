@@ -159,6 +159,12 @@ module Karafka
           @_karafka_producer_client.messages
         end
 
+        # @return [Array<Karafka::Messages::Message>] array of messages that will be used to
+        #   construct the final consumer messages batch
+        def _karafka_consumer_messages
+          @_karafka_consumer_messages
+        end
+
         private
 
         # @param consumer_obj [Karafka::BaseConsumer] consumer reference
