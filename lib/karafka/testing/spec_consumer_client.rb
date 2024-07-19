@@ -12,6 +12,7 @@ module Karafka
         commit_offsets
         commit_offsets!
         seek
+        consumer_group_metadata_pointer
       ].each do |caught_delegator|
         define_method(caught_delegator) { |*| true }
       end
