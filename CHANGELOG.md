@@ -1,7 +1,7 @@
 # Karafka Test gem changelog
 
 ## 2.4.5 (Unreleased)
-- [Fix] #consumer_group_metadata_pointer is not stubbed in the consumer client.
+- [Fix] `#consumer_group_metadata_pointer` is not stubbed in the consumer client.
 
 ## 2.4.4 (2024-07-02)
 - [Enhancement] Memoize `consumer_for` so consumers can be set up for multiple topics and `let(:consumer)` is no longer a requirement. (dorner)
