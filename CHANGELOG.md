@@ -1,4 +1,4 @@
-# Karafka Test gem changelog
+# Karafka Testing Changelog
 
 ## 2.4.5 (Unreleased)
 - [Enhancement] Provide `karafka.consumer_messages` to get (or alter) the messages that will go into created consumer.
