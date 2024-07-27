@@ -39,9 +39,11 @@ module Karafka
               # Find matching consumer group
               .find { |cg, _sgs| cg.name == requested_consumer_group.to_s }
               # Raise error if not found
-              .tap { |cg| cg || raise(Errors::ConsumerGroupNotFound, requested_consumer_group) }
-              # Since lookup was on a hash, get the value, that is subscription groups
-              .last
+              .then do |cg|
+                cg || raise(Errors::ConsumerGroupNotFoundError, requested_consumer_group)
+                # Since lookup was on a hash, get the value, that is subscription groups
+                cg.last
+              end
           else
             ::Karafka::App
               .subscription_groups
