@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.4.6 (Unreleased)
+- [Fix] uninitialized constant `Karafka::Testing::Errors::ConsumerGroupNotFound`.
+
 ## 2.4.5 (2024-07-21)
 - [Enhancement] Provide `karafka.consumer_messages` to get (or alter) the messages that will go into created consumer.
 - [Fix] `#consumer_group_metadata_pointer` is not stubbed in the consumer client.
