@@ -1,6 +1,6 @@
 # Karafka Testing Changelog
 
-## 2.4.6 (Unreleased)
+## 2.4.6 (2024-07-31)
 - [Fix] uninitialized constant `Karafka::Testing::Errors::ConsumerGroupNotFound`.
 
 ## 2.4.5 (2024-07-21)
