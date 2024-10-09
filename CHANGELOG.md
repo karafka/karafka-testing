@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.4.7 (Unreleased)
+- **[Breaking]** Drop Ruby `3.0` support according to the EOL schedule.
+
 ## 2.4.6 (2024-07-31)
 - [Fix] uninitialized constant `Karafka::Testing::Errors::ConsumerGroupNotFound`.
 
