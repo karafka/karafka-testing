@@ -46,6 +46,10 @@ module Karafka
               _karafka_producer_client.reset
               @_karafka_consumer_mappings = {}
 
+              # We do check the presence not only of Mocha but also that it is used and
+              # that patches are available because some users have Mocha as part of their
+              # supply chain, but do not use it when running Karafka specs. In such cases, without
+              # such check `karafka-testing` would falsely assume, that Mocha is in use.
               if Object.const_defined?('Mocha', false) && Karafka.producer.respond_to?(:stubs)
                 Karafka.producer.stubs(:client).returns(_karafka_producer_client)
               else
