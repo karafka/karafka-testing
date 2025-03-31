@@ -46,7 +46,7 @@ module Karafka
               _karafka_producer_client.reset
               @_karafka_consumer_mappings = {}
 
-              if Object.const_defined?('Mocha', false)
+              if Object.const_defined?('Mocha', false) && Karafka.producer.respond_to?(:stubs)
                 Karafka.producer.stubs(:client).returns(_karafka_producer_client)
               else
                 allow(Karafka.producer).to receive(:client).and_return(_karafka_producer_client)
