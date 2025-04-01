@@ -2,6 +2,7 @@
 
 ## 2.4.7 (Unreleased)
 - **[Breaking]** Drop Ruby `3.0` support according to the EOL schedule.
+- **[Fix]** Check not only that `Mocha` is loaded but also that its stubs are used.
 
 ## 2.4.6 (2024-07-31)
 - [Fix] uninitialized constant `Karafka::Testing::Errors::ConsumerGroupNotFound`.
