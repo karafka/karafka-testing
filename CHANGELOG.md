@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.5.0 (2025-05-21)
+- [Maintenance] Release matching Karafka `2.5.0` release.
+
 ## 2.4.7 (2025-04-01)
 - **[Breaking]** Drop Ruby `3.0` support according to the EOL schedule.
 - **[Fix]** Check not only that `Mocha` is loaded but also that its stubs are used.
