@@ -18,11 +18,6 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = %w[lib]
-  spec.cert_chain    = %w[certs/cert.pem]
-
-  if $PROGRAM_NAME.end_with?('gem')
-    spec.signing_key = File.expand_path('~/.ssh/gem-private_key.pem')
-  end
 
   spec.add_dependency 'karafka', '>= 2.5.0.beta1', '< 2.6.0'
   spec.add_dependency 'waterdrop', '>= 2.8.0'
