@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 3.1.0'
 
   spec.metadata = {
-    'funding_uri' => 'https://karafka.io/#become-pro',
     'homepage_uri' => 'https://karafka.io',
     'changelog_uri' => 'https://karafka.io/docs/Changelog-Karafka-Testing',
     'bug_tracker_uri' => 'https://github.com/karafka/karafka-testing/issues',
