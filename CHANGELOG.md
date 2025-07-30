@@ -2,6 +2,7 @@
 
 ## 2.5.2 (Unreleased)
 - [Change] Remove `funding_uri` from the gemspec to minimize double-funding info.
+- [Change] Add new CI action to trigger auto-doc refresh.
 
 ## 2.5.1 (2025-05-25)
 - [Change] Move to trusted-publishers and remove signing since no longer needed.
