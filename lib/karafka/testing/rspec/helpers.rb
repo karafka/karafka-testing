@@ -39,9 +39,14 @@ module Karafka
             # Producer fake client to mock communication with Kafka
             base.let(:_karafka_producer_client) { Karafka::Testing::SpecProducerClient.new(self) }
 
-            base.prepend_before do
+            base.before(:context) do
               Karafka::Testing.ensure_karafka_initialized!
+              @_karafka_shared_producer_client = WaterDrop::Clients::Dummy.new(-1)
+              Karafka.producer.instance_variable_set(:'@client', @_karafka_shared_producer_client)
+              Karafka.producer.instance_variable_set(:'@pid', ::Process.pid)
+            end
 
+            base.prepend_before do
               _karafka_consumer_messages.clear
               _karafka_producer_client.reset
               @_karafka_consumer_mappings = {}

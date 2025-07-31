@@ -1,6 +1,7 @@
 # Karafka Testing Changelog
 
 ## 2.5.2 (Unreleased)
+- [Enhancement] Change RSpec hook execution order issue in Karafka testing helpers.
 - [Change] Remove `funding_uri` from the gemspec to minimize double-funding info.
 - [Change] Add new CI action to trigger auto-doc refresh.
 
