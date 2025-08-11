@@ -201,16 +201,19 @@ module Karafka
             Karafka::Routing::Topics.new([topic])
           )
 
+          processing_cfg = Karafka::App.config.internal.processing
           consumer = topic.consumer.new
           consumer.producer = Karafka::App.producer
           # Inject appropriate strategy so needed options and components are available
-          strategy = Karafka::App.config.internal.processing.strategy_selector.find(topic)
+          strategy = processing_cfg.strategy_selector.find(topic)
           consumer.singleton_class.include(strategy)
           consumer.client = _karafka_consumer_client
           consumer.coordinator = coordinators.find_or_create(topic.name, 0)
           consumer.coordinator.seek_offset = 0
           # Indicate usage as for tests no direct enqueuing happens
           consumer.instance_variable_set('@used', true)
+          expansions = processing_cfg.expansions_selector.find(topic)
+          expansions.each { |expansion| consumer.singleton_class.include(expansion) }
 
           @_karafka_consumer_mappings[topic.name] = consumer
           consumer

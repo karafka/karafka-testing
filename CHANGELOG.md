@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.5.3 (Unreleased)
+- [Fix] Allow testing consumers with Pro expansions (i.e. Piping).
+
 ## 2.5.2 (2025-08-04)
 - [Enhancement] Change RSpec hook execution order issue in Karafka testing helpers.
 - [Change] Remove `funding_uri` from the gemspec to minimize double-funding info.
