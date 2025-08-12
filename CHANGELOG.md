@@ -1,6 +1,6 @@
 # Karafka Testing Changelog
 
-## 2.5.3 (Unreleased)
+## 2.5.3 (2025-08-12)
 - [Fix] Allow testing consumers with Pro expansions (i.e. Piping).
 
 ## 2.5.2 (2025-08-04)
