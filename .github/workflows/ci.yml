@@ -18,13 +18,7 @@ permissions:
 jobs:
   specs:
     timeout-minutes: 30
-    runs-on: >-
-      ${{
-        (github.event_name != 'pull_request' ||
-         github.event.pull_request.head.repo.full_name == github.repository)
-        && fromJSON('["self-hosted", "linux", "x64", "qemu"]')
-        || 'ubuntu-latest'
-      }}
+    runs-on: ubuntu-latest
     needs: diffend
     strategy:
       fail-fast: false
@@ -64,13 +58,7 @@ jobs:
 
   diffend:
     timeout-minutes: 5
-    runs-on: >-
-      ${{
-        (github.event_name != 'pull_request' ||
-         github.event.pull_request.head.repo.full_name == github.repository)
-        && fromJSON('["self-hosted", "linux", "x64", "qemu"]')
-        || 'ubuntu-latest'
-      }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
@@ -94,13 +82,7 @@ jobs:
 
   coditsu:
     timeout-minutes: 5
-    runs-on: >-
-      ${{
-        (github.event_name != 'pull_request' ||
-         github.event.pull_request.head.repo.full_name == github.repository)
-        && fromJSON('["self-hosted", "linux", "x64", "qemu"]')
-        || 'ubuntu-latest'
-      }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
