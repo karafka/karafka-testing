@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = %w[lib]
 
-  spec.add_dependency 'karafka', '>= 2.5.0.beta1', '< 2.6.0'
+  spec.add_dependency 'karafka', '>= 2.5.0', '< 2.6.0'
   spec.add_dependency 'waterdrop', '>= 2.8.0'
 
   spec.required_ruby_version = '>= 3.1.0'
