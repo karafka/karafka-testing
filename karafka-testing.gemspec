@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'karafka', '>= 2.5.0', '< 2.6.0'
   spec.add_dependency 'waterdrop', '>= 2.8.0'
 
-  spec.required_ruby_version = '>= 3.1.0'
+  spec.required_ruby_version = '>= 3.2.0'
 
   spec.metadata = {
     'homepage_uri' => 'https://karafka.io',

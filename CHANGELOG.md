@@ -1,7 +1,7 @@
 # Karafka Testing Changelog
 
 ## 2.5.4 (Unreleased)
-- [Change] Remove Ruby `3.1` specs according to the EOL schedule.
+- [Change] Remove Ruby `3.1` according to the EOL schedule.
 
 ## 2.5.3 (2025-08-12)
 - [Fix] Allow testing consumers with Pro expansions (i.e. Piping).
