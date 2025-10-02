@@ -1,6 +1,7 @@
 # Karafka Testing Changelog
 
 ## 2.5.4 (Unreleased)
+- [Fix] Topic present in second dynamically built subscription group not available for dispatch (#291).
 - [Change] Remove Ruby `3.1` according to the EOL schedule.
 
 ## 2.5.3 (2025-08-12)

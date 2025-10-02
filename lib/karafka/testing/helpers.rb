@@ -15,17 +15,25 @@ module Karafka
         # @note Since we run the lookup on subscription groups, the search will automatically
         #   expand with matching patterns
         def karafka_consumer_find_candidate_topics(requested_topic, requested_consumer_group)
-          karafka_consumer_find_subscription_groups(requested_consumer_group)
-            # multiplexed subscriptions of the same origin share name, thus we can reduced
-            # multiplexing to the first one as during testing, there is no multiplexing parallel
-            # execution anyhow
-            .uniq(&:name)
-            .map(&:topics)
-            .filter_map do |topics|
-              topics.find(requested_topic.to_s)
-            rescue Karafka::Errors::TopicNotFoundError
-              nil
-            end
+          subscription_groups = karafka_consumer_find_subscription_groups(requested_consumer_group)
+
+          candidate_topics = []
+
+          subscription_groups.each do |group|
+            topic = group.topics.find(requested_topic.to_s)
+
+            next unless topic
+
+            candidate_topics << topic
+          rescue Karafka::Errors::TopicNotFoundError
+            # Skip groups that don't have the requested topic
+            next
+          end
+
+          # Remove duplicate topics from multiplexed subscriptions
+          # (Multiplexed subscriptions share the same name, and during testing
+          # there's no parallel execution anyway, so we only need the first one)
+          candidate_topics.uniq { |topic| topic.subscription_group.name }
         end
 
         # Finds subscription groups from the requested consumer group or selects all if no
