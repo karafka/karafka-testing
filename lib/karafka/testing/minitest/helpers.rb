@@ -200,7 +200,7 @@ module Karafka
           @consumer.coordinator = coordinators.find_or_create(topic.name, 0)
           @consumer.coordinator.seek_offset = 0
           # Indicate usage as for tests no direct enqueuing happens
-          @consumer.instance_variable_set('@used', true)
+          @consumer.instance_variable_set(:@used, true)
           expansions = processing_cfg.expansions_selector.find(topic)
           expansions.each { |expansion| @consumer.singleton_class.include(expansion) }
           @_karafka_consumer_mappings[topic.name] = @consumer
