@@ -11,14 +11,14 @@ module Karafka
           @minitest_example = minitest_example
         end
 
-        # @param args Anything that the `#_karafka_consumer_for` accepts
-        def consumer_for(*args)
-          @minitest_example._karafka_consumer_for(*args)
+        # Forwards all arguments to `#_karafka_consumer_for`
+        def consumer_for(*)
+          @minitest_example._karafka_consumer_for(*)
         end
 
-        # @param args Anything that `#_karafka_produce` accepts
-        def produce(*args)
-          @minitest_example._karafka_produce(*args)
+        # Forwards all arguments to `#_karafka_produce`
+        def produce(*)
+          @minitest_example._karafka_produce(*)
         end
 
         # @return [Array<Hash>] messages produced via `Karafka#producer`

@@ -42,8 +42,8 @@ module Karafka
             base.before(:context) do
               Karafka::Testing.ensure_karafka_initialized!
               @_karafka_shared_producer_client = WaterDrop::Clients::Dummy.new(-1)
-              Karafka.producer.instance_variable_set(:'@client', @_karafka_shared_producer_client)
-              Karafka.producer.instance_variable_set(:'@pid', ::Process.pid)
+              Karafka.producer.instance_variable_set(:@client, @_karafka_shared_producer_client)
+              Karafka.producer.instance_variable_set(:@pid, ::Process.pid)
             end
 
             base.prepend_before do
@@ -211,7 +211,7 @@ module Karafka
           consumer.coordinator = coordinators.find_or_create(topic.name, 0)
           consumer.coordinator.seek_offset = 0
           # Indicate usage as for tests no direct enqueuing happens
-          consumer.instance_variable_set('@used', true)
+          consumer.instance_variable_set(:@used, true)
           expansions = processing_cfg.expansions_selector.find(topic)
           expansions.each { |expansion| consumer.singleton_class.include(expansion) }
 
