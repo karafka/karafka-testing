@@ -2,7 +2,7 @@
 
 ## 2.5.4 (2025-10-03)
 - [Fix] Topic present in second dynamically built subscription group not available for dispatch (#291).
-- [Change] Remove Ruby `3.1` according to the EOL schedule.
+- **[EOL]** Remove Ruby `3.1` according to the EOL schedule.
 
 ## 2.5.3 (2025-08-12)
 - [Fix] Allow testing consumers with Pro expansions (i.e. Piping).
@@ -19,7 +19,7 @@
 - [Maintenance] Release matching Karafka `2.5.0` release.
 
 ## 2.4.7 (2025-04-01)
-- **[Breaking]** Drop Ruby `3.0` support according to the EOL schedule.
+- **[EOL]** Drop Ruby `3.0` support according to the EOL schedule.
 - **[Fix]** Check not only that `Mocha` is loaded but also that its stubs are used.
 
 ## 2.4.6 (2024-07-31)
@@ -44,7 +44,7 @@
 - [Fix] Fix instance variable in minitest helper (tldn0718)
 
 ## 2.4.0 (2024-04-26)
-- **[Breaking]** Drop Ruby `2.7` support.
+- **[EOL]** Drop Ruby `2.7` support.
 - [Refactor] Extract common components for Minitest and RSpec.
 - [Fix] Support again `require: false` on gem loading.
 - [Fix] Fix a case where multiplexed SG would fail with `TopicInManyConsumerGroupsError`
@@ -153,7 +153,7 @@
 - Change the API to be more comprehensive
 - Update to work with Karafka 2.0
 - Support for Ruby 3.1
-- Drop support for ruby 2.6
+- **[EOL]** Drop support for ruby 2.6
 
 ## 1.4.*
 
