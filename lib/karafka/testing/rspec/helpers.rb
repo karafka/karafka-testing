@@ -119,9 +119,8 @@ module Karafka
           # produce other messages targeting other topics
           return unless message[:topic] == consumer_obj.topic.name
           # If consumer_group is explicitly specified, verify it matches
-          if message[:consumer_group]
-            return unless message[:consumer_group].to_s == consumer_obj.topic.consumer_group.name
-          end
+          return if message[:consumer_group] &&
+                    message[:consumer_group].to_s != consumer_obj.topic.consumer_group.name
 
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults(consumer_obj)
@@ -164,7 +163,8 @@ module Karafka
                   elsif defined?(consumer)
                     consumer.topic.name
                   else
-                    @_karafka_consumer_mappings&.values&.last&.topic&.name
+                    last_consumer = @_karafka_consumer_mappings&.values&.last
+                    last_consumer&.topic&.name
                   end
           Karafka.producer.produce_sync(
             {
@@ -183,7 +183,8 @@ module Karafka
         # Use when testing multiple consumers for the same topic
         #
         # @param consumer_instance [Object] the consumer to produce to
-        # @param payload [String] payload to dispatch
+        # @param payload [String] message content (usually serialized JSON) to deliver to the
+        #   consumer
         # @param metadata [Hash] any metadata to dispatch alongside the payload
         #
         # @example Produce to specific consumer when multiple exist for same topic
