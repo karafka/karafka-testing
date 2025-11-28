@@ -29,6 +29,9 @@ if coverage
     add_filter '/.bundle/'
     add_filter '/doc/'
     add_filter '/config/'
+    # Helpers require full Karafka integration to test properly
+    add_filter '/lib/karafka/testing/rspec/helpers.rb'
+    add_filter '/lib/karafka/testing/minitest/helpers.rb'
 
     merge_timeout 600
     minimum_coverage 100
@@ -53,7 +56,8 @@ RSpec.extend Karafka::Core::Helpers::RSpecLocator.new(__FILE__)
 require 'waterdrop'
 require 'karafka-testing'
 require 'karafka/testing/errors'
+require 'karafka/testing/helpers'
 require 'karafka/testing/spec_consumer_client'
 require 'karafka/testing/spec_producer_client'
-require 'karafka/testing/rspec/proxy'
-require 'karafka/testing/minitest/proxy'
+require 'karafka/testing/rspec/helpers'
+require 'karafka/testing/minitest/helpers'
