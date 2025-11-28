@@ -1,6 +1,6 @@
 # Karafka Testing Changelog
 
-## 2.5.5 (Unreleased)
+## 2.5.5 (2025-11-28)
 - [Feature] Add `produce_to` method for explicit consumer targeting in multi-consumer scenarios.
 - [Fix] Fix consumer mapping collision when multiple consumer groups listen to the same topic.
 
