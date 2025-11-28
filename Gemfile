@@ -5,5 +5,9 @@ source 'https://rubygems.org'
 gemspec
 
 group :test do
+  gem 'ostruct'
+  gem 'rspec'
+  gem 'simplecov'
+  gem 'warning'
   gem 'yard-lint'
 end

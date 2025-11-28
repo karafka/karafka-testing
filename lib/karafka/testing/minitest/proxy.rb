@@ -21,6 +21,11 @@ module Karafka
           @minitest_example._karafka_produce(*)
         end
 
+        # Forwards all arguments to `#_karafka_produce_to`
+        def produce_to(*)
+          @minitest_example._karafka_produce_to(*)
+        end
+
         # @return [Array<Hash>] messages produced via `Karafka#producer`
         def produced_messages
           @minitest_example._karafka_produced_messages

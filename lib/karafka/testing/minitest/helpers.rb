@@ -92,7 +92,7 @@ module Karafka
           consumer_obj = if defined?(@consumer)
                            @consumer
                          else
-                           @_karafka_consumer_mappings&.dig(message[:topic])
+                           _karafka_find_consumer_for_message(message)
                          end
           # Consumer needs to be defined in order to pass messages to it
           return unless defined?(consumer_obj)
@@ -103,6 +103,9 @@ module Karafka
           # We target to the consumer only messages that were produced to it, since specs may also
           # produce other messages targeting other topics
           return unless message[:topic] == consumer_obj.topic.name
+          # If consumer_group is explicitly specified, verify it matches
+          return if message[:consumer_group] &&
+                    message[:consumer_group].to_s != consumer_obj.topic.consumer_group.name
 
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults(consumer_obj)
@@ -144,7 +147,8 @@ module Karafka
                   elsif defined?(@consumer)
                     @consumer.topic.name
                   else
-                    @_karafka_consumer_mappings&.keys&.last
+                    last_consumer = @_karafka_consumer_mappings&.values&.last
+                    last_consumer&.topic&.name
                   end
           Karafka.producer.produce_sync(
             {
@@ -165,7 +169,51 @@ module Karafka
           @_karafka_consumer_messages
         end
 
+        # Produces message to a specific consumer instance
+        # Use when testing multiple consumers for the same topic
+        #
+        # @param consumer_instance [Object] the consumer to produce to
+        # @param payload [String] message content (usually serialized JSON) to deliver to the
+        #   consumer
+        # @param metadata [Hash] any metadata to dispatch alongside the payload
+        #
+        # @example Produce to specific consumer when multiple exist for same topic
+        #   consumer1 = @karafka.consumer_for(:events, :analytics_group)
+        #   consumer2 = @karafka.consumer_for(:events, :notifications_group)
+        #   @karafka.produce_to(consumer1, { 'event' => 'click' }.to_json)
+        def _karafka_produce_to(consumer_instance, payload, metadata = {})
+          _karafka_produce(
+            payload,
+            metadata.merge(
+              topic: consumer_instance.topic.name,
+              consumer_group: consumer_instance.topic.consumer_group.name
+            )
+          )
+        end
+
         private
+
+        # Finds a consumer for the given message with backward-compatible fallback
+        # @param message [Hash] the message being routed
+        # @return [Object, nil] the consumer instance or nil
+        def _karafka_find_consumer_for_message(message)
+          return nil unless @_karafka_consumer_mappings
+
+          topic_name = message[:topic]
+          consumer_group = message[:consumer_group]
+
+          if consumer_group
+            # Explicit consumer group - find by composite key pattern
+            @_karafka_consumer_mappings.values.find do |c|
+              c.topic.name == topic_name && c.topic.consumer_group.name == consumer_group.to_s
+            end
+          else
+            # No consumer group specified - find all consumers for this topic
+            matching = @_karafka_consumer_mappings.values.select { |c| c.topic.name == topic_name }
+            # If exactly one consumer matches, use it (backward compatible)
+            matching.size == 1 ? matching.first : nil
+          end
+        end
 
         # @param consumer_obj [Karafka::BaseConsumer] consumer reference
         # @return [Hash] message default options
@@ -203,7 +251,7 @@ module Karafka
           @consumer.instance_variable_set(:@used, true)
           expansions = processing_cfg.expansions_selector.find(topic)
           expansions.each { |expansion| @consumer.singleton_class.include(expansion) }
-          @_karafka_consumer_mappings[topic.name] = @consumer
+          @_karafka_consumer_mappings[topic.id] = @consumer
           @consumer
         end
       end
