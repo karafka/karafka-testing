@@ -92,9 +92,10 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@80740b3b13bf9857e28854481ca95a84e78a2bdf # v1.284.0
         with:
-          # Using 3.4 until ffi gem supports Ruby 4.0
-          ruby-version: '3.4'
-          bundler-cache: true
+          ruby-version: '4.0'
+          bundler-cache: false
+      - name: Bundle install
+        run: bundle install --jobs 4 --retry 3
       - run: bundle exec yard-lint lib/
 
   ci-success:
