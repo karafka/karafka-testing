@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'karafka/testing'
-require 'karafka/testing/errors'
-require 'karafka/testing/helpers'
-require 'karafka/testing/spec_consumer_client'
-require 'karafka/testing/spec_producer_client'
-require 'karafka/testing/minitest/proxy'
+require "karafka/testing"
+require "karafka/testing/errors"
+require "karafka/testing/helpers"
+require "karafka/testing/spec_consumer_client"
+require "karafka/testing/spec_producer_client"
+require "karafka/testing/minitest/proxy"
 
 module Karafka
   module Testing
@@ -42,7 +42,7 @@ module Karafka
               Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
             end
 
-            if base.to_s == 'Minitest::Spec'
+            if base.to_s == "Minitest::Spec"
               base.class_eval do
                 before(&eval_flow)
               end
@@ -90,10 +90,10 @@ module Karafka
         #   @karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         def _karafka_add_message_to_consumer_if_needed(message)
           consumer_obj = if defined?(@consumer)
-                           @consumer
-                         else
-                           _karafka_find_consumer_for_message(message)
-                         end
+            @consumer
+          else
+            _karafka_find_consumer_for_message(message)
+          end
           # Consumer needs to be defined in order to pass messages to it
           return unless defined?(consumer_obj)
           # We're interested in adding message to consumer only when it is a Karafka consumer
@@ -105,7 +105,7 @@ module Karafka
           return unless message[:topic] == consumer_obj.topic.name
           # If consumer_group is explicitly specified, verify it matches
           return if message[:consumer_group] &&
-                    message[:consumer_group].to_s != consumer_obj.topic.consumer_group.name
+            message[:consumer_group].to_s != consumer_obj.topic.consumer_group.name
 
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults(consumer_obj)
@@ -143,13 +143,13 @@ module Karafka
         # @param metadata [Hash] any metadata we want to dispatch alongside the payload
         def _karafka_produce(payload, metadata = {})
           topic = if metadata[:topic]
-                    metadata[:topic]
-                  elsif defined?(@consumer)
-                    @consumer.topic.name
-                  else
-                    last_consumer = @_karafka_consumer_mappings&.values&.last
-                    last_consumer&.topic&.name
-                  end
+            metadata[:topic]
+          elsif defined?(@consumer)
+            @consumer.topic.name
+          else
+            last_consumer = @_karafka_consumer_mappings&.values&.last
+            last_consumer&.topic&.name
+          end
           Karafka.producer.produce_sync(
             {
               topic: topic,
@@ -211,7 +211,7 @@ module Karafka
             # No consumer group specified - find all consumers for this topic
             matching = @_karafka_consumer_mappings.values.select { |c| c.topic.name == topic_name }
             # If exactly one consumer matches, use it (backward compatible)
-            matching.size == 1 ? matching.first : nil
+            (matching.size == 1) ? matching.first : nil
           end
         end
 
