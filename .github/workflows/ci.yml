@@ -88,6 +88,23 @@ jobs:
           bundler-cache: true
       - run: bundle exec yard-lint lib/
 
+  lostconf:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run lostconf
+        run: npx lostconf --fail-on-stale
+
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
@@ -96,6 +113,7 @@ jobs:
       - rubocop
       - specs
       - yard-lint
+      - lostconf
     steps:
       - name: Check all jobs passed
         if: |
