@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "consumers/test_consumer"
-require_relative "consumers/other_consumer"
-
 Karafka::App.setup do |config|
   config.kafka = { "bootstrap.servers": "localhost:9092" }
   config.group_id = "test_group"

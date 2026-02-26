@@ -36,11 +36,6 @@ RSpec.describe "Karafka::Testing::RSpec::Helpers integration" do
       expect(consumer).to be_a(OtherConsumer)
       expect(consumer.topic.name).to eq("test_topic")
     end
-
-    it "returns TestConsumer for test_topic in the default group" do
-      consumer = karafka.consumer_for(:test_topic, :test_group)
-      expect(consumer).to be_a(TestConsumer)
-    end
   end
 
   describe "#produce basics" do

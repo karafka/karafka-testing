@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
 require "karafka"
-require_relative "support/karafka_app"
+
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
+
 require "karafka/testing/rspec/helpers"

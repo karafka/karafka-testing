@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 class OtherConsumer < Karafka::BaseConsumer
-  def consume; end
+  def consume
+  end
 end
