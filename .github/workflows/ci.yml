@@ -88,6 +88,23 @@ jobs:
           bundler-cache: true
       - run: bundle exec yard-lint lib/
 
+  minitest-integration:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
+        with:
+          ruby-version: '4.0'
+          bundler: 'latest'
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+      - name: Run minitest integration tests
+        run: bundle exec ruby -e "Dir['spec/integration/minitest/*_test.rb'].sort.each { |f| require File.expand_path(f) }"
+
   lostconf:
     timeout-minutes: 5
     runs-on: ubuntu-latest
@@ -112,6 +129,7 @@ jobs:
     needs:
       - rubocop
       - specs
+      - minitest-integration
       - yard-lint
       - lostconf
     steps:

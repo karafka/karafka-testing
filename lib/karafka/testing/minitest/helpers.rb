@@ -46,10 +46,19 @@ module Karafka
               base.class_eval do
                 before(&eval_flow)
               end
-            else
+            elsif base.respond_to?(:setup) && base.method(:setup).arity != 0
               base.class_eval do
                 setup(&eval_flow)
               end
+            else
+              setup_mod = Module.new do
+                define_method(:setup) do
+                  instance_exec(&eval_flow)
+                  super()
+                end
+              end
+
+              base.prepend(setup_mod)
             end
           end
         end
@@ -89,7 +98,9 @@ module Karafka
         # @example Send a json message to consumer and simulate, that it is partition 6
         #   @karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
         def _karafka_add_message_to_consumer_if_needed(message)
-          consumer_obj = if defined?(@consumer)
+          consumer_obj = if message[:consumer_group]
+            _karafka_find_consumer_for_message(message)
+          elsif defined?(@consumer)
             @consumer
           else
             _karafka_find_consumer_for_message(message)
