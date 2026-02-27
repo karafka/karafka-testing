@@ -231,7 +231,7 @@ module Karafka
             timestamp: Time.now,
             raw_headers: {},
             raw_key: nil,
-            offset: @_karafka_next_offset || @_karafka_consumer_messages.size,
+            offset: @_karafka_next_offset.nil? ? @_karafka_consumer_messages.size : @_karafka_next_offset,
             partition: 0,
             received_at: Time.now,
             topic: consumer_obj.topic.name
