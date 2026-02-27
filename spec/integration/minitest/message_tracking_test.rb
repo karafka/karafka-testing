@@ -23,6 +23,18 @@ class MessageTrackingTest < Minitest::Test
     assert_equal '{"data":"test"}', msg[:payload]
   end
 
+  def test_includes_key_in_produced_messages
+    @karafka.produce('{"x":1}', key: "msg_key")
+    msg = @karafka.produced_messages.first
+    assert_equal "msg_key", msg[:key]
+  end
+
+  def test_tracks_messages_without_a_consumer
+    Karafka.producer.produce_sync(topic: "other_topic", payload: '{"standalone":true}')
+    assert_equal 1, @karafka.produced_messages.size
+    assert_equal '{"standalone":true}', @karafka.produced_messages.first[:payload]
+  end
+
   def test_returns_internal_message_buffer
     @karafka.produce('{"n":1}')
     @karafka.produce('{"n":2}')
