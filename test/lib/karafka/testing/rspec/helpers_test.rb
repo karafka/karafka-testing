@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 class KarafkaTestingRSpecHelpersTest < Minitest::Test
   def test_maps_raw_key_to_key
     mappings = Karafka::Testing::RSpec::Helpers.const_get(:METADATA_DISPATCH_MAPPINGS)

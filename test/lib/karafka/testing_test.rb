@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 class KarafkaTestingEnsureLoadedTest < Minitest::Test
   def test_does_not_raise_when_karafka_app_defined
     stub_karafka_app

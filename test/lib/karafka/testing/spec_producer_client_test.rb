@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 class KarafkaTestingSpecProducerClientTest < Minitest::Test
   def setup
     @rspec_example = mock("RSpec::Core::ExampleGroup")

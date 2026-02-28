@@ -7,6 +7,7 @@ require "rake/testtask"
 Rake::TestTask.new(:test) do |t|
   t.libs << "test"
   t.test_files = FileList["test/lib/**/*_test.rb"]
+  t.ruby_opts = ["-r test_helper"]
 end
 
 Rake::TestTask.new("test:integration") do |t|

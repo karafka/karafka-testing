@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 class KarafkaTestingMinitestProxyTest < Minitest::Test
   def setup
     @minitest_example = mock("Minitest::Test")

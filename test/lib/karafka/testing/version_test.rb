@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 class KarafkaTestingVersionTest < Minitest::Test
   def test_version_is_not_nil
     refute_nil Karafka::Testing::VERSION

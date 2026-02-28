@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 class KarafkaTestingSpecConsumerClientTest < Minitest::Test
   def setup
     @client = Karafka::Testing::SpecConsumerClient.new

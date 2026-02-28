@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 class KarafkaTestingHelpersFindCandidateTopicsTest < Minitest::Test
   def setup
     @topic = mock("Topic")
