@@ -7,21 +7,25 @@ class ConsumerForTest < Minitest::Test
 
   def test_returns_instance_of_configured_consumer_class
     consumer = @karafka.consumer_for(:test_topic, :test_group)
+
     assert_kind_of TestConsumer, consumer
   end
 
   def test_assigns_correct_topic_to_consumer
     consumer = @karafka.consumer_for(:test_topic, :test_group)
+
     assert_equal "test_topic", consumer.topic.name
   end
 
   def test_provides_mock_client_on_consumer
     consumer = @karafka.consumer_for(:test_topic, :test_group)
+
     assert_kind_of Karafka::Testing::SpecConsumerClient, consumer.client
   end
 
   def test_assigns_producer_to_consumer
     consumer = @karafka.consumer_for(:test_topic, :test_group)
+
     assert_equal Karafka::App.producer, consumer.producer
   end
 
@@ -39,6 +43,7 @@ class ConsumerForTest < Minitest::Test
 
   def test_works_with_consumer_group_disambiguation
     consumer = @karafka.consumer_for(:test_topic, :secondary_group)
+
     assert_kind_of OtherConsumer, consumer
     assert_equal "test_topic", consumer.topic.name
   end

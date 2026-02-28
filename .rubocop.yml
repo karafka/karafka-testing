@@ -3,6 +3,7 @@
 plugins:
   - rubocop-capybara
   - rubocop-factory_bot
+  - rubocop-minitest
   - rubocop-performance
   - rubocop-rspec
   - rubocop-rspec_rails
@@ -11,6 +12,7 @@ plugins:
 inherit_gem:
   standard: config/base.yml
   standard-performance: config/base.yml
+  standard-minitest: config/base.yml
   standard-rspec: config/base.yml
 
 AllCops:
@@ -34,32 +36,23 @@ Layout/LineLength:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: space
 
-# RSpec
-RSpec/ExampleLength:
+# Minitest
+Minitest/MultipleAssertions:
   Enabled: false
 
-RSpec/IndexedLet:
-  Enabled: false
-
-RSpec/MultipleExpectations:
-  Enabled: false
-
-RSpec/MultipleMemoizedHelpers:
-  Max: 20
-
-RSpec/NestedGroups:
-  Max: 4
-
-RSpec/NoExpectationExample:
-  Enabled: false
-
-RSpec/SpecFilePathFormat:
-  Enabled: false
+# RSpec – only applies to spec/ (RSpec integration tests that remain)
+RSpec:
+  Include:
+    - "spec/**/*_spec.rb"
+    - "spec/**/*_helper.rb"
 
 RSpec/DescribeClass:
   Enabled: false
 
-RSpec/VerifiedDoubles:
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
   Enabled: false
 
 # ThreadSafety
