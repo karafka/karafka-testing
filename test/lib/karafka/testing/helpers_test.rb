@@ -41,7 +41,9 @@ class KarafkaTestingHelpersFindCandidateTopicsTest < Minitest::Test
 
     assert_equal [], result
   ensure
-    Karafka::Errors.send(:remove_const, :TopicNotFoundError) if defined?(Karafka::Errors::TopicNotFoundError)
+    if defined?(Karafka::Errors::TopicNotFoundError)
+      Karafka::Errors.send(:remove_const, :TopicNotFoundError)
+    end
     Karafka.send(:remove_const, :Errors) unless errors_existed
   end
 
