@@ -156,8 +156,14 @@ module Karafka
 
         # Produces message with a given payload to the consumer matching topic
         # @param payload [String] payload we want to dispatch
-        # @param metadata [Hash] any metadata we want to dispatch alongside the payload
+        # @param metadata [Hash] any metadata we want to dispatch alongside the payload.
+        #   Supports an `offset` key to set a custom offset for the message (otherwise
+        #   offsets auto-increment from 0).
         def _karafka_produce(payload, metadata = {})
+          # Extract offset before passing to WaterDrop since it is not a valid
+          # WaterDrop message attribute (Kafka assigns offsets, not producers)
+          @_karafka_next_offset = metadata.delete(:offset)
+
           topic = if metadata[:topic]
             metadata[:topic]
           elsif defined?(consumer)
@@ -172,6 +178,8 @@ module Karafka
               payload: payload
             }.merge(metadata)
           )
+        ensure
+          @_karafka_next_offset = nil
         end
 
         # @return [Array<Hash>] messages that were produced
@@ -236,7 +244,7 @@ module Karafka
             timestamp: Time.now,
             raw_headers: {},
             raw_key: nil,
-            offset: _karafka_consumer_messages.size,
+            offset: @_karafka_next_offset.nil? ? _karafka_consumer_messages.size : @_karafka_next_offset,
             partition: 0,
             received_at: Time.now,
             topic: consumer_obj.topic.name
