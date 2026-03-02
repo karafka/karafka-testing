@@ -24,7 +24,6 @@ if coverage
 
   SimpleCov.start do
     add_filter "/test/"
-    add_filter "/spec/"
     add_filter "/vendor/"
     add_filter "/gems/"
     add_filter "/.bundle/"
