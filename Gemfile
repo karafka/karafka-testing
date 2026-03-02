@@ -4,8 +4,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "karafka-core", path: File.join(__dir__, "../waterdrop/karafka-core")
-
 group :test do
   gem "minitest"
   gem "mocha"
