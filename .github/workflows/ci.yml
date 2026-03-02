@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  specs:
+  tests:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     strategy:
@@ -55,7 +55,7 @@ jobs:
       - name: Run all tests
         env:
           GITHUB_COVERAGE: ${{matrix.coverage}}
-        run: bundle exec rspec
+        run: bundle exec rake test
 
   rubocop:
     timeout-minutes: 5
@@ -128,7 +128,7 @@ jobs:
     if: always()
     needs:
       - rubocop
-      - specs
+      - tests
       - minitest-integration
       - yard-lint
       - lostconf

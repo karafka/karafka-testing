@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe_current do
+require "test_helper"
+
+describe Karafka::Testing do
   describe ".ensure_karafka_loaded!" do
     context "when Karafka::App is defined" do
       before do
@@ -8,18 +10,19 @@ RSpec.describe_current do
       end
 
       it "does not raise an error" do
-        expect { described_class.ensure_karafka_loaded! }.not_to raise_error
+        Karafka::Testing.ensure_karafka_loaded!
       end
     end
 
     context "when Karafka::App is not defined" do
       before do
-        allow(Karafka).to receive(:const_defined?).with("App", false).and_return(false)
+        Karafka.stubs(:const_defined?).with("App", false).returns(false)
       end
 
       it "raises KarafkaNotLoadedError" do
-        expect { described_class.ensure_karafka_loaded! }
-          .to raise_error(Karafka::Testing::Errors::KarafkaNotLoadedError)
+        assert_raises(Karafka::Testing::Errors::KarafkaNotLoadedError) do
+          Karafka::Testing.ensure_karafka_loaded!
+        end
       end
     end
   end
@@ -27,41 +30,43 @@ RSpec.describe_current do
   describe ".ensure_karafka_initialized!" do
     context "when Karafka is fully initialized" do
       before do
-        stub_const("Karafka::App", Class.new do
+        stub_const("Karafka::App", Class.new {
           def self.initializing?
             false
           end
-        end)
+        })
       end
 
       it "does not raise an error" do
-        expect { described_class.ensure_karafka_initialized! }.not_to raise_error
+        Karafka::Testing.ensure_karafka_initialized!
       end
     end
 
     context "when Karafka is still initializing" do
       before do
-        stub_const("Karafka::App", Class.new do
+        stub_const("Karafka::App", Class.new {
           def self.initializing?
             true
           end
-        end)
+        })
       end
 
       it "raises KarafkaNotInitializedError" do
-        expect { described_class.ensure_karafka_initialized! }
-          .to raise_error(Karafka::Testing::Errors::KarafkaNotInitializedError)
+        assert_raises(Karafka::Testing::Errors::KarafkaNotInitializedError) do
+          Karafka::Testing.ensure_karafka_initialized!
+        end
       end
     end
 
     context "when Karafka is not loaded" do
       before do
-        allow(Karafka).to receive(:const_defined?).with("App", false).and_return(false)
+        Karafka.stubs(:const_defined?).with("App", false).returns(false)
       end
 
       it "raises KarafkaNotLoadedError" do
-        expect { described_class.ensure_karafka_initialized! }
-          .to raise_error(Karafka::Testing::Errors::KarafkaNotLoadedError)
+        assert_raises(Karafka::Testing::Errors::KarafkaNotLoadedError) do
+          Karafka::Testing.ensure_karafka_initialized!
+        end
       end
     end
   end

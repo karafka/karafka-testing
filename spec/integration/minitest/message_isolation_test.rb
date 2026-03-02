@@ -10,6 +10,7 @@ class MessageIsolationTest < Minitest::Test
 
   def test_first_example_starts_clean
     @consumer = @karafka.consumer_for(:other_topic)
+
     assert_empty @karafka.produced_messages
     assert_empty @karafka.consumer_messages
     @karafka.produce('{"leak":"test"}')
@@ -17,6 +18,7 @@ class MessageIsolationTest < Minitest::Test
 
   def test_second_example_starts_clean
     @consumer = @karafka.consumer_for(:other_topic)
+
     assert_empty @karafka.produced_messages
     assert_empty @karafka.consumer_messages
   end

@@ -16,11 +16,13 @@ class OffsetTest < Minitest::Test
     @karafka.produce('{"n":2}')
 
     offsets = @consumer.messages.map(&:offset)
+
     assert_equal [0, 1, 2], offsets
   end
 
   def test_uses_provided_custom_offset
     @karafka.produce('{"x":1}', offset: 1337)
+
     assert_equal 1337, @consumer.messages.first.offset
   end
 
@@ -30,11 +32,13 @@ class OffsetTest < Minitest::Test
     @karafka.produce('{"n":2}')
 
     offsets = @consumer.messages.map(&:offset)
+
     assert_equal [0, 100, 2], offsets
   end
 
   def test_handles_offset_zero_explicitly
     @karafka.produce('{"first":true}', offset: 0)
+
     assert_equal 0, @consumer.messages.first.offset
   end
 
@@ -44,6 +48,7 @@ class OffsetTest < Minitest::Test
     @karafka.produce('{"n":2}', offset: 30)
 
     offsets = @consumer.messages.map(&:offset)
+
     assert_equal [10, 20, 30], offsets
   end
 end
