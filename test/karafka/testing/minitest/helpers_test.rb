@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing::Minitest::Helpers do
   describe "METADATA_DISPATCH_MAPPINGS" do
     let(:mappings) { Karafka::Testing::Minitest::Helpers.const_get(:METADATA_DISPATCH_MAPPINGS) }

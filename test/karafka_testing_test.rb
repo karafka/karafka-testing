@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe "karafka-testing" do
   it "loads without error" do
     require "karafka-testing"

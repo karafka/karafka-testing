@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing::Minitest::Proxy do
   let(:minitest_example) { stub_everything("Minitest::Test") }
   let(:proxy) { Karafka::Testing::Minitest::Proxy.new(minitest_example) }

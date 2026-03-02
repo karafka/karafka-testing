@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing::SpecProducerClient do
   let(:rspec_example) do
     mock("RSpec::Core::ExampleGroup").tap do |example|

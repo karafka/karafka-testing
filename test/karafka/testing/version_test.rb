@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing do
   it "has a version" do
     refute_nil Karafka::Testing::VERSION

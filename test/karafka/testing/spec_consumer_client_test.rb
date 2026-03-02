@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing::SpecConsumerClient do
   let(:client) { Karafka::Testing::SpecConsumerClient.new }
 

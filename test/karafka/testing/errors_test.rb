@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing::Errors do
   describe "BaseError" do
     it "inherits from StandardError" do

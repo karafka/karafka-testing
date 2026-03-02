@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing::RSpec::Proxy do
   let(:rspec_example) { stub_everything("RSpec::ExampleGroups") }
   let(:proxy) { Karafka::Testing::RSpec::Proxy.new(rspec_example) }

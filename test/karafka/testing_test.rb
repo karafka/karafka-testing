@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_helper"
-
 describe Karafka::Testing do
   describe ".ensure_karafka_loaded!" do
     context "when Karafka::App is defined" do
