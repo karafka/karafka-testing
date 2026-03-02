@@ -1,67 +1,67 @@
 # frozen_string_literal: true
 
-RSpec.describe_current do
-  subject(:client) { described_class.new }
+describe Karafka::Testing::SpecConsumerClient do
+  let(:client) { Karafka::Testing::SpecConsumerClient.new }
 
   describe "#mark_as_consumed" do
     it "returns true" do
-      expect(client.mark_as_consumed).to be(true)
+      assert client.mark_as_consumed
     end
 
     it "accepts any arguments" do
-      expect(client.mark_as_consumed("arg1", "arg2")).to be(true)
+      assert client.mark_as_consumed("arg1", "arg2")
     end
   end
 
   describe "#mark_as_consumed!" do
     it "returns true" do
-      expect(client.mark_as_consumed!).to be(true)
+      assert client.mark_as_consumed!
     end
 
     it "accepts any arguments" do
-      expect(client.mark_as_consumed!("arg1")).to be(true)
+      assert client.mark_as_consumed!("arg1")
     end
   end
 
   describe "#commit_offsets" do
     it "returns true" do
-      expect(client.commit_offsets).to be(true)
+      assert client.commit_offsets
     end
 
     it "accepts any arguments" do
-      expect(client.commit_offsets("arg1")).to be(true)
+      assert client.commit_offsets("arg1")
     end
   end
 
   describe "#commit_offsets!" do
     it "returns true" do
-      expect(client.commit_offsets!).to be(true)
+      assert client.commit_offsets!
     end
 
     it "accepts any arguments" do
-      expect(client.commit_offsets!("arg1", "arg2")).to be(true)
+      assert client.commit_offsets!("arg1", "arg2")
     end
   end
 
   describe "#seek" do
     it "returns true" do
-      expect(client.seek).to be(true)
+      assert client.seek
     end
 
     it "accepts any arguments" do
-      expect(client.seek("topic", 0, 100)).to be(true)
+      assert client.seek("topic", 0, 100)
     end
   end
 
   describe "#consumer_group_metadata_pointer" do
     it "returns true" do
-      expect(client.consumer_group_metadata_pointer).to be(true)
+      assert client.consumer_group_metadata_pointer
     end
   end
 
   describe "#assignment_lost?" do
     it "always returns false" do
-      expect(client.assignment_lost?).to be(false)
+      refute_predicate client, :assignment_lost?
     end
   end
 end

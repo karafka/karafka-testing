@@ -29,6 +29,7 @@ class ProduceToTest < Minitest::Test
     test_consumer = @karafka.consumer_for(:test_topic, :test_group)
     @karafka.produce_to(test_consumer, '{"key":"value"}')
     test_consumer.consume
+
     assert_equal [{ "key" => "value" }], test_consumer.consumed_payloads
   end
 end
