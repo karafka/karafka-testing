@@ -45,12 +45,8 @@ require "mocha/minitest"
 
 require "waterdrop"
 require "karafka-testing"
-require "karafka/testing/errors"
-require "karafka/testing/helpers"
-require "karafka/testing/spec_consumer_client"
-require "karafka/testing/spec_producer_client"
-require "karafka/testing/rspec/helpers"
-require "karafka/testing/minitest/helpers"
+
+Dir[File.join(__dir__, "../lib/karafka/testing/**/*.rb")].each { |f| require f }
 
 class Minitest::Spec
   class << self
