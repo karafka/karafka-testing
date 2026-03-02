@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Karafka::Testing::Errors do
+describe_current do
   describe "BaseError" do
     it "inherits from StandardError" do
       assert_operator Karafka::Testing::Errors::BaseError, :<, StandardError

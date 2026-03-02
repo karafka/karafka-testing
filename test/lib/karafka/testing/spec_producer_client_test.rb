@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Karafka::Testing::SpecProducerClient do
+describe_current do
   let(:rspec_example) do
     mock("RSpec::Core::ExampleGroup").tap do |example|
       example.stubs(:_karafka_add_message_to_consumer_if_needed)
