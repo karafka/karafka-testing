@@ -88,6 +88,7 @@ class Minitest::Spec
 
   def teardown
     super
+  ensure
     if @_stub_const_restorers
       @_stub_const_restorers.reverse_each(&:call)
       @_stub_const_restorers = nil
