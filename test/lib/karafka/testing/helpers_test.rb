@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Karafka::Testing::Helpers do
+describe_current do
   describe ".karafka_consumer_find_candidate_topics" do
     let(:subscription_group) { stub_everything("SubscriptionGroup") }
     let(:topic) { stub_everything("Topic") }

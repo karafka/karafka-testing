@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Karafka::Testing::SpecConsumerClient do
+describe_current do
   let(:client) { Karafka::Testing::SpecConsumerClient.new }
 
   describe "#mark_as_consumed" do

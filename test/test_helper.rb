@@ -47,6 +47,15 @@ require "karafka-testing"
 
 Dir[File.join(__dir__, "../lib/karafka/testing/**/*.rb")].each { |f| require f }
 
+require "karafka/core/helpers/minitest_locator"
+
+Kernel.extend(
+  Karafka::Core::Helpers::MinitestLocator.new(
+    __FILE__,
+    "Rspec" => "RSpec"
+  )
+)
+
 class Minitest::Spec
   class << self
     alias_method :context, :describe
