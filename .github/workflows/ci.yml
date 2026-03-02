@@ -103,7 +103,7 @@ jobs:
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
       - name: Run minitest integration tests
-        run: bundle exec ruby -e "Dir['spec/integration/minitest/*_test.rb'].sort.each { |f| require File.expand_path(f) }"
+        run: bundle exec ruby -e "Dir['test/integration/minitest/*_test.rb'].sort.each { |f| require File.expand_path(f) }"
 
   lostconf:
     timeout-minutes: 5
