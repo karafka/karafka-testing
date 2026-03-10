@@ -106,6 +106,8 @@ module Karafka
         def _karafka_add_message_to_consumer_if_needed(message)
           consumer_obj = if defined?(consumer)
             consumer
+          elsif _karafka_described_class_is_consumer?
+            subject
           else
             _karafka_find_consumer_for_message(message)
           end
@@ -168,6 +170,8 @@ module Karafka
             metadata[:topic]
           elsif defined?(consumer)
             consumer.topic.name
+          elsif _karafka_described_class_is_consumer?
+            subject.topic.name
           else
             last_consumer = @_karafka_consumer_mappings&.values&.last
             last_consumer&.topic&.name
@@ -213,6 +217,16 @@ module Karafka
         end
 
         private
+
+        # Checks if the RSpec described_class is a Karafka consumer class.
+        # When true, the implicit RSpec subject can be used as a consumer fallback.
+        #
+        # @return [Boolean] true if described_class inherits from Karafka::BaseConsumer
+        def _karafka_described_class_is_consumer?
+          respond_to?(:described_class) &&
+            described_class.is_a?(Class) &&
+            described_class < Karafka::BaseConsumer
+        end
 
         # Finds a consumer for the given message with backward-compatible fallback
         # @param message [Hash] the message being routed
