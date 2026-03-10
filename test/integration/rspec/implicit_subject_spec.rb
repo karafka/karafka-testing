@@ -56,6 +56,20 @@ RSpec.describe OtherConsumer do
   end
 end
 
+# When described_class is a consumer but no custom subject is defined (default subject),
+# falls back gracefully to consumer mappings instead of blowing up on unconfigured instance
+RSpec.describe OtherConsumer do
+  include Karafka::Testing::RSpec::Helpers
+
+  # No custom subject — default RSpec subject would be OtherConsumer.new (unconfigured)
+
+  it "falls back to mappings when default subject is not a configured consumer" do
+    consumer = karafka.consumer_for(:other_topic)
+    karafka.produce('{"x":1}', topic: "other_topic")
+    expect(consumer.messages.size).to eq(1)
+  end
+end
+
 # When described_class is NOT a consumer class, implicit subject is not used
 RSpec.describe "non-consumer context" do
   include Karafka::Testing::RSpec::Helpers

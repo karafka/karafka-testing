@@ -107,7 +107,7 @@ module Karafka
           consumer_obj = if defined?(consumer)
             consumer
           elsif _karafka_described_class_is_consumer?
-            subject
+            _karafka_resolve_subject_consumer || _karafka_find_consumer_for_message(message)
           else
             _karafka_find_consumer_for_message(message)
           end
@@ -170,8 +170,8 @@ module Karafka
             metadata[:topic]
           elsif defined?(consumer)
             consumer.topic.name
-          elsif _karafka_described_class_is_consumer?
-            subject.topic.name
+          elsif _karafka_described_class_is_consumer? && (sub = _karafka_resolve_subject_consumer)
+            sub.topic.name
           else
             last_consumer = @_karafka_consumer_mappings&.values&.last
             last_consumer&.topic&.name
@@ -226,6 +226,22 @@ module Karafka
           respond_to?(:described_class) &&
             described_class.is_a?(Class) &&
             described_class < Karafka::BaseConsumer
+        end
+
+        # Resolves the RSpec implicit subject as a usable Karafka consumer instance.
+        # Returns nil if subject is not a properly configured consumer (e.g. a default
+        # described_class.new without topic setup via karafka.consumer_for).
+        #
+        # @return [Karafka::BaseConsumer, nil] the subject if it is a configured consumer
+        def _karafka_resolve_subject_consumer
+          candidate = subject
+
+          return nil unless candidate.is_a?(Karafka::BaseConsumer)
+          # Unconfigured consumers (default subject = described_class.new) have nil
+          # coordinator, so topic delegation would fail. Check coordinator presence first.
+          return nil unless candidate.coordinator
+
+          candidate.topic&.name ? candidate : nil
         end
 
         # Finds a consumer for the given message with backward-compatible fallback
