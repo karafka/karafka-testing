@@ -56,17 +56,48 @@ RSpec.describe OtherConsumer do
   end
 end
 
-# When described_class is a consumer but no custom subject is defined (default subject),
-# falls back gracefully to consumer mappings instead of blowing up on unconfigured instance
-RSpec.describe OtherConsumer do
+# Guard: described_class is a consumer but default subject (unconfigured described_class.new)
+# should fall back to consumer mappings without raising
+RSpec.describe OtherConsumer, "with default subject" do
   include Karafka::Testing::RSpec::Helpers
 
   # No custom subject — default RSpec subject would be OtherConsumer.new (unconfigured)
 
-  it "falls back to mappings when default subject is not a configured consumer" do
+  it "falls back to mappings when default subject has no coordinator" do
     consumer = karafka.consumer_for(:other_topic)
     karafka.produce('{"x":1}', topic: "other_topic")
     expect(consumer.messages.size).to eq(1)
+  end
+
+  it "does not raise when producing without explicit topic" do
+    karafka.consumer_for(:other_topic)
+    expect { karafka.produce('{"x":1}') }.not_to raise_error
+  end
+end
+
+# Guard: described_class is a consumer but subject is overridden to a non-consumer object
+RSpec.describe OtherConsumer, "with non-consumer subject" do
+  include Karafka::Testing::RSpec::Helpers
+
+  subject { "not a consumer" }
+
+  it "falls back to mappings when subject is not a BaseConsumer" do
+    consumer = karafka.consumer_for(:other_topic)
+    karafka.produce('{"x":1}', topic: "other_topic")
+    expect(consumer.messages.size).to eq(1)
+  end
+end
+
+# Guard: described_class is a consumer, subject is configured, but produce targets a different
+# topic — message should not be routed to subject
+RSpec.describe OtherConsumer, "with mismatched topic" do
+  include Karafka::Testing::RSpec::Helpers
+
+  subject { karafka.consumer_for(:other_topic) }
+
+  it "does not route messages for a different topic to the subject" do
+    karafka.produce('{"x":1}', topic: "test_topic")
+    expect(subject.messages).to be_nil
   end
 end
 
