@@ -2,6 +2,7 @@
 
 ## 2.5.6 (Unreleased)
 - [Feature] Support custom `offset` option in `karafka.produce` for test message production (#230).
+- [Feature] Restore ability to use implicit RSpec `subject` in consumer specs when `described_class` inherits from `Karafka::BaseConsumer` (#110).
 
 ## 2.5.5 (2025-11-28)
 - [Feature] Add `produce_to` method for explicit consumer targeting in multi-consumer scenarios.
