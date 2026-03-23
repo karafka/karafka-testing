@@ -69,7 +69,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@dffb23f65a78bba8db45d387d5ea1bbd6be3ef18 # v1.293.0
         with:
-          ruby-version: '4.0.1'
+          ruby-version: '4.0.2'
           bundler-cache: true
       - name: Run rubocop
         run: bundle exec rubocop
@@ -84,7 +84,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@dffb23f65a78bba8db45d387d5ea1bbd6be3ef18 # v1.293.0
         with:
-          ruby-version: '4.0.1'
+          ruby-version: '4.0.2'
           bundler-cache: true
       - run: bundle exec yard-lint lib/
 
@@ -98,7 +98,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@dffb23f65a78bba8db45d387d5ea1bbd6be3ef18 # v1.293.0
         with:
-          ruby-version: '4.0.1'
+          ruby-version: '4.0.2'
           bundler: 'latest'
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
@@ -115,7 +115,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@dffb23f65a78bba8db45d387d5ea1bbd6be3ef18 # v1.293.0
         with:
-          ruby-version: '4.0.1'
+          ruby-version: '4.0.2'
           bundler: 'latest'
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
