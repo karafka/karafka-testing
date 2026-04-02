@@ -1,6 +1,6 @@
 # Karafka Testing Changelog
 
-## 2.5.6 (Unreleased)
+## 2.5.6 (2026-04-02)
 - [Feature] Support custom `offset` option in `karafka.produce` for test message production (#230).
 - [Feature] Restore ability to use implicit RSpec `subject` in consumer specs when `described_class` inherits from `Karafka::BaseConsumer` (#110).
 
