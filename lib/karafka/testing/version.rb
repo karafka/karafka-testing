@@ -4,6 +4,6 @@
 module Karafka
   module Testing
     # Current version of gem. It should match Karafka framework version
-    VERSION = "2.5.6"
+    VERSION = "2.6.0"
   end
 end
