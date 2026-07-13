@@ -23,15 +23,15 @@ if coverage
   require "simplecov"
 
   SimpleCov.start do
-    add_filter "/test/"
-    add_filter "/vendor/"
-    add_filter "/gems/"
-    add_filter "/.bundle/"
-    add_filter "/doc/"
-    add_filter "/config/"
+    skip "/test/"
+    skip "/vendor/"
+    skip "/gems/"
+    skip "/.bundle/"
+    skip "/doc/"
+    skip "/config/"
     # Helpers require full Karafka integration to test properly
-    add_filter "/lib/karafka/testing/rspec/helpers.rb"
-    add_filter "/lib/karafka/testing/minitest/helpers.rb"
+    skip "/lib/karafka/testing/rspec/helpers.rb"
+    skip "/lib/karafka/testing/minitest/helpers.rb"
 
     merge_timeout 600
     minimum_coverage 100
