@@ -57,7 +57,7 @@ GEM
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
     ruby2_keywords (0.0.5)
-    simplecov (1.0.0)
+    simplecov (1.0.2)
     warning (1.6.0)
     waterdrop (2.10.2)
       karafka-core (>= 2.5.12, < 3.0.0)
