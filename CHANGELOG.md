@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.6.1 (2026-08-05)
+- [Fix] Fix the dependency constraints.
+
 ## 2.6.0 (2026-06-10)
 - [Maintenance] Release matching Karafka `2.6.0` release.
 
