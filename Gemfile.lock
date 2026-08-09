@@ -12,7 +12,7 @@ GEM
     drb (2.2.3)
     ffi (1.17.4)
     ffi (1.17.4-x86_64-linux-gnu)
-    json (2.20.0)
+    json (2.21.2)
     karafka (2.6.0.rc2)
       karafka-core (>= 2.6.0, < 2.7.0)
       karafka-rdkafka (>= 0.28.0)
