@@ -1,7 +1,7 @@
 # Karafka Testing library
 
-[![Build Status](https://github.com/karafka/karafka-testing/workflows/ci/badge.svg)](https://github.com/karafka/karafka-testing/actions?query=workflow%3Aci)
-[![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](http://badge.fury.io/rb/karafka-testing)
+[![Build Status](https://github.com/karafka/karafka-testing/actions/workflows/ci.yml/badge.svg)](https://github.com/karafka/karafka-testing/actions/workflows/ci.yml)
+[![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](https://badge.fury.io/rb/karafka-testing)
 [![Join the chat at https://slack.karafka.io](https://raw.githubusercontent.com/karafka/misc/master/slack.svg)](https://slack.karafka.io)
 
 Karafka-Testing is a library that provides RSpec helpers, to make testing of Karafka consumers and producer much easier.
