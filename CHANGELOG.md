@@ -1,7 +1,7 @@
 # Karafka Testing Changelog
 
 ## 2.6.2 (2026-08-13)
-- [Fix] Read the processing `strategy_selector` and `expansions_selector` from their nested `config.internal.processing.consumer_groups.*` location. Karafka `2.6.0` moved these settings under the `consumer_groups` namespace; a temporary forwarding shim kept the old flat paths working and has been removed in Karafka, so read the nested paths directly. Requires Karafka `>= 2.6.0`.
+- [Fix] Read the `strategy_selector` and `expansions_selector` settings from their new `consumer_groups` location. Requires Karafka `>= 2.6.0`.
 
 ## 2.6.1 (2026-08-05)
 - [Fix] Fix the dependency constraints.
