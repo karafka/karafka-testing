@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.6.3 (Unreleased)
+- **[EOL]** Drop Ruby 3.2 support; require Ruby 3.3+.
+
 ## 2.6.2 (2026-08-13)
 - [Fix] Read the `strategy_selector` and `expansions_selector` settings from their new `consumer_groups` location. Requires Karafka `>= 2.6.0`.
 
