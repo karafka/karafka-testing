@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/karafka-testing.svg)](https://badge.fury.io/rb/karafka-testing)
 [![Join the chat at https://slack.karafka.io](https://raw.githubusercontent.com/karafka/misc/master/slack.svg)](https://slack.karafka.io)
 
-Karafka-Testing is a library that provides RSpec helpers, to make testing of Karafka consumers and producer much easier.
+Karafka-Testing is a library that provides RSpec and Minitest helpers that make testing of Karafka consumers and producers much easier.
 
 ## Installation and usage
 
