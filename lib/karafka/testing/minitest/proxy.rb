@@ -12,16 +12,19 @@ module Karafka
         end
 
         # Forwards all arguments to `#_karafka_consumer_for`
+        # @return [Karafka::BaseConsumer] consumer instance
         def consumer_for(*)
           @minitest_example._karafka_consumer_for(*)
         end
 
         # Forwards all arguments to `#_karafka_produce`
+        # @return [Rdkafka::Producer::DeliveryReport] delivery report
         def produce(*)
           @minitest_example._karafka_produce(*)
         end
 
         # Forwards all arguments to `#_karafka_produce_to`
+        # @return [Rdkafka::Producer::DeliveryReport] delivery report
         def produce_to(*)
           @minitest_example._karafka_produce_to(*)
         end

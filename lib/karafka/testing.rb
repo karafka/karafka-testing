@@ -8,6 +8,8 @@ module Karafka
       #
       # You should never use karafka-testing primitives when framework is not loaded because
       # testing lib stubs certain pieces of Karafka that need to be initialized.
+      #
+      # @raise [Karafka::Testing::Errors::KarafkaNotLoadedError] raised when Karafka is not loaded
       def ensure_karafka_loaded!
         return if ::Karafka.const_defined?("App", false)
 
@@ -19,6 +21,10 @@ module Karafka
 
       # If you do not initialize Karafka always within your specs, do not include/use this lib
       # in places where Karafka would not be loaded.
+      #
+      # @raise [Karafka::Testing::Errors::KarafkaNotLoadedError] raised when Karafka is not loaded
+      # @raise [Karafka::Testing::Errors::KarafkaNotInitializedError] raised when Karafka is still
+      #   initializing
       def ensure_karafka_initialized!
         ensure_karafka_loaded!
 

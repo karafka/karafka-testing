@@ -13,8 +13,8 @@ describe_current do
   end
 
   describe "#initialize" do
-    it "stores the rspec example" do
-      assert_equal rspec_example, client.instance_variable_get(:@rspec)
+    it "stores the test example" do
+      assert_equal rspec_example, client.instance_variable_get(:@example)
     end
   end
 
