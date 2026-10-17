@@ -4,18 +4,18 @@ module Karafka
   module Testing
     # Spec producer client used to buffer messages that we send out in specs
     class SpecProducerClient < ::WaterDrop::Clients::Buffered
-      # @param rspec [RSpec::Core::ExampleGroup] rspec example we need to hold to trigger actions
-      #   on it that are rspec context aware
-      def initialize(rspec)
+      # @param example [RSpec::Core::ExampleGroup, Minitest::Test] test example we need to hold to
+      #   trigger actions on it that are test context aware
+      def initialize(example)
         super(nil)
-        @rspec = rspec
+        @example = example
       end
 
       # "Produces" message to Kafka. That is, it acknowledges it locally, adds it to the internal
       # buffer and adds it (if needed) into the current consumer messages buffer
       # @param message [Hash] `Karafka.producer.produce_sync` message hash
       def produce(message)
-        @rspec._karafka_add_message_to_consumer_if_needed(message)
+        @example._karafka_add_message_to_consumer_if_needed(message)
 
         super
       end

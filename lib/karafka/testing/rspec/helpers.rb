@@ -66,26 +66,30 @@ module Karafka
 
         # Creates a consumer instance for a given topic
         #
-        # @param requested_topic [String, Symbol] name of the topic for which we want to
-        #   create a consumer instance
+        # @param topic_name [String, Symbol] name of the topic for which we want to create a
+        #   consumer instance
         # @param requested_consumer_group [String, Symbol, nil] optional name of the consumer group
         #   if we have multiple consumer groups listening on the same topic
         # @return [Object] Karafka consumer instance
         # @raise [Karafka::Testing::Errors::TopicNotFoundError] raised when we're unable to find
         #   topic that was requested
+        # @raise [Karafka::Testing::Errors::TopicInManyConsumerGroupsError] raised when the topic is
+        #   in many consumer groups and no consumer group was requested
+        # @raise [Karafka::Testing::Errors::ConsumerGroupNotFoundError] raised when the requested
+        #   consumer group does not exist
         #
         # @example Creates a MyConsumer consumer instance with settings for `my_requested_topic`
         #   RSpec.describe MyConsumer do
         #     subject(:consumer) { karafka.consumer_for(:my_requested_topic) }
         #   end
-        def _karafka_consumer_for(requested_topic, requested_consumer_group = nil)
+        def _karafka_consumer_for(topic_name, requested_consumer_group = nil)
           selected_topics = Testing::Helpers.karafka_consumer_find_candidate_topics(
-            requested_topic.to_s,
+            topic_name.to_s,
             requested_consumer_group.to_s
           )
 
-          raise Errors::TopicInManyConsumerGroupsError, requested_topic if selected_topics.size > 1
-          raise Errors::TopicNotFoundError, requested_topic if selected_topics.empty?
+          raise Errors::TopicInManyConsumerGroupsError, topic_name if selected_topics.size > 1
+          raise Errors::TopicNotFoundError, topic_name if selected_topics.empty?
 
           _karafka_build_consumer_for(selected_topics.first)
         end
@@ -101,12 +105,12 @@ module Karafka
         #
         # @example Send a json message to consumer and simulate, that it is partition 6
         #   before do
-        #     karafka.produce({ 'hello' => 'world' }.to_json, 'partition' => 6)
+        #     karafka.produce({ 'hello' => 'world' }.to_json, partition: 6)
         #   end
         def _karafka_add_message_to_consumer_if_needed(message)
           consumer_obj = if defined?(consumer)
             consumer
-          elsif _karafka_described_class_is_consumer?
+          elsif _karafka_described_class_consumer?
             _karafka_resolve_subject_consumer || _karafka_find_consumer_for_message(message)
           else
             _karafka_find_consumer_for_message(message)
@@ -166,11 +170,11 @@ module Karafka
           # WaterDrop message attribute (Kafka assigns offsets, not producers)
           @_karafka_next_offset = metadata.delete(:offset)
 
-          topic = if metadata[:topic]
+          topic_name = if metadata[:topic]
             metadata[:topic]
           elsif defined?(consumer)
             consumer.topic.name
-          elsif _karafka_described_class_is_consumer? && (sub = _karafka_resolve_subject_consumer)
+          elsif _karafka_described_class_consumer? && (sub = _karafka_resolve_subject_consumer)
             sub.topic.name
           else
             last_consumer = @_karafka_consumer_mappings&.values&.last
@@ -178,7 +182,7 @@ module Karafka
           end
           Karafka.producer.produce_sync(
             {
-              topic: topic,
+              topic: topic_name,
               payload: payload
             }.merge(metadata)
           )
@@ -222,7 +226,7 @@ module Karafka
         # When true, the implicit RSpec subject can be used as a consumer fallback.
         #
         # @return [Boolean] true if described_class inherits from Karafka::BaseConsumer
-        def _karafka_described_class_is_consumer?
+        def _karafka_described_class_consumer?
           respond_to?(:described_class) &&
             described_class.is_a?(Class) &&
             described_class < Karafka::BaseConsumer
