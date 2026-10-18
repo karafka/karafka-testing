@@ -8,19 +8,19 @@ module Karafka
         # Finds all the routing topics matching requested topic within all topics or within
         # provided consumer group based on name
         #
-        # @param requested_topic [String] requested topic name
+        # @param topic_name [String] requested topic name
         # @param requested_consumer_group [String] requested consumer group or nil to look in all
         # @return [Array<Karafka::Routing::Topic>] all matching topics
         #
         # @note Since we run the lookup on subscription groups, the search will automatically
         #   expand with matching patterns
-        def karafka_consumer_find_candidate_topics(requested_topic, requested_consumer_group)
+        def karafka_consumer_find_candidate_topics(topic_name, requested_consumer_group)
           subscription_groups = karafka_consumer_find_subscription_groups(requested_consumer_group)
 
           candidate_topics = []
 
           subscription_groups.each do |group|
-            topic = group.topics.find(requested_topic.to_s)
+            topic = group.topics.find(topic_name.to_s)
 
             next unless topic
 
