@@ -7,7 +7,6 @@ gemspec
 group :test do
   gem "minitest"
   gem "mocha"
-  gem "ostruct"
   gem "rspec"
   gem "simplecov"
   gem "warning"
