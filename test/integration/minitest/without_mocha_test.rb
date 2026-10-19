@@ -10,6 +10,6 @@ class MinitestWithoutMochaTest < Minitest::Test
     output, status = Open3.capture2e(RbConfig.ruby, "-Ilib", script)
 
     assert_predicate status, :success?, output
-    assert_match(/3 runs, \d+ assertions, 0 failures, 0 errors/, output)
+    assert_match(/5 runs, \d+ assertions, 0 failures, 0 errors/, output)
   end
 end

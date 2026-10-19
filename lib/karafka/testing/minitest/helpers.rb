@@ -61,12 +61,10 @@ module Karafka
             if base.to_s == "Minitest::Spec"
               base.class_eval do
                 before(&eval_flow)
-                after(&teardown_flow)
               end
             elsif base.respond_to?(:setup) && base.method(:setup).arity != 0
               base.class_eval do
                 setup(&eval_flow)
-                teardown(&teardown_flow)
               end
             else
               setup_mod = Module.new do
@@ -74,16 +72,21 @@ module Karafka
                   instance_exec(&eval_flow)
                   super()
                 end
-
-                define_method(:teardown) do
-                  super()
-                ensure
-                  instance_exec(&teardown_flow)
-                end
               end
 
               base.prepend(setup_mod)
             end
+
+            # `after_teardown` runs even when a test overrides `teardown` without calling `super`
+            teardown_mod = Module.new do
+              define_method(:after_teardown) do
+                super()
+              ensure
+                instance_exec(&teardown_flow)
+              end
+            end
+
+            base.prepend(teardown_mod)
           end
         end
 
