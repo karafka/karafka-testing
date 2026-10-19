@@ -39,7 +39,23 @@ module Karafka
 
               @_karafka_consumer_mappings = {}
 
-              Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
+              # Mocha is a dev dependency of many apps without being used in their Karafka tests,
+              # so we stub with it only when its patches are actually available
+              if Object.const_defined?("Mocha", false) && Karafka.producer.respond_to?(:stubs)
+                Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
+              else
+                producer_client = @_karafka_producer_client
+                Karafka.producer.define_singleton_method(:client) { producer_client }
+                @_karafka_producer_client_stubbed = true
+              end
+            end
+
+            # Mocha removes its own stubs, so we only remove the one we defined
+            teardown_flow = lambda do
+              next unless @_karafka_producer_client_stubbed
+
+              Karafka.producer.singleton_class.remove_method(:client)
+              @_karafka_producer_client_stubbed = false
             end
 
             if base.to_s == "Minitest::Spec"
@@ -60,6 +76,17 @@ module Karafka
 
               base.prepend(setup_mod)
             end
+
+            # `after_teardown` runs even when a test overrides `teardown` without calling `super`
+            teardown_mod = Module.new do
+              define_method(:after_teardown) do
+                super()
+              ensure
+                instance_exec(&teardown_flow)
+              end
+            end
+
+            base.prepend(teardown_mod)
           end
         end
 

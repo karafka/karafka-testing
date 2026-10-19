@@ -3,6 +3,7 @@
 ## 2.6.3 (Unreleased)
 - **[EOL]** Drop Ruby 3.2 support; require Ruby 3.3+.
 - [Maintenance] Align internal naming and YARD docs with the Karafka ecosystem conventions.
+- [Fix] Make the Minitest helpers work without Mocha. They no longer fail with `undefined method 'stubs'` when Mocha is not loaded, and still use Mocha when it is.
 
 ## 2.6.2 (2026-08-13)
 - [Fix] Read the `strategy_selector` and `expansions_selector` settings from their new `consumer_groups` location. Requires Karafka `>= 2.6.0`.
