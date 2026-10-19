@@ -39,22 +39,46 @@ module Karafka
 
               @_karafka_consumer_mappings = {}
 
-              Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
+              # Mocha is a dev dependency of many apps without being used in their Karafka tests,
+              # so we stub with it only when its patches are actually available
+              if Object.const_defined?("Mocha", false) && Karafka.producer.respond_to?(:stubs)
+                Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
+              else
+                producer_client = @_karafka_producer_client
+                Karafka.producer.define_singleton_method(:client) { producer_client }
+                @_karafka_producer_client_stubbed = true
+              end
+            end
+
+            # Mocha removes its own stubs, so we only remove the one we defined
+            teardown_flow = lambda do
+              next unless @_karafka_producer_client_stubbed
+
+              Karafka.producer.singleton_class.remove_method(:client)
+              @_karafka_producer_client_stubbed = false
             end
 
             if base.to_s == "Minitest::Spec"
               base.class_eval do
                 before(&eval_flow)
+                after(&teardown_flow)
               end
             elsif base.respond_to?(:setup) && base.method(:setup).arity != 0
               base.class_eval do
                 setup(&eval_flow)
+                teardown(&teardown_flow)
               end
             else
               setup_mod = Module.new do
                 define_method(:setup) do
                   instance_exec(&eval_flow)
                   super()
+                end
+
+                define_method(:teardown) do
+                  super()
+                ensure
+                  instance_exec(&teardown_flow)
                 end
               end
 
