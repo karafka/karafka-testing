@@ -14,6 +14,6 @@ Karafka-Testing is a library that provides RSpec and Minitest helpers that make 
 
 First, thank you for considering contributing to the Karafka ecosystem! It's people like you that make the open source community such a great community!
 
-Each pull request must pass all the RSpec specs, integration tests and meet our quality requirements.
+Each pull request must pass all the tests, including integration tests, and meet our quality requirements.
 
 Fork it, update and wait for the Github Actions results.
