@@ -14,8 +14,6 @@ Warning.process do |warning|
   raise "Warning in your code: #{warning}"
 end
 
-require "ostruct"
-
 coverage = !ENV.key?("GITHUB_WORKFLOW")
 coverage = true if ENV["GITHUB_COVERAGE"] == "true"
 
