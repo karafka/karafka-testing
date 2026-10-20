@@ -40,7 +40,6 @@ GEM
       prism (~> 1.5)
     mocha (3.1.0)
       ruby2_keywords (>= 0.0.5)
-    ostruct (0.6.3)
     prism (1.9.0)
     rake (13.4.2)
     rspec (3.13.2)
@@ -73,7 +72,6 @@ DEPENDENCIES
   karafka-testing!
   minitest
   mocha
-  ostruct
   rspec
   simplecov
   warning
