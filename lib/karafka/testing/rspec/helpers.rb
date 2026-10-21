@@ -139,7 +139,6 @@ module Karafka
             metadata[key] = message.fetch(message_key)
           end
 
-          # A real run delivers an empty Hash for a message without headers
           metadata[:raw_headers] ||= {}
 
           metadata = Karafka::Messages::Metadata.new(metadata)
@@ -147,7 +146,6 @@ module Karafka
             message[:payload],
             metadata
           )
-          # Assign message to metadata as the real messages builder does
           metadata[:message] = karafka_message
 
           # Add this message to previously produced messages
