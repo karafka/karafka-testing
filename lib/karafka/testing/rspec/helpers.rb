@@ -151,8 +151,11 @@ module Karafka
           # Add this message to previously produced messages
           _karafka_consumer_messages << karafka_message
 
-          # A real batch never mixes partitions, so the first message decides the partition
-          partition = _karafka_consumer_messages.first.partition
+          # A real batch never mixes partitions, so the first message of this consumer's topic
+          # decides the partition
+          partition = _karafka_consumer_messages
+            .find { |buffered| buffered.topic == consumer_obj.topic.name }
+            .partition
 
           if consumer_obj.partition != partition
             consumer_obj.coordinator = Testing::Helpers.karafka_build_coordinator(
