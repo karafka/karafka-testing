@@ -160,11 +160,17 @@ module Karafka
             metadata[key] = message.fetch(message_key)
           end
 
-          # Add this message to previously produced messages
-          @_karafka_consumer_messages << Karafka::Messages::Message.new(
+          metadata[:raw_headers] ||= {}
+
+          metadata = Karafka::Messages::Metadata.new(metadata)
+          karafka_message = Karafka::Messages::Message.new(
             message[:payload],
-            Karafka::Messages::Metadata.new(metadata)
+            metadata
           )
+          metadata[:message] = karafka_message
+
+          # Add this message to previously produced messages
+          @_karafka_consumer_messages << karafka_message
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
             @_karafka_consumer_messages,

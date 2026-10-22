@@ -5,6 +5,7 @@
 - [Maintenance] Align internal naming and YARD docs with the Karafka ecosystem conventions.
 - [Maintenance] Drop `ostruct` from the test dependencies.
 - [Fix] Make the Minitest helpers work without Mocha. They no longer fail with `undefined method 'stubs'` when Mocha is not loaded, and still use Mocha when it is.
+- [Fix] Set `metadata.message` on test messages and give `headers: nil` empty `raw_headers`, as a real run does.
 
 ## 2.6.2 (2026-08-13)
 - [Fix] Read the `strategy_selector` and `expansions_selector` settings from their new `consumer_groups` location. Requires Karafka `>= 2.6.0`.
