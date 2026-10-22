@@ -171,11 +171,21 @@ module Karafka
 
           # Add this message to previously produced messages
           @_karafka_consumer_messages << karafka_message
+          # A real batch never mixes partitions, so the first message decides the partition
+          partition = @_karafka_consumer_messages.first.partition
+
+          if consumer_obj.partition != partition
+            consumer_obj.coordinator = Testing::Helpers.karafka_build_coordinator(
+              consumer_obj.topic,
+              partition
+            )
+          end
+
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
             @_karafka_consumer_messages,
             consumer_obj.topic,
-            0,
+            partition,
             Time.now
           )
 
@@ -291,9 +301,6 @@ module Karafka
         # @param topic [Karafka::Routing::Topic] topic for which we want to build the consumer
         # @return [Object] karafka consumer
         def _karafka_build_consumer_for(topic)
-          coordinators = Karafka::Processing::CoordinatorsBuffer.new(
-            Karafka::Routing::Topics.new([topic])
-          )
           processing_cfg = Karafka::App.config.internal.processing
           @consumer = topic.consumer.new
           @consumer.producer = Karafka::App.producer
@@ -301,8 +308,7 @@ module Karafka
           strategy = processing_cfg.consumer_groups.strategy_selector.find(topic)
           @consumer.singleton_class.include(strategy)
           @consumer.client = @_karafka_consumer_client
-          @consumer.coordinator = coordinators.find_or_create(topic.name, 0)
-          @consumer.coordinator.seek_offset = 0
+          @consumer.coordinator = Testing::Helpers.karafka_build_coordinator(topic, 0)
           # Indicate usage as for tests no direct enqueuing happens
           @consumer.instance_variable_set(:@used, true)
           expansions = processing_cfg.consumer_groups.expansions_selector.find(topic)

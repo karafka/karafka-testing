@@ -119,4 +119,28 @@ describe_current do
       end
     end
   end
+
+  describe ".karafka_build_coordinator" do
+    let(:topic) { stub_everything("Topic") }
+    let(:topics) { stub_everything("Topics") }
+    let(:buffer) { stub_everything("CoordinatorsBuffer") }
+    let(:coordinator) { stub_everything("Coordinator") }
+
+    before do
+      topic.stubs(:name).returns("test_topic")
+      stub_const("Karafka::Routing::Topics", Class.new)
+      stub_const("Karafka::Processing::CoordinatorsBuffer", Class.new)
+      Karafka::Routing::Topics.stubs(:new).with([topic]).returns(topics)
+      Karafka::Processing::CoordinatorsBuffer.stubs(:new).with(topics).returns(buffer)
+      buffer.stubs(:find_or_create).with("test_topic", 3).returns(coordinator)
+    end
+
+    it "returns the coordinator of the requested partition with seek offset 0" do
+      coordinator.expects(:seek_offset=).with(0)
+
+      result = Karafka::Testing::Helpers.karafka_build_coordinator(topic, 3)
+
+      assert_same coordinator, result
+    end
+  end
 end
