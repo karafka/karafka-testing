@@ -36,6 +36,20 @@ module Karafka
           candidate_topics.uniq { |topic| topic.subscription_group.name }
         end
 
+        # Builds a coordinator for given topic partition, as a consumer gets in a real run
+        #
+        # @param topic [Karafka::Routing::Topic] topic of the consumer
+        # @param partition [Integer] partition the consumer works on
+        # @return [Karafka::Processing::ConsumerGroups::Coordinator] coordinator for the partition
+        def karafka_build_coordinator(topic, partition)
+          coordinator = Karafka::Processing::CoordinatorsBuffer
+            .new(Karafka::Routing::Topics.new([topic]))
+            .find_or_create(topic.name, partition)
+
+          coordinator.seek_offset = 0
+          coordinator
+        end
+
         # Finds subscription groups from the requested consumer group or selects all if no
         # consumer group specified
         # @param requested_consumer_group [String] requested consumer group or nil to look in all

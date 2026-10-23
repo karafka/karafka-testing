@@ -25,6 +25,17 @@ class ProduceToTest < Minitest::Test
     assert_equal({ "h" => "v" }, consumer1.messages.first.headers)
   end
 
+  def test_takes_batch_and_consumer_partition_from_own_messages
+    consumer1 = @karafka.consumer_for(:test_topic, :test_group)
+    consumer2 = @karafka.consumer_for(:test_topic, :secondary_group)
+
+    @karafka.produce_to(consumer1, '{"x":1}', partition: 3)
+    @karafka.produce_to(consumer2, '{"x":2}')
+
+    assert_equal [3, 3], [consumer1.messages.metadata.partition, consumer1.partition]
+    assert_equal [0, 0], [consumer2.messages.metadata.partition, consumer2.partition]
+  end
+
   def test_consumer_processes_batch_via_consume
     test_consumer = @karafka.consumer_for(:test_topic, :test_group)
     @karafka.produce_to(test_consumer, '{"key":"value"}')

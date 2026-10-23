@@ -27,6 +27,12 @@ RSpec.describe "produce" do
     expect(consumer.messages.first.partition).to eq(0)
   end
 
+  it "sets default batch and consumer partition to 0" do
+    karafka.produce('{"x":1}')
+    expect(consumer.messages.metadata.partition).to eq(0)
+    expect(consumer.partition).to eq(0)
+  end
+
   it "sets default headers to empty hash" do
     karafka.produce('{"x":1}')
     expect(consumer.messages.first.headers).to eq({})
@@ -66,6 +72,22 @@ RSpec.describe "produce" do
     it "passes through partition" do
       karafka.produce('{"x":1}', partition: 5)
       expect(consumer.messages.first.partition).to eq(5)
+    end
+
+    it "simulates the partition for the batch and the consumer" do
+      karafka.produce('{"x":1}', partition: 5)
+      karafka.produce('{"x":2}', partition: 5)
+      expect(consumer.messages.metadata.partition).to eq(5)
+      expect(consumer.partition).to eq(5)
+      expect(consumer.messages.map(&:offset)).to eq([0, 1])
+    end
+
+    it "uses the partition of the first message when partitions are mixed" do
+      karafka.produce('{"x":1}', partition: 2)
+      karafka.produce('{"x":2}', partition: 7)
+      expect(consumer.messages.metadata.partition).to eq(2)
+      expect(consumer.partition).to eq(2)
+      expect(consumer.messages.map(&:partition)).to eq([2, 7])
     end
   end
 end

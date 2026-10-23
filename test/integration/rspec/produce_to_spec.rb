@@ -25,6 +25,19 @@ RSpec.describe "produce_to" do
     expect(consumer1.messages.first.headers).to eq({ "h" => "v" })
   end
 
+  it "takes the batch and consumer partition from the consumer's own topic" do
+    consumer1 = karafka.consumer_for(:test_topic, :test_group)
+    consumer2 = karafka.consumer_for(:other_topic)
+
+    karafka.produce_to(consumer1, '{"x":1}', partition: 3)
+    karafka.produce_to(consumer2, '{"x":2}')
+
+    expect(consumer1.messages.metadata.partition).to eq(3)
+    expect(consumer1.partition).to eq(3)
+    expect(consumer2.messages.metadata.partition).to eq(0)
+    expect(consumer2.partition).to eq(0)
+  end
+
   it "allows the consumer to process the batch via #consume" do
     test_consumer = karafka.consumer_for(:test_topic, :test_group)
     karafka.produce_to(test_consumer, '{"key":"value"}')

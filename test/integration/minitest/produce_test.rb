@@ -34,6 +34,13 @@ class ProduceTest < Minitest::Test
     assert_equal 0, @consumer.messages.first.partition
   end
 
+  def test_sets_default_batch_and_consumer_partition_to_zero
+    @karafka.produce('{"x":1}')
+
+    assert_equal 0, @consumer.messages.metadata.partition
+    assert_equal 0, @consumer.partition
+  end
+
   def test_sets_default_headers_to_empty_hash
     @karafka.produce('{"x":1}')
 
@@ -80,5 +87,23 @@ class ProduceTest < Minitest::Test
     @karafka.produce('{"x":1}', partition: 5)
 
     assert_equal 5, @consumer.messages.first.partition
+  end
+
+  def test_simulates_partition_for_batch_and_consumer
+    @karafka.produce('{"x":1}', partition: 5)
+    @karafka.produce('{"x":2}', partition: 5)
+
+    assert_equal 5, @consumer.messages.metadata.partition
+    assert_equal 5, @consumer.partition
+    assert_equal [0, 1], @consumer.messages.map(&:offset)
+  end
+
+  def test_uses_partition_of_first_message_when_partitions_are_mixed
+    @karafka.produce('{"x":1}', partition: 2)
+    @karafka.produce('{"x":2}', partition: 7)
+
+    assert_equal 2, @consumer.messages.metadata.partition
+    assert_equal 2, @consumer.partition
+    assert_equal [2, 7], @consumer.messages.map(&:partition)
   end
 end
