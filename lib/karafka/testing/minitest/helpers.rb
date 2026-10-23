@@ -149,8 +149,11 @@ module Karafka
           return if message[:consumer_group] &&
             message[:consumer_group].to_s != consumer_obj.topic.consumer_group.name
 
+          # A real batch holds messages of one topic, so each consumer gets only its own messages
+          batch = (@_karafka_consumer_batches ||= {})[consumer_obj] ||= []
+
           # Build message metadata and copy any metadata that would come from the message
-          metadata = _karafka_message_metadata_defaults(consumer_obj)
+          metadata = _karafka_message_metadata_defaults(consumer_obj, batch)
 
           metadata.keys.each do |key|
             message_key = METADATA_DISPATCH_MAPPINGS.fetch(key, key)
@@ -171,6 +174,7 @@ module Karafka
 
           # Add this message to previously produced messages
           @_karafka_consumer_messages << karafka_message
+          batch << karafka_message
           # A real batch never mixes partitions, so the first message of this consumer decides
           # the partition
           partition = (@_karafka_batch_partitions ||= {})[consumer_obj] ||= karafka_message.partition
@@ -184,7 +188,7 @@ module Karafka
 
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
-            @_karafka_consumer_messages,
+            batch,
             consumer_obj.topic,
             partition,
             Time.now
@@ -192,7 +196,7 @@ module Karafka
 
           # Update consumer messages batch
           consumer_obj.messages = Karafka::Messages::Messages.new(
-            @_karafka_consumer_messages,
+            batch,
             batch_metadata
           )
         end
@@ -283,14 +287,15 @@ module Karafka
         end
 
         # @param consumer_obj [Karafka::BaseConsumer] consumer reference
+        # @param batch [Array<Karafka::Messages::Message>] messages already given to this consumer
         # @return [Hash] message default options
-        def _karafka_message_metadata_defaults(consumer_obj)
+        def _karafka_message_metadata_defaults(consumer_obj, batch)
           {
             deserializers: consumer_obj.topic.deserializers,
             timestamp: Time.now,
             raw_headers: {},
             raw_key: nil,
-            offset: @_karafka_next_offset.nil? ? @_karafka_consumer_messages.size : @_karafka_next_offset,
+            offset: @_karafka_next_offset.nil? ? batch.size : @_karafka_next_offset,
             partition: 0,
             received_at: Time.now,
             topic: consumer_obj.topic.name
