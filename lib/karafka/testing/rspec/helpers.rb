@@ -128,8 +128,7 @@ module Karafka
           return if message[:consumer_group] &&
             message[:consumer_group].to_s != consumer_obj.topic.consumer_group.name
 
-          # A real batch holds messages of one topic, so each consumer gets only its own messages
-          batch = (@_karafka_consumer_batches ||= {})[consumer_obj] ||= []
+          batch = _karafka_consumer_batch(consumer_obj)
 
           # Build message metadata and copy any metadata that would come from the message
           metadata = _karafka_message_metadata_defaults(consumer_obj, batch)
@@ -153,7 +152,7 @@ module Karafka
 
           # Add this message to previously produced messages
           _karafka_consumer_messages << karafka_message
-          batch << karafka_message
+          batch << karafka_message unless batch.equal?(_karafka_consumer_messages)
 
           # A real batch never mixes partitions, so the first message of this consumer decides
           # the partition
@@ -242,6 +241,38 @@ module Karafka
         end
 
         private
+
+        # Messages of the batch of a given consumer. The first consumer that gets a message uses
+        # the shared buffer, so altering `consumer_messages` alters its batch. Once a second
+        # consumer gets one, each consumer gets its own batch, as a real batch holds one topic.
+        #
+        # @param consumer_obj [Karafka::BaseConsumer] consumer reference
+        # @return [Array<Karafka::Messages::Message>] messages of this consumer's batch
+        def _karafka_consumer_batch(consumer_obj)
+          batches = (@_karafka_consumer_batches ||= {})
+
+          batches.fetch(consumer_obj) do
+            if batches.empty?
+              batches[consumer_obj] = _karafka_consumer_messages
+            else
+              first_consumer, first_batch = batches.first
+
+              if first_batch.equal?(_karafka_consumer_messages)
+                own_batch = first_batch.dup
+                batches[first_consumer] = own_batch
+
+                if first_consumer.messages
+                  first_consumer.messages = Karafka::Messages::Messages.new(
+                    own_batch,
+                    first_consumer.messages.metadata
+                  )
+                end
+              end
+
+              batches[consumer_obj] = []
+            end
+          end
+        end
 
         # Checks if the RSpec described_class is a Karafka consumer class.
         # When true, the implicit RSpec subject can be used as a consumer fallback.
