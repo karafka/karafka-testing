@@ -1,6 +1,6 @@
 # Karafka Testing Changelog
 
-## 2.6.3 (Unreleased)
+## 2.6.3 (2026-10-25)
 - **[EOL]** Drop Ruby 3.2 support; require Ruby 3.3+.
 - [Maintenance] Align internal naming and YARD docs with the Karafka ecosystem conventions.
 - [Maintenance] Drop `ostruct` from the test dependencies.
