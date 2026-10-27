@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.6.4 (Unreleased)
+- [Fix] Give each consumer in one test a batch of only its own messages. Several consumers no longer share one batch, and offsets count per consumer.
+
 ## 2.6.3 (2026-10-25)
 - **[EOL]** Drop Ruby 3.2 support; require Ruby 3.3+.
 - [Maintenance] Align internal naming and YARD docs with the Karafka ecosystem conventions.
@@ -7,7 +10,6 @@
 - [Fix] Make the Minitest helpers work without Mocha. They no longer fail with `undefined method 'stubs'` when Mocha is not loaded, and still use Mocha when it is.
 - [Fix] Set `metadata.message` on test messages and give `headers: nil` empty `raw_headers`, as a real run does.
 - [Fix] Make `produce(partition: N)` set N as the batch and consumer partition, not only the message one. With mixed partitions the first message decides.
-- [Fix] Give each consumer in one test a batch of only its own messages. Several consumers no longer share one batch, and offsets count per consumer.
 
 ## 2.6.2 (2026-08-13)
 - [Fix] Read the `strategy_selector` and `expansions_selector` settings from their new `consumer_groups` location. Requires Karafka `>= 2.6.0`.
