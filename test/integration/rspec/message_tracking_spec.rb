@@ -47,5 +47,17 @@ RSpec.describe "message tracking" do
       karafka.produce('{"x":1}')
       expect(karafka.consumer_messages.first).to be_a(Karafka::Messages::Message)
     end
+
+    it "alters the consumer batch when changed" do
+      karafka.produce('{"x":1}')
+      karafka.produce('{"x":2}')
+      karafka.consumer_messages.clear
+
+      expect(consumer.messages.to_a).to be_empty
+
+      karafka.produce('{"x":3}')
+
+      expect(consumer.messages.map { |m| [m.payload, m.offset] }).to eq([[{ "x" => 3 }, 0]])
+    end
   end
 end

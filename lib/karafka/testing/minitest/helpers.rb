@@ -149,8 +149,10 @@ module Karafka
           return if message[:consumer_group] &&
             message[:consumer_group].to_s != consumer_obj.topic.consumer_group.name
 
+          batch = _karafka_consumer_batch(consumer_obj)
+
           # Build message metadata and copy any metadata that would come from the message
-          metadata = _karafka_message_metadata_defaults(consumer_obj)
+          metadata = _karafka_message_metadata_defaults(consumer_obj, batch)
 
           metadata.keys.each do |key|
             message_key = METADATA_DISPATCH_MAPPINGS.fetch(key, key)
@@ -171,6 +173,7 @@ module Karafka
 
           # Add this message to previously produced messages
           @_karafka_consumer_messages << karafka_message
+          batch << karafka_message unless batch.equal?(@_karafka_consumer_messages)
           # A real batch never mixes partitions, so the first message of this consumer decides
           # the partition
           partition = (@_karafka_batch_partitions ||= {})[consumer_obj] ||= karafka_message.partition
@@ -184,7 +187,7 @@ module Karafka
 
           # Update batch metadata
           batch_metadata = Karafka::Messages::Builders::BatchMetadata.call(
-            @_karafka_consumer_messages,
+            batch,
             consumer_obj.topic,
             partition,
             Time.now
@@ -192,7 +195,7 @@ module Karafka
 
           # Update consumer messages batch
           consumer_obj.messages = Karafka::Messages::Messages.new(
-            @_karafka_consumer_messages,
+            batch,
             batch_metadata
           )
         end
@@ -260,6 +263,38 @@ module Karafka
 
         private
 
+        # Messages of the batch of a given consumer. The first consumer that gets a message uses
+        # the shared buffer, so altering `consumer_messages` alters its batch. Once a second
+        # consumer gets one, each consumer gets its own batch, as a real batch holds one topic.
+        #
+        # @param consumer_obj [Karafka::BaseConsumer] consumer reference
+        # @return [Array<Karafka::Messages::Message>] messages of this consumer's batch
+        def _karafka_consumer_batch(consumer_obj)
+          batches = (@_karafka_consumer_batches ||= {})
+
+          batches.fetch(consumer_obj) do
+            if batches.empty?
+              batches[consumer_obj] = @_karafka_consumer_messages
+            else
+              first_consumer, first_batch = batches.first
+
+              if first_batch.equal?(@_karafka_consumer_messages)
+                own_batch = first_batch.dup
+                batches[first_consumer] = own_batch
+
+                if first_consumer.messages
+                  first_consumer.messages = Karafka::Messages::Messages.new(
+                    own_batch,
+                    first_consumer.messages.metadata
+                  )
+                end
+              end
+
+              batches[consumer_obj] = []
+            end
+          end
+        end
+
         # Finds a consumer for the given message with backward-compatible fallback
         # @param message [Hash] the message being routed
         # @return [Object, nil] the consumer instance or nil
@@ -283,14 +318,15 @@ module Karafka
         end
 
         # @param consumer_obj [Karafka::BaseConsumer] consumer reference
+        # @param batch [Array<Karafka::Messages::Message>] messages already given to this consumer
         # @return [Hash] message default options
-        def _karafka_message_metadata_defaults(consumer_obj)
+        def _karafka_message_metadata_defaults(consumer_obj, batch)
           {
             deserializers: consumer_obj.topic.deserializers,
             timestamp: Time.now,
             raw_headers: {},
             raw_key: nil,
-            offset: @_karafka_next_offset.nil? ? @_karafka_consumer_messages.size : @_karafka_next_offset,
+            offset: @_karafka_next_offset.nil? ? batch.size : @_karafka_next_offset,
             partition: 0,
             received_at: Time.now,
             topic: consumer_obj.topic.name

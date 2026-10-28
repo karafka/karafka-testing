@@ -51,4 +51,16 @@ class MessageTrackingTest < Minitest::Test
 
     assert_kind_of Karafka::Messages::Message, @karafka.consumer_messages.first
   end
+
+  def test_altering_consumer_messages_alters_the_consumer_batch
+    @karafka.produce('{"x":1}')
+    @karafka.produce('{"x":2}')
+    @karafka.consumer_messages.clear
+
+    assert_empty @consumer.messages.to_a
+
+    @karafka.produce('{"x":3}')
+
+    assert_equal([[{ "x" => 3 }, 0]], @consumer.messages.map { |m| [m.payload, m.offset] })
+  end
 end
