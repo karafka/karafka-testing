@@ -39,18 +39,13 @@ module Karafka
 
               @_karafka_consumer_mappings = {}
 
-              # Mocha is a dev dependency of many apps without being used in their Karafka tests,
-              # so we stub with it only when its patches are actually available
-              if Object.const_defined?("Mocha", false) && Karafka.producer.respond_to?(:stubs)
-                Karafka.producer.stubs(:client).returns(@_karafka_producer_client)
-              else
-                producer_client = @_karafka_producer_client
-                Karafka.producer.define_singleton_method(:client) { producer_client }
-                @_karafka_producer_client_stubbed = true
-              end
+              # Not a Mocha stub even when Mocha is loaded: Mocha records every call in an
+              # unsynchronized array, which breaks when code under test produces from many threads
+              producer_client = @_karafka_producer_client
+              Karafka.producer.define_singleton_method(:client) { producer_client }
+              @_karafka_producer_client_stubbed = true
             end
 
-            # Mocha removes its own stubs, so we only remove the one we defined
             teardown_flow = lambda do
               next unless @_karafka_producer_client_stubbed
 

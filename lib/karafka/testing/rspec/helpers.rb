@@ -55,11 +55,22 @@ module Karafka
               # that patches are available because some users have Mocha as part of their
               # supply chain, but do not use it when running Karafka specs. In such cases, without
               # such check `karafka-testing` would falsely assume, that Mocha is in use.
+              # With Mocha we define the method instead of stubbing it: Mocha records every call in
+              # an unsynchronized array, which breaks when code under test produces from many threads
               if Object.const_defined?("Mocha", false) && Karafka.producer.respond_to?(:stubs)
-                Karafka.producer.stubs(:client).returns(_karafka_producer_client)
+                producer_client = _karafka_producer_client
+                Karafka.producer.define_singleton_method(:client) { producer_client }
+                @_karafka_producer_client_stubbed = true
               else
                 allow(Karafka.producer).to receive(:client).and_return(_karafka_producer_client)
               end
+            end
+
+            base.after do
+              next unless @_karafka_producer_client_stubbed
+
+              Karafka.producer.singleton_class.remove_method(:client)
+              @_karafka_producer_client_stubbed = false
             end
           end
         end
