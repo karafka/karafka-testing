@@ -38,4 +38,16 @@ class ThreadedProduceTest < Minitest::Test
     assert_equal THREADS * PER_THREAD, @karafka.produced_messages.size
     assert_empty @karafka.consumer_messages
   end
+
+  def test_keeps_custom_offsets_per_thread
+    custom = Thread.new { PER_THREAD.times { |i| @karafka.produce("custom-#{i}", offset: 10_000 + i) } }
+    auto = Thread.new { PER_THREAD.times { |i| @karafka.produce("auto-#{i}") } }
+    [custom, auto].each(&:join)
+
+    customs, autos = @consumer.messages.partition { |m| m.raw_payload.start_with?("custom") }
+
+    assert_equal (10_000...10_000 + PER_THREAD).to_a, customs.map(&:offset).sort
+    assert_equal PER_THREAD, autos.map(&:offset).uniq.size
+    assert(autos.all? { |m| m.offset < 2 * PER_THREAD })
+  end
 end

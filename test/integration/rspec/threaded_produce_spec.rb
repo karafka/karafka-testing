@@ -35,4 +35,16 @@ RSpec.describe "producing from many threads" do
     expect(karafka.produced_messages.size).to eq(total)
     expect(karafka.consumer_messages).to be_empty
   end
+
+  it "keeps custom offsets per thread" do
+    custom = Thread.new { per_thread.times { |i| karafka.produce("custom-#{i}", offset: 10_000 + i) } }
+    auto = Thread.new { per_thread.times { |i| karafka.produce("auto-#{i}") } }
+    [custom, auto].each(&:join)
+
+    customs, autos = consumer.messages.partition { |m| m.raw_payload.start_with?("custom") }
+
+    expect(customs.map(&:offset).sort).to eq((10_000...10_000 + per_thread).to_a)
+    expect(autos.map(&:offset).uniq.size).to eq(per_thread)
+    expect(autos.map(&:offset)).to all(be < 2 * per_thread)
+  end
 end

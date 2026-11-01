@@ -33,10 +33,14 @@ describe_current do
     end
 
     it "keeps every message when producing from many threads" do
-      Array.new(8) { Thread.new { 500.times { client.produce(produce_message) } } }.each(&:join)
+      # Lazy lets are not thread-safe, so they are built before the threads start
+      buffered = client
+      message = produce_message
 
-      assert_equal 4_000, client.messages.size
-      assert_equal 4_000, client.messages_for("test_topic").size
+      Array.new(8) { Thread.new { 500.times { buffered.produce(message) } } }.each(&:join)
+
+      assert_equal 4_000, buffered.messages.size
+      assert_equal 4_000, buffered.messages_for("test_topic").size
     end
   end
 
