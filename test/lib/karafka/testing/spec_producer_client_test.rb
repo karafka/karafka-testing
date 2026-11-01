@@ -31,5 +31,45 @@ describe_current do
 
       assert_includes client.messages, produce_message
     end
+
+    it "keeps every message when producing from many threads" do
+      Array.new(8) { Thread.new { 500.times { client.produce(produce_message) } } }.each(&:join)
+
+      assert_equal 4_000, client.messages.size
+      assert_equal 4_000, client.messages_for("test_topic").size
+    end
+  end
+
+  describe "transactions" do
+    let(:produce_message) { { topic: "test_topic", payload: "test_payload" } }
+
+    it "moves the messages to the buffer on commit" do
+      client.begin_transaction
+      client.produce(produce_message)
+
+      assert_empty client.messages
+
+      client.commit_transaction
+
+      assert_equal [produce_message], client.messages
+    end
+
+    it "drops the messages on abort" do
+      client.begin_transaction
+      client.produce(produce_message)
+      client.abort_transaction
+
+      assert_empty client.messages
+    end
+  end
+
+  describe "#reset" do
+    it "clears the buffer" do
+      client.produce({ topic: "test_topic", payload: "test_payload" })
+      client.reset
+
+      assert_empty client.messages
+      assert_empty client.messages_for("test_topic")
+    end
   end
 end
