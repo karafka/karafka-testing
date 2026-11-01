@@ -14,6 +14,10 @@ Karafka::App.routes.draw do
     consumer OtherConsumer
   end
 
+  topic :pausing_topic do
+    consumer PausingConsumer
+  end
+
   consumer_group :secondary_group do
     topic :test_topic do
       consumer OtherConsumer

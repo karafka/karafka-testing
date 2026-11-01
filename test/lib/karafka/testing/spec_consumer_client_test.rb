@@ -53,6 +53,26 @@ describe_current do
     end
   end
 
+  describe "#pause" do
+    it "returns true" do
+      assert client.pause
+    end
+
+    it "accepts any arguments" do
+      assert client.pause("topic", 0, 100, 5_000)
+    end
+  end
+
+  describe "#resume" do
+    it "returns true" do
+      assert client.resume
+    end
+
+    it "accepts any arguments" do
+      assert client.resume("topic", 0)
+    end
+  end
+
   describe "#consumer_group_metadata_pointer" do
     it "returns true" do
       assert client.consumer_group_metadata_pointer
