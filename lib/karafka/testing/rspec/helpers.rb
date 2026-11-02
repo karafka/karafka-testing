@@ -55,11 +55,22 @@ module Karafka
               # that patches are available because some users have Mocha as part of their
               # supply chain, but do not use it when running Karafka specs. In such cases, without
               # such check `karafka-testing` would falsely assume, that Mocha is in use.
+              # With Mocha we define the method instead of stubbing it: Mocha records every call in
+              # an unsynchronized array, which breaks when code under test produces from many threads
               if Object.const_defined?("Mocha", false) && Karafka.producer.respond_to?(:stubs)
-                Karafka.producer.stubs(:client).returns(_karafka_producer_client)
+                producer_client = _karafka_producer_client
+                Karafka.producer.define_singleton_method(:client) { producer_client }
+                @_karafka_producer_client_stubbed = true
               else
                 allow(Karafka.producer).to receive(:client).and_return(_karafka_producer_client)
               end
+            end
+
+            base.after do
+              next unless @_karafka_producer_client_stubbed
+
+              Karafka.producer.singleton_class.remove_method(:client)
+              @_karafka_producer_client_stubbed = false
             end
           end
         end
@@ -187,8 +198,9 @@ module Karafka
         #   offsets auto-increment from 0).
         def _karafka_produce(payload, metadata = {})
           # Extract offset before passing to WaterDrop since it is not a valid
-          # WaterDrop message attribute (Kafka assigns offsets, not producers)
-          @_karafka_next_offset = metadata.delete(:offset)
+          # WaterDrop message attribute (Kafka assigns offsets, not producers). Kept per thread, as
+          # code under test may produce from many threads at once
+          Thread.current[:_karafka_next_offset] = metadata.delete(:offset)
 
           topic_name = if metadata[:topic]
             metadata[:topic]
@@ -207,7 +219,7 @@ module Karafka
             }.merge(metadata)
           )
         ensure
-          @_karafka_next_offset = nil
+          Thread.current[:_karafka_next_offset] = nil
         end
 
         # @return [Array<Hash>] messages that were produced
@@ -331,7 +343,7 @@ module Karafka
             timestamp: Time.now,
             raw_headers: {},
             raw_key: nil,
-            offset: @_karafka_next_offset.nil? ? batch.size : @_karafka_next_offset,
+            offset: Thread.current[:_karafka_next_offset] || batch.size,
             partition: 0,
             received_at: Time.now,
             topic: consumer_obj.topic.name
