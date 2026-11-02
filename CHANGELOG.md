@@ -4,6 +4,7 @@
 - [Maintenance] Declare `rake` in the `Gemfile`. It came only through `karafka-rdkafka`, which will stop depending on it for precompiled platform gems.
 - [Fix] Give each consumer in one test a batch of only its own messages. Several consumers no longer share one batch, and offsets count per consumer.
 - [Fix] Stub `pause` and `resume` on the spec consumer client. Consumers that call `#pause` no longer fail with `NoMethodError`.
+- [Fix] Make producing in a test safe from many threads. On JRuby, messages produced from 2+ threads at once were lost or got duplicate offsets.
 
 ## 2.6.3 (2026-10-25)
 - **[EOL]** Drop Ruby 3.2 support; require Ruby 3.3+.
