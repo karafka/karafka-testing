@@ -32,8 +32,12 @@ if coverage
     skip "/lib/karafka/testing/minitest/helpers.rb"
 
     merge_timeout 600
-    minimum_coverage 100
-    enable_coverage :branch
+
+    # JRuby counts multi-line chains on their last line and has no branch coverage
+    if RUBY_ENGINE == "ruby"
+      minimum_coverage 100
+      enable_coverage :branch
+    end
   end
 end
 
