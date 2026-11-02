@@ -88,10 +88,10 @@ describe_current do
 
   describe "#resumes" do
     it "delegates to _karafka_resumes" do
-      pauses = [{ topic: "topic", partition: 0 }]
-      minitest_example.stubs(:_karafka_resumes).returns(pauses)
+      resumes = [{ topic: "topic", partition: 0 }]
+      minitest_example.stubs(:_karafka_resumes).returns(resumes)
 
-      assert_equal pauses, proxy.resumes
+      assert_equal resumes, proxy.resumes
     end
   end
 end
