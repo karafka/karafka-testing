@@ -62,4 +62,13 @@ class PauseTest < Minitest::Test
     assert_empty @karafka.pauses
     assert_empty @karafka.resumes
   end
+
+  def test_records_one_resume_per_pause
+    3.times { @karafka.produce({ "resume_twice" => true }.to_json) }
+
+    @consumer.consume
+
+    assert_equal [{ topic: "pausing_topic", partition: 0 }], @karafka.resumes
+    refute_predicate @consumer.coordinator.pause_tracker, :paused?
+  end
 end

@@ -25,7 +25,9 @@ describe_current do
   context "when the consumer is paused" do
     before { pause_tracker.stubs(:paused?).returns(true) }
 
-    it "resumes the partition on the client" do
+    it "resumes the pause tracker and the partition on the client" do
+      pause_tracker.expects(:resume)
+
       consumer.resume
 
       assert consumer.resumed
@@ -37,6 +39,8 @@ describe_current do
     before { pause_tracker.stubs(:paused?).returns(false) }
 
     it "does not resume the partition on the client" do
+      pause_tracker.expects(:resume).never
+
       consumer.resume
 
       assert consumer.resumed

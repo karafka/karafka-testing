@@ -59,4 +59,13 @@ RSpec.describe "pausing" do
     expect(karafka.pauses).to be_empty
     expect(karafka.resumes).to be_empty
   end
+
+  it "records one resume per pause" do
+    3.times { karafka.produce({ "resume_twice" => true }.to_json) }
+
+    consumer.consume
+
+    expect(karafka.resumes).to eq([{ topic: "pausing_topic", partition: 0 }])
+    expect(pause_tracker).not_to be_paused
+  end
 end
