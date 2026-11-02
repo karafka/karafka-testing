@@ -55,21 +55,38 @@ describe_current do
 
   describe "#pause" do
     it "returns true" do
-      assert client.pause
+      assert client.pause("topic", 0, 100, 5_000)
     end
 
-    it "accepts any arguments" do
-      assert client.pause("topic", 0, 100, 5_000)
+    it "records the pause" do
+      client.pause("topic", 1, 100, 5_000)
+
+      assert_equal [{ topic: "topic", partition: 1, offset: 100, timeout: 5_000 }], client.pauses
+    end
+
+    it "records a pause without offset and timeout" do
+      client.pause("topic", 0)
+
+      assert_equal [{ topic: "topic", partition: 0, offset: nil, timeout: 0 }], client.pauses
     end
   end
 
   describe "#resume" do
     it "returns true" do
-      assert client.resume
+      assert client.resume("topic", 0)
     end
 
-    it "accepts any arguments" do
-      assert client.resume("topic", 0)
+    it "records the resume" do
+      client.resume("topic", 2)
+
+      assert_equal [{ topic: "topic", partition: 2 }], client.resumes
+    end
+  end
+
+  describe "#pauses and #resumes" do
+    it "are empty for a new client" do
+      assert_empty client.pauses
+      assert_empty client.resumes
     end
   end
 

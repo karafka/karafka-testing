@@ -1,6 +1,7 @@
 # Karafka Testing Changelog
 
 ## 2.6.4 (Unreleased)
+- [Feature] Record consumer pauses and resumes. Assert them with `karafka.pauses` and `karafka.resumes` (#214).
 - [Maintenance] Declare `rake` in the `Gemfile`. It came only through `karafka-rdkafka`, which will stop depending on it for precompiled platform gems.
 - [Fix] Give each consumer in one test a batch of only its own messages. Several consumers no longer share one batch, and offsets count per consumer.
 - [Fix] Stub `pause` and `resume` on the spec consumer client. Consumers that call `#pause` no longer fail with `NoMethodError`.

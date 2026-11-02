@@ -33,4 +33,33 @@ class PauseTest < Minitest::Test
 
     assert_predicate @consumer.coordinator.pause_tracker, :expired?
   end
+
+  def test_records_pauses
+    3.times { |i| @karafka.produce({ "i" => i }.to_json) }
+
+    @consumer.consume
+
+    assert_equal(
+      [{ topic: "pausing_topic", partition: 0, offset: 2, timeout: 5_000 }],
+      @karafka.pauses
+    )
+    assert_empty @karafka.resumes
+  end
+
+  def test_records_resumes_of_paused_consumers
+    3.times { @karafka.produce({ "resume" => true }.to_json) }
+
+    @consumer.consume
+
+    assert_equal [{ topic: "pausing_topic", partition: 0 }], @karafka.resumes
+  end
+
+  def test_does_not_record_resumes_without_a_pause
+    @karafka.produce({ "resume" => true }.to_json)
+
+    @consumer.consume
+
+    assert_empty @karafka.pauses
+    assert_empty @karafka.resumes
+  end
 end

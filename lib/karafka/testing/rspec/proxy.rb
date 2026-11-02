@@ -39,6 +39,17 @@ module Karafka
         def consumer_messages
           @rspec_example._karafka_consumer_messages
         end
+
+        # @return [Array<Hash>] pauses requested by the consumers, each with the `topic`,
+        #   `partition`, `offset` and `timeout`
+        def pauses
+          @rspec_example._karafka_pauses
+        end
+
+        # @return [Array<Hash>] resumes of paused consumers, each with the `topic` and `partition`
+        def resumes
+          @rspec_example._karafka_resumes
+        end
       end
     end
   end

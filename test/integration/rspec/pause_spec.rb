@@ -31,4 +31,32 @@ RSpec.describe "pausing" do
 
     expect(pause_tracker).to be_expired
   end
+
+  it "records pauses" do
+    3.times { |i| karafka.produce({ "i" => i }.to_json) }
+
+    consumer.consume
+
+    expect(karafka.pauses).to eq(
+      [{ topic: "pausing_topic", partition: 0, offset: 2, timeout: 5_000 }]
+    )
+    expect(karafka.resumes).to be_empty
+  end
+
+  it "records resumes of paused consumers" do
+    3.times { karafka.produce({ "resume" => true }.to_json) }
+
+    consumer.consume
+
+    expect(karafka.resumes).to eq([{ topic: "pausing_topic", partition: 0 }])
+  end
+
+  it "does not record resumes without a pause" do
+    karafka.produce({ "resume" => true }.to_json)
+
+    consumer.consume
+
+    expect(karafka.pauses).to be_empty
+    expect(karafka.resumes).to be_empty
+  end
 end
