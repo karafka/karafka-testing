@@ -76,4 +76,22 @@ describe_current do
       assert_equal messages, proxy.consumer_messages
     end
   end
+
+  describe "#pauses" do
+    it "delegates to _karafka_pauses" do
+      pauses = [{ topic: "topic", partition: 0 }]
+      minitest_example.stubs(:_karafka_pauses).returns(pauses)
+
+      assert_equal pauses, proxy.pauses
+    end
+  end
+
+  describe "#resumes" do
+    it "delegates to _karafka_resumes" do
+      resumes = [{ topic: "topic", partition: 0 }]
+      minitest_example.stubs(:_karafka_resumes).returns(resumes)
+
+      assert_equal resumes, proxy.resumes
+    end
+  end
 end

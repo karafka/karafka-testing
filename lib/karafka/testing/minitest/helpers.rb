@@ -4,6 +4,7 @@ require "karafka/testing"
 require "karafka/testing/errors"
 require "karafka/testing/helpers"
 require "karafka/testing/spec_consumer_client"
+require "karafka/testing/spec_consumer_resume"
 require "karafka/testing/spec_producer_client"
 require "karafka/testing/minitest/proxy"
 
@@ -235,6 +236,16 @@ module Karafka
           @_karafka_consumer_messages
         end
 
+        # @return [Array<Hash>] pauses requested by the consumers
+        def _karafka_pauses
+          @_karafka_consumer_client.pauses
+        end
+
+        # @return [Array<Hash>] resumes of paused consumers
+        def _karafka_resumes
+          @_karafka_consumer_client.resumes
+        end
+
         # Produces message to a specific consumer instance
         # Use when testing multiple consumers for the same topic
         #
@@ -346,6 +357,7 @@ module Karafka
           @consumer.instance_variable_set(:@used, true)
           expansions = processing_cfg.consumer_groups.expansions_selector.find(topic)
           expansions.each { |expansion| @consumer.singleton_class.include(expansion) }
+          @consumer.singleton_class.prepend(Testing::SpecConsumerResume)
           @_karafka_consumer_mappings[topic.id] = @consumer
           @consumer
         end
