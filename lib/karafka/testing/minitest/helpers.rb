@@ -55,8 +55,9 @@ module Karafka
             end
 
             if base.to_s == "Minitest::Spec"
+              # `before` passes the test to its block, which the lambda does not take
               base.class_eval do
-                before(&eval_flow)
+                before { instance_exec(&eval_flow) }
               end
             elsif base.respond_to?(:setup) && base.method(:setup).arity != 0
               base.class_eval do
