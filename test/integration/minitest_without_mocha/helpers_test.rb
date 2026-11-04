@@ -13,31 +13,16 @@ require "karafka/testing/minitest/helpers"
 
 abort("Mocha must not be loaded in this test") if Object.const_defined?("Mocha", false)
 
-# The helper has to remove its producer client stub after every test. A stub left by one test
-# is seen before the setup of the next one, or at exit after the last one.
-STUB_LEAKS = []
-
-def stub_leaked?
-  Karafka.producer.singleton_class.method_defined?(:client, false)
-end
-
 Minitest::Test.prepend(
   Module.new do
     def before_setup
-      STUB_LEAKS << name if stub_leaked?
+      StubLeaks.check(name)
       super
     end
   end
 )
 
-Minitest.after_run do
-  STUB_LEAKS << "after the last test" if stub_leaked?
-
-  unless STUB_LEAKS.empty?
-    warn "Karafka.producer.client was still stubbed before: #{STUB_LEAKS.join(", ")}"
-    exit!(1)
-  end
-end
+Minitest.after_run { StubLeaks.verify! }
 
 class WithoutMochaTest < Minitest::Test
   include Karafka::Testing::Minitest::Helpers
