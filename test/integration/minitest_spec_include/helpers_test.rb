@@ -13,29 +13,16 @@ require "karafka/testing/minitest/helpers"
 
 Minitest::Spec.include(Karafka::Testing::Minitest::Helpers)
 
-STUB_LEAKS = []
-
-def stub_leaked?
-  Karafka.producer.singleton_class.method_defined?(:client, false)
-end
-
 Minitest::Test.prepend(
   Module.new do
     def before_setup
-      STUB_LEAKS << name if stub_leaked?
+      StubLeaks.check(name)
       super
     end
   end
 )
 
-Minitest.after_run do
-  STUB_LEAKS << "after the last test" if stub_leaked?
-
-  unless STUB_LEAKS.empty?
-    warn "Karafka.producer.client was still stubbed before: #{STUB_LEAKS.join(", ")}"
-    exit!(1)
-  end
-end
+Minitest.after_run { StubLeaks.verify! }
 
 describe "Minitest::Spec with the helpers included" do
   before do

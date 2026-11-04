@@ -10,31 +10,16 @@ Dir["#{File.expand_path("../support", __dir__)}/**/*.rb"].sort.each { |f| requir
 
 require "karafka/testing/rspec/helpers"
 
-# The helper has to remove its producer client stub after every example. A stub left by one
-# example is seen before the hooks of the next one, or after the last one.
-STUB_LEAKS = []
-
-def stub_leaked?
-  Karafka.producer.singleton_class.method_defined?(:client, false)
-end
-
 RSpec.configure do |config|
   config.mock_with :mocha
 
   # `around` runs before the helper's `prepend_before` hook defines the stub
   config.around do |example|
-    STUB_LEAKS << example.description if stub_leaked?
+    StubLeaks.check(example.description)
     example.run
   end
 
-  config.after(:suite) do
-    STUB_LEAKS << "after the last example" if stub_leaked?
-
-    unless STUB_LEAKS.empty?
-      warn "Karafka.producer.client was still stubbed before: #{STUB_LEAKS.join(", ")}"
-      exit!(1)
-    end
-  end
+  config.after(:suite) { StubLeaks.verify! }
 end
 
 RSpec.describe "RSpec helpers with Mocha" do
