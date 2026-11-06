@@ -2,13 +2,15 @@
 
 require "bundler/setup"
 require "bundler/gem_tasks"
+require "minitest/test_task"
 
-require "rake/testtask"
-
-Rake::TestTask.new(:test) do |t|
+Minitest::TestTask.create(:test) do |t|
   t.libs << "test"
-  t.test_files = FileList["test/test_helper.rb", "test/**/*_test.rb"]
-    .exclude("test/integration/**/*")
+  t.libs << "lib"
+  t.test_globs = ["test/lib/**/*_test.rb"]
+  # Load test_helper before minitest/autorun so SimpleCov's at_exit hook is
+  # registered first and thus runs last (LIFO), collecting coverage AFTER tests
+  t.test_prelude = 'require "test_helper"; require "minitest/autorun"'
 end
 
 task default: :test
