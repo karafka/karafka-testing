@@ -41,8 +41,8 @@ if coverage
 
     # JRuby counts multi-line chains on their last line and has no branch coverage
     if RUBY_ENGINE == "ruby"
-      minimum_coverage 100
       enable_coverage :branch
+      minimum_coverage line: 100, branch: 100
     end
   end
 end
