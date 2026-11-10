@@ -1,5 +1,9 @@
 # Karafka Testing Changelog
 
+## 2.6.5 (Unreleased)
+- [Maintenance] Share the stub leak check of the own-process integration scripts.
+- [Maintenance] Align the Minitest setup with the other Karafka repos.
+
 ## 2.6.4 (2026-11-04)
 - [Feature] Record consumer pauses and resumes. Assert them with `karafka.pauses` and `karafka.resumes` (#214).
 - [Maintenance] Declare `rake` in the `Gemfile`. It came only through `karafka-rdkafka`, which will stop depending on it for precompiled platform gems.
