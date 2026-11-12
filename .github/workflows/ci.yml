@@ -31,6 +31,7 @@ jobs:
           - '4.0'
           - '3.4'
           - '3.3'
+          - 'jruby-10.0'
         include:
           - ruby: '4.0'
             coverage: 'true'
