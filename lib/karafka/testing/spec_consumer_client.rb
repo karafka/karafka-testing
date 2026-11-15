@@ -33,23 +33,23 @@ module Karafka
 
       # Records the pause instead of pausing the partition
       #
-      # @param topic [String] topic name
+      # @param topic_name [String] topic name
       # @param partition [Integer] partition
       # @param offset [Integer, nil] offset to continue from or nil to keep the current position
       # @param timeout [Integer] pause time in milliseconds
       # @return [true]
-      def pause(topic, partition, offset = nil, timeout = 0)
-        @pauses << { topic: topic, partition: partition, offset: offset, timeout: timeout }
+      def pause(topic_name, partition, offset = nil, timeout = 0)
+        @pauses << { topic: topic_name, partition: partition, offset: offset, timeout: timeout }
         true
       end
 
       # Records the resume instead of resuming the partition
       #
-      # @param topic [String] topic name
+      # @param topic_name [String] topic name
       # @param partition [Integer] partition
       # @return [true]
-      def resume(topic, partition)
-        @resumes << { topic: topic, partition: partition }
+      def resume(topic_name, partition)
+        @resumes << { topic: topic_name, partition: partition }
         true
       end
 
