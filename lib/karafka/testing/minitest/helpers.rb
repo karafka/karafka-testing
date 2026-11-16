@@ -372,7 +372,6 @@ module Karafka
           expansions = processing_cfg.consumer_groups.expansions_selector.find(topic)
           expansions.each { |expansion| @consumer.singleton_class.include(expansion) }
           @consumer.singleton_class.prepend(Testing::SpecConsumerResume)
-          # Pro offset metadata is read from Kafka through a client that specs never register
           if Karafka.pro? && topic.offset_metadata?
             @consumer.singleton_class.prepend(Testing::SpecOffsetMetadata)
           end

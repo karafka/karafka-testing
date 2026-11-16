@@ -31,6 +31,10 @@ describe_current do
       assert_equal "deserialized meta", consumer.committed_offset_metadata
     end
 
+    it "rejects keywords the Pro method does not take" do
+      assert_raises(ArgumentError) { consumer.offset_metadata(cach: false) }
+    end
+
     it "deserializes nil when no offset metadata was set" do
       assert_equal "none", consumer.offset_metadata
     end
