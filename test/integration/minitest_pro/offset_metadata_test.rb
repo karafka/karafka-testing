@@ -52,3 +52,37 @@ class OffsetMetadataTest < Minitest::Test
     refute @consumer.offset_metadata
   end
 end
+
+class TransactionalMarksTest < Minitest::Test
+  include Karafka::Testing::Minitest::Helpers
+
+  def setup
+    super
+    @consumer = @karafka.consumer_for(:transactional_marking_topic)
+    Karafka.producer.define_singleton_method(:transactional?) { true }
+  end
+
+  def teardown
+    Karafka.producer.singleton_class.remove_method(:transactional?)
+    super
+  end
+
+  def test_records_marks_of_a_committed_transaction
+    @karafka.produce({ "i" => 0 }.to_json)
+
+    @consumer.consume
+
+    assert_equal(
+      [{ topic: "transactional_marking_topic", partition: 0, offset: 0, metadata: "tx-meta" }],
+      @karafka.marks
+    )
+  end
+
+  def test_records_no_marks_of_an_aborted_transaction
+    @karafka.produce({ "abort" => true }.to_json)
+
+    @consumer.consume
+
+    assert_empty @karafka.marks
+  end
+end

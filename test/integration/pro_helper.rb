@@ -43,3 +43,19 @@ Karafka::App.routes.draw do
     offset_metadata(deserializer: ->(raw) { raw ? JSON.parse(raw) : {} })
   end
 end
+
+class TransactionalMarkingConsumer < Karafka::BaseConsumer
+  def consume
+    transaction do
+      produce_async(topic: "other_topic", payload: "{}")
+      mark_as_consumed(messages.last, "tx-meta")
+      raise WaterDrop::Errors::AbortTransaction if messages.last.payload["abort"]
+    end
+  end
+end
+
+Karafka::App.routes.draw do
+  topic :transactional_marking_topic do
+    consumer TransactionalMarkingConsumer
+  end
+end

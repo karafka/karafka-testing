@@ -48,3 +48,29 @@ RSpec.describe OffsetMetadataConsumer do
     expect(consumer.offset_metadata).to be(false)
   end
 end
+
+RSpec.describe TransactionalMarkingConsumer do
+  include Karafka::Testing::RSpec::Helpers
+
+  subject(:consumer) { karafka.consumer_for(:transactional_marking_topic) }
+
+  before { allow(Karafka.producer).to receive(:transactional?).and_return(true) }
+
+  it "records marks of a committed transaction" do
+    karafka.produce({ "i" => 0 }.to_json)
+
+    consumer.consume
+
+    expect(karafka.marks).to eq(
+      [{ topic: "transactional_marking_topic", partition: 0, offset: 0, metadata: "tx-meta" }]
+    )
+  end
+
+  it "records no marks of an aborted transaction" do
+    karafka.produce({ "abort" => true }.to_json)
+
+    consumer.consume
+
+    expect(karafka.marks).to be_empty
+  end
+end
