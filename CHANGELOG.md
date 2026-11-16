@@ -1,5 +1,10 @@
 # Karafka Testing Changelog
 
+## 2.6.5 (Unreleased)
+- [Feature] Record marks with their offset metadata. Assert them with `karafka.marks` (#214).
+- [Feature] Set the Pro offset metadata that consumers read with `karafka.offset_metadata = "..."`.
+- [Fix] Make Pro `#offset_metadata` work in specs. It no longer fails with `NoMethodError: undefined method '[]' for false`.
+
 ## 2.6.4 (2026-11-04)
 - [Feature] Record consumer pauses and resumes. Assert them with `karafka.pauses` and `karafka.resumes` (#214).
 - [Maintenance] Declare `rake` in the `Gemfile`. It came only through `karafka-rdkafka`, which will stop depending on it for precompiled platform gems.
