@@ -14,15 +14,22 @@ module Karafka
       #   `partition`
       attr_reader :resumes
 
-      # Builds a client with no pauses or resumes recorded
+      # @return [Array<Hash>] messages marked as consumed on this client, each with the `topic`,
+      #   `partition`, `offset` and offset `metadata`
+      attr_reader :marks
+
+      # @return [String, nil] raw offset metadata the consumers read as committed
+      attr_accessor :offset_metadata
+
+      # Builds a client with no pauses, resumes or marks recorded and no offset metadata
       def initialize
         @pauses = []
         @resumes = []
+        @marks = []
+        @offset_metadata = nil
       end
 
       %i[
-        mark_as_consumed
-        mark_as_consumed!
         commit_offsets
         commit_offsets!
         seek
@@ -30,6 +37,23 @@ module Karafka
       ].each do |caught_delegator|
         define_method(caught_delegator) { |*| true }
       end
+
+      # Records the mark instead of storing the offset
+      #
+      # @param message [Karafka::Messages::Message] message marked as consumed
+      # @param metadata [String, nil] offset metadata or nil if none
+      # @return [true]
+      def mark_as_consumed(message, metadata = nil)
+        @marks << {
+          topic: message.topic,
+          partition: message.partition,
+          offset: message.offset,
+          metadata: metadata
+        }
+        true
+      end
+
+      alias_method :mark_as_consumed!, :mark_as_consumed
 
       # Records the pause instead of pausing the partition
       #

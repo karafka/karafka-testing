@@ -50,6 +50,19 @@ module Karafka
         def resumes
           @rspec_example._karafka_resumes
         end
+
+        # @return [Array<Hash>] messages marked as consumed by the consumers, each with the
+        #   `topic`, `partition`, `offset` and offset `metadata`
+        def marks
+          @rspec_example._karafka_marks
+        end
+
+        # Sets the raw offset metadata the consumers read as committed (Pro)
+        #
+        # @param metadata [String, nil] raw offset metadata, deserialized as the topic defines
+        def offset_metadata=(metadata)
+          @rspec_example._karafka_offset_metadata = metadata
+        end
       end
     end
   end
