@@ -91,3 +91,28 @@ RSpec.describe "produce" do
     end
   end
 end
+
+# When no topic can be resolved, `produce` should raise a dedicated error instead of passing
+# a nil topic to WaterDrop and failing with a confusing `WaterDrop::Errors::MessageInvalidError`
+RSpec.describe "produce without a resolvable topic" do
+  include Karafka::Testing::RSpec::Helpers
+
+  it "raises TopicNotDefinedError when no consumer is defined and no topic is given" do
+    expect { karafka.produce('{"x":1}') }
+      .to raise_error(Karafka::Testing::Errors::TopicNotDefinedError)
+  end
+
+  it "mentions the expected ways to resolve the topic in the error message" do
+    expect { karafka.produce('{"x":1}') }
+      .to raise_error(Karafka::Testing::Errors::TopicNotDefinedError, /topic/)
+  end
+
+  it "does not raise when an explicit topic is given" do
+    expect { karafka.produce('{"x":1}', topic: "other_topic") }.not_to raise_error
+  end
+
+  it "does not raise once a consumer was built with consumer_for" do
+    karafka.consumer_for(:other_topic)
+    expect { karafka.produce('{"x":1}') }.not_to raise_error
+  end
+end

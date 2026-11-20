@@ -107,3 +107,32 @@ class ProduceTest < Minitest::Test
     assert_equal [2, 7], @consumer.messages.map(&:partition)
   end
 end
+
+# When no topic can be resolved, `produce` should raise a dedicated error instead of passing
+# a nil topic to WaterDrop and failing with a confusing `WaterDrop::Errors::MessageInvalidError`
+class ProduceWithoutResolvableTopicTest < Minitest::Test
+  include Karafka::Testing::Minitest::Helpers
+
+  def test_raises_topic_not_defined_error_when_no_consumer_and_no_topic
+    assert_raises(Karafka::Testing::Errors::TopicNotDefinedError) do
+      @karafka.produce('{"x":1}')
+    end
+  end
+
+  def test_error_message_mentions_the_expected_ways_to_resolve_the_topic
+    error = assert_raises(Karafka::Testing::Errors::TopicNotDefinedError) do
+      @karafka.produce('{"x":1}')
+    end
+
+    assert_match(/topic/, error.message)
+  end
+
+  def test_does_not_raise_when_explicit_topic_is_given
+    @karafka.produce('{"x":1}', topic: "other_topic")
+  end
+
+  def test_does_not_raise_once_a_consumer_was_built_with_consumer_for
+    @karafka.consumer_for(:other_topic)
+    @karafka.produce('{"x":1}')
+  end
+end
