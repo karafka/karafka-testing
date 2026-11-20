@@ -124,7 +124,7 @@ class ProduceWithoutResolvableTopicTest < Minitest::Test
       @karafka.produce('{"x":1}')
     end
 
-    assert_match(/topic/, error.message)
+    assert_match(/consumer_for/, error.message)
   end
 
   def test_does_not_raise_when_explicit_topic_is_given
