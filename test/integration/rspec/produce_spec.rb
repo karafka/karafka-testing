@@ -104,7 +104,10 @@ RSpec.describe "produce without a resolvable topic" do
 
   it "mentions the expected ways to resolve the topic in the error message" do
     expect { karafka.produce('{"x":1}') }
-      .to raise_error(Karafka::Testing::Errors::TopicNotDefinedError, /consumer_for/)
+      .to raise_error(
+        Karafka::Testing::Errors::TopicNotDefinedError,
+        a_string_including("topic:", "consumer_for")
+      )
   end
 
   it "does not raise when an explicit topic is given" do

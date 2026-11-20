@@ -124,15 +124,20 @@ class ProduceWithoutResolvableTopicTest < Minitest::Test
       @karafka.produce('{"x":1}')
     end
 
+    assert_match(/topic:/, error.message)
     assert_match(/consumer_for/, error.message)
   end
 
   def test_does_not_raise_when_explicit_topic_is_given
     @karafka.produce('{"x":1}', topic: "other_topic")
+
+    assert_equal 1, @karafka.produced_messages.size
   end
 
   def test_does_not_raise_once_a_consumer_was_built_with_consumer_for
     @karafka.consumer_for(:other_topic)
     @karafka.produce('{"x":1}')
+
+    assert_equal 1, @karafka.produced_messages.size
   end
 end
