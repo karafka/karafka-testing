@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# Runs the Minitest helpers with Karafka Pro. Run as a separate process by
-# `test/integration/minitest/offset_metadata_test.rb`, because the other Minitest integration
-# tests load Karafka without Pro.
+# Runs the Minitest helpers with Karafka Pro. Run in its own CI job, because the other Minitest
+# integration tests load Karafka without Pro.
 
 require_relative "../pro_helper"
 require "minitest/autorun"

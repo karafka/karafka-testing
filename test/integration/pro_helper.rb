@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Loads Karafka with Pro for the scenarios run as separate processes. Needs a real license in
+# Loads Karafka with Pro for the Pro integration tests. Needs a real license in
 # `KARAFKA_PRO_LICENSE_TOKEN`.
 
 module Karafka

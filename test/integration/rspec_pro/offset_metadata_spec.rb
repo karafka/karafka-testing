@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# Runs the RSpec helpers with Karafka Pro. Run as a separate process by
-# `test/integration/rspec/offset_metadata_spec.rb`, because the other RSpec integration specs
-# load Karafka without Pro.
+# Runs the RSpec helpers with Karafka Pro. Run in its own CI job, because the other RSpec
+# integration specs load Karafka without Pro.
 
 require_relative "../pro_helper"
 require "karafka/testing/rspec/helpers"

@@ -137,6 +137,48 @@ jobs:
       - name: Run rspec integration tests
         run: bundle exec rspec test/integration/rspec --require ./test/integration/rspec_helper.rb
 
+  minitest-integration-pro:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+        with:
+          ruby-version: '4.0.10'
+          bundler: 'latest'
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+      - name: Run minitest Pro integration tests
+        env:
+          KARAFKA_PRO_LICENSE_TOKEN: ${{ secrets.KARAFKA_PRO_LICENSE_TOKEN }}
+        run: bundle exec ruby -Ilib -e "Dir['test/integration/minitest_pro/*_test.rb'].sort.each { |f| require File.expand_path(f) }"
+
+  rspec-integration-pro:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
+        with:
+          ruby-version: '4.0.10'
+          bundler: 'latest'
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+      - name: Run rspec Pro integration tests
+        env:
+          KARAFKA_PRO_LICENSE_TOKEN: ${{ secrets.KARAFKA_PRO_LICENSE_TOKEN }}
+        run: bundle exec rspec test/integration/rspec_pro
+
   lostconf:
     timeout-minutes: 5
     runs-on: ubuntu-latest
@@ -166,6 +208,8 @@ jobs:
       - tests
       - minitest-integration
       - rspec-integration
+      - minitest-integration-pro
+      - rspec-integration-pro
       - yard-lint
       - lostconf
     steps:
