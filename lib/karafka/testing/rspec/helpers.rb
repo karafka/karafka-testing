@@ -6,6 +6,7 @@ require "karafka/testing/errors"
 require "karafka/testing/helpers"
 require "karafka/testing/spec_consumer_client"
 require "karafka/testing/spec_consumer_resume"
+require "karafka/testing/pro/injector"
 require "karafka/testing/spec_producer_client"
 require "karafka/testing/rspec/proxy"
 
@@ -250,6 +251,18 @@ module Karafka
           _karafka_consumer_client.resumes
         end
 
+        # @return [Array<Hash>] messages marked as consumed by the consumers
+        def _karafka_marks
+          _karafka_consumer_client.marks
+        end
+
+        # Sets the raw offset metadata the consumers read as committed
+        #
+        # @param metadata [String, nil] raw offset metadata
+        def _karafka_offset_metadata=(metadata)
+          _karafka_consumer_client.offset_metadata = metadata
+        end
+
         # Produces message to a specific consumer instance
         # Use when testing multiple consumers for the same topic
         #
@@ -391,6 +404,7 @@ module Karafka
           expansions = processing_cfg.consumer_groups.expansions_selector.find(topic)
           expansions.each { |expansion| consumer.singleton_class.include(expansion) }
           consumer.singleton_class.prepend(Testing::SpecConsumerResume)
+          Testing::Pro::Injector.inject(consumer, topic)
 
           @_karafka_consumer_mappings[topic.id] = consumer
           consumer

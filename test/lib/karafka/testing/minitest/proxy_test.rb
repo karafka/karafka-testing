@@ -94,4 +94,20 @@ describe_current do
       assert_equal resumes, proxy.resumes
     end
   end
+
+  describe "#marks" do
+    it "returns the marks from the example" do
+      marks = [{ topic: "test", partition: 0, offset: 1, metadata: "meta" }]
+      minitest_example.expects(:_karafka_marks).returns(marks)
+
+      assert_equal marks, proxy.marks
+    end
+  end
+
+  describe "#offset_metadata=" do
+    it "delegates to _karafka_offset_metadata=" do
+      minitest_example.expects(:_karafka_offset_metadata=).with("meta")
+      proxy.offset_metadata = "meta"
+    end
+  end
 end

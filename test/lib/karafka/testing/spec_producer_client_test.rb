@@ -67,6 +67,43 @@ describe_current do
     end
   end
 
+  describe "transactional marks" do
+    let(:consumer_client) { Karafka::Testing::SpecConsumerClient.new }
+    let(:tpl) { stub(to_h: { "test_topic" => [stub(partition: 1, offset: 11, metadata: "meta")] }) }
+
+    before do
+      client.begin_transaction
+      client.send_offsets_to_transaction(consumer_client, tpl, 1_000)
+    end
+
+    it "records the marks on the consumer client on commit" do
+      assert_empty consumer_client.marks
+
+      client.commit_transaction
+
+      assert_equal(
+        [{ topic: "test_topic", partition: 1, offset: 10, metadata: "meta" }],
+        consumer_client.marks
+      )
+    end
+
+    it "drops the marks on abort" do
+      client.abort_transaction
+      client.begin_transaction
+      client.commit_transaction
+
+      assert_empty consumer_client.marks
+    end
+
+    it "drops the marks on reset" do
+      client.reset
+      client.begin_transaction
+      client.commit_transaction
+
+      assert_empty consumer_client.marks
+    end
+  end
+
   describe "#reset" do
     it "clears the buffer" do
       client.produce({ topic: "test_topic", payload: "test_payload" })

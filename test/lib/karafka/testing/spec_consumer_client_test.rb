@@ -3,23 +3,53 @@
 describe_current do
   let(:client) { Karafka::Testing::SpecConsumerClient.new }
 
+  let(:marked_message) { stub(topic: "topic", partition: 1, offset: 10) }
+
   describe "#mark_as_consumed" do
     it "returns true" do
-      assert client.mark_as_consumed
+      assert client.mark_as_consumed(marked_message)
     end
 
-    it "accepts any arguments" do
-      assert client.mark_as_consumed("arg1", "arg2")
+    it "records the mark with its metadata" do
+      client.mark_as_consumed(marked_message, "meta")
+
+      assert_equal [{ topic: "topic", partition: 1, offset: 10, metadata: "meta" }], client.marks
+    end
+
+    it "records the mark without metadata" do
+      client.mark_as_consumed(marked_message)
+
+      assert_equal [{ topic: "topic", partition: 1, offset: 10, metadata: nil }], client.marks
     end
   end
 
   describe "#mark_as_consumed!" do
     it "returns true" do
-      assert client.mark_as_consumed!
+      assert client.mark_as_consumed!(marked_message)
     end
 
-    it "accepts any arguments" do
-      assert client.mark_as_consumed!("arg1")
+    it "records the mark with its metadata" do
+      client.mark_as_consumed!(marked_message, "meta")
+
+      assert_equal [{ topic: "topic", partition: 1, offset: 10, metadata: "meta" }], client.marks
+    end
+  end
+
+  describe "#marks" do
+    it "is empty for a new client" do
+      assert_empty client.marks
+    end
+  end
+
+  describe "#offset_metadata" do
+    it "is nil for a new client" do
+      assert_nil client.offset_metadata
+    end
+
+    it "returns the assigned metadata" do
+      client.offset_metadata = "meta"
+
+      assert_equal "meta", client.offset_metadata
     end
   end
 
