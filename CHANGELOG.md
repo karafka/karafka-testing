@@ -4,6 +4,7 @@
 - [Feature] Record marks with their offset metadata. Assert them with `karafka.marks` (#214).
 - [Feature] Set the Pro offset metadata that consumers read with `karafka.offset_metadata = "..."`.
 - [Fix] Make Pro `#offset_metadata` work in specs. It no longer fails with `NoMethodError: undefined method '[]' for false`.
+- [Fix] Raise `Karafka::Testing::Errors::TopicNotDefinedError` from `karafka.produce` when no topic can be resolved. It no longer fails with a confusing `WaterDrop::Errors::MessageInvalidError` when no `topic:` is given and no consumer is defined (#227).
 
 ## 2.6.4 (2026-11-04)
 - [Feature] Record consumer pauses and resumes. Assert them with `karafka.pauses` and `karafka.resumes` (#214).

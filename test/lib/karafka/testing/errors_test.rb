@@ -76,4 +76,18 @@ describe_current do
       assert_equal "custom message", err.message
     end
   end
+
+  describe "TopicNotDefinedError" do
+    it "inherits from BaseError" do
+      assert_operator Karafka::Testing::Errors::TopicNotDefinedError,
+        :<, Karafka::Testing::Errors::BaseError
+    end
+
+    it "can be raised with a message" do
+      err = assert_raises(Karafka::Testing::Errors::TopicNotDefinedError) do
+        raise Karafka::Testing::Errors::TopicNotDefinedError, "custom message"
+      end
+      assert_equal "custom message", err.message
+    end
+  end
 end

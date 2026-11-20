@@ -26,6 +26,12 @@ module Karafka
       # configured. Prior to initialization process, most of config values are nils, etc and
       # mocks will not work.
       KarafkaNotInitializedError = Class.new(BaseError)
+
+      # Raised when `karafka.produce` cannot resolve any target topic because no `topic:` was
+      # given, no consumer is defined and no consumer has been built with `consumer_for`.
+      # Without it we would pass a nil topic to WaterDrop and fail with a confusing
+      # `WaterDrop::Errors::MessageInvalidError`.
+      TopicNotDefinedError = Class.new(BaseError)
     end
   end
 end

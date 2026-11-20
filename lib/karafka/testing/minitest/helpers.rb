@@ -203,6 +203,8 @@ module Karafka
         # @param metadata [Hash] any metadata we want to dispatch alongside the payload.
         #   Supports an `offset` key to set a custom offset for the message (otherwise
         #   offsets auto-increment from 0).
+        # @raise [Karafka::Testing::Errors::TopicNotDefinedError] raised when the target topic
+        #   cannot be resolved from the message metadata, the consumer or the defined consumers
         def _karafka_produce(payload, metadata = {})
           # Extract offset before passing to WaterDrop since it is not a valid
           # WaterDrop message attribute (Kafka assigns offsets, not producers). Kept per thread, as
@@ -217,6 +219,16 @@ module Karafka
             last_consumer = @_karafka_consumer_mappings&.values&.last
             last_consumer&.topic&.name
           end
+
+          # Without a topic, WaterDrop would fail with a confusing `MessageInvalidError`
+          unless topic_name
+            raise(
+              Errors::TopicNotDefinedError,
+              "Cannot resolve the target topic. Pass `topic:` to `produce` or use " \
+              "`@karafka.consumer_for(:topic_name)` to define a consumer first."
+            )
+          end
+
           Karafka.producer.produce_sync(
             {
               topic: topic_name,
