@@ -11,7 +11,7 @@ describe_current do
     end
   end
 
-  let(:consumer) { consumer_class.new.tap { |c| c.singleton_class.prepend(Karafka::Testing::SpecOffsetMetadata) } }
+  let(:consumer) { consumer_class.new.tap { |c| c.singleton_class.prepend(Karafka::Testing::Pro::SpecOffsetMetadata) } }
   let(:client) { Karafka::Testing::SpecConsumerClient.new }
   let(:deserializer) { ->(raw) { raw ? "deserialized #{raw}" : "none" } }
 

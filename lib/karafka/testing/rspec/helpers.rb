@@ -6,7 +6,7 @@ require "karafka/testing/errors"
 require "karafka/testing/helpers"
 require "karafka/testing/spec_consumer_client"
 require "karafka/testing/spec_consumer_resume"
-require "karafka/testing/spec_offset_metadata"
+require "karafka/testing/pro/injector"
 require "karafka/testing/spec_producer_client"
 require "karafka/testing/rspec/proxy"
 
@@ -404,9 +404,7 @@ module Karafka
           expansions = processing_cfg.consumer_groups.expansions_selector.find(topic)
           expansions.each { |expansion| consumer.singleton_class.include(expansion) }
           consumer.singleton_class.prepend(Testing::SpecConsumerResume)
-          if Karafka.pro? && topic.offset_metadata?
-            consumer.singleton_class.prepend(Testing::SpecOffsetMetadata)
-          end
+          Testing::Pro::Injector.inject(consumer, topic)
 
           @_karafka_consumer_mappings[topic.id] = consumer
           consumer
