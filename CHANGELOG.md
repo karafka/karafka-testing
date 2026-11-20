@@ -1,5 +1,8 @@
 # Karafka Testing Changelog
 
+## 2.6.5 (Unreleased)
+- [Fix] Raise `Karafka::Testing::Errors::TopicNotDefinedError` from `karafka.produce` when no topic can be resolved. It no longer fails with a confusing `WaterDrop::Errors::MessageInvalidError` when no `topic:` is given and no consumer is defined (#227).
+
 ## 2.6.4 (2026-11-04)
 - [Feature] Record consumer pauses and resumes. Assert them with `karafka.pauses` and `karafka.resumes` (#214).
 - [Maintenance] Declare `rake` in the `Gemfile`. It came only through `karafka-rdkafka`, which will stop depending on it for precompiled platform gems.
