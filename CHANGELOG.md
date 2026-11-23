@@ -3,11 +3,10 @@
 ## 2.6.5 (Unreleased)
 - [Feature] Record marks with their offset metadata. Assert them with `karafka.marks` (#214).
 - [Feature] Set the Pro offset metadata that consumers read with `karafka.offset_metadata = "..."`.
-- [Fix] Make Pro `#offset_metadata` work in specs. It no longer fails with `NoMethodError: undefined method '[]' for false`.
-- [Fix] Raise `Karafka::Testing::Errors::TopicNotDefinedError` from `karafka.produce` when no topic can be resolved. It no longer fails with a confusing `WaterDrop::Errors::MessageInvalidError` when no `topic:` is given and no consumer is defined (#227).
 - [Maintenance] Publish with a Sigstore attestation again. 2.6.3 and 2.6.4 were published without one: signing failed in the release workflow (the signer does not work with json 3.x, the default of Ruby 4.0) and the attestation patch then pushed the gems unsigned.
 - [Maintenance] Sign the gem with `sigstore-cli` and push it with `gem push --attestation` (the `gem-push` action of `karafka/misc`), so a failed signing stops the release instead of publishing the gem without an attestation.
-- [Maintenance] Add the `Sigstore Check` workflow: nightly, and on pull requests that change the push workflow, it builds the gem, signs it like a release and verifies the attestation, without pushing.
+- [Fix] Make Pro `#offset_metadata` work in specs. It no longer fails with `NoMethodError: undefined method '[]' for false`.
+- [Fix] Raise `Karafka::Testing::Errors::TopicNotDefinedError` from `karafka.produce` when no topic can be resolved. It no longer fails with a confusing `WaterDrop::Errors::MessageInvalidError` when no `topic:` is given and no consumer is defined (#227).
 
 ## 2.6.4 (2026-11-04)
 - [Feature] Record consumer pauses and resumes. Assert them with `karafka.pauses` and `karafka.resumes` (#214).
