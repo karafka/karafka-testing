@@ -17,6 +17,9 @@
 # sftp configuration file
 sftp-config.json
 
+### AI stuff
+.claude
+.codex
 
 ### Ruby template
 *.gem

@@ -1,6 +1,6 @@
 # Karafka Testing Changelog
 
-## 2.6.5 (Unreleased)
+## 2.6.5 (2026-11-25)
 - [Feature] Record marks with their offset metadata. Assert them with `karafka.marks` (#214).
 - [Feature] Set the Pro offset metadata that consumers read with `karafka.offset_metadata = "..."`.
 - [Maintenance] Publish with a Sigstore attestation again. 2.6.3 and 2.6.4 were published without one: signing failed in the release workflow (the signer does not work with json 3.x, the default of Ruby 4.0) and the attestation patch then pushed the gems unsigned.
